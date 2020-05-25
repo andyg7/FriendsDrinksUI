@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 
-COPY src/ .
+COPY ./src .
 
 EXPOSE 8080
 CMD [ "sh", "-c", "node", "server.js" ]
