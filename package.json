@@ -1,0 +1,13 @@
+{
+  "name": "friendsdrinks_ui",
+  "version": "1.0.0",
+  "description": "FriendsDrinks UI",
+  "author": "https://github.com/andyg7",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}
