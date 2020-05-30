@@ -6,7 +6,6 @@ var LoggedInuser = require('./../auth').LoggedInUser;
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
-
 class UserManagement {
 	constructor() {
 		var poolData = {
@@ -55,11 +54,12 @@ class UserManagement {
 			Pool: this.userPool,
 		};
 		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+		var sessionManager = this.sessionManager;
 		const promise = new Promise(function (resolve, reject) {
 			cognitoUser.authenticateUser(authenticationDetails, {
 				onSuccess: function (result) {
 					console.log(result);
-					const sessionId = this.sessionManager.storeSession(result);
+					const sessionId = sessionManager.storeSession(result);
 					var payload = result.getIdToken().decodePayload();
 					var user = new User(payload['email']);
 					var loggedInuser = new LoggedInuser(user, sessionId);
