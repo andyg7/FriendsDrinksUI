@@ -23,7 +23,11 @@ app.get('/', function (req, res) {
 		res.redirect('/login');
 	} else {
 		const username = awsAuth.user.getLoggedInUser(sessiondId);
-		res.render('index', { username: username });
+		if (username == null) {
+			res.redirect('/login')
+		} else {
+			res.render('index', { username: username });
+		}
 	}
 })
 

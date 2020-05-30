@@ -71,9 +71,13 @@ var user = {
 		});
 		return promise;
 	},
-	getLoggedInUser: function(sessionId) {
+	getLoggedInUser: function (sessionId) {
 		const tokens = sessionManager.getSession(sessionId);
-		console.log(tokens);
+		if (tokens == null) {
+			console.log("No logged in user for " + sessionId);
+			return tokens;
+		}
+		console.log("Returned tokens: " + tokens);
 		return tokens.getIdToken().decodePayload()['email'];
 	},
 	forgotPassword: function (email, res) {
