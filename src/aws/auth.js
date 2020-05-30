@@ -6,16 +6,15 @@ var LoggedInuser = require('./../auth').LoggedInUser;
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
-var poolData = {
-    UserPoolId: 'us-east-1_sFPmZMOoq', // Your user pool id here
-    ClientId: '3f1crpdsji4vsav79b3s9qfjld', // Your client id here
-};
-
-var sessionManager = new SessionManager();
 
 class UserManagement {
-    constructor() {
+	constructor() {
+		var poolData = {
+			UserPoolId: 'us-east-1_sFPmZMOoq', // Your user pool id here
+			ClientId: '3f1crpdsji4vsav79b3s9qfjld', // Your client id here
+		};
         this.userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+		this.sessionManager = new SessionManager();
 	}
 
 	signup(email, password) {
@@ -60,7 +59,7 @@ class UserManagement {
 			cognitoUser.authenticateUser(authenticationDetails, {
 				onSuccess: function (result) {
 					console.log(result);
-					const sessionId = sessionManager.storeSession(result);
+					const sessionId = this.sessionManager.storeSession(result);
 					var payload = result.getIdToken().decodePayload();
 					var user = new User(payload['email']);
 					var loggedInuser = new LoggedInuser(user, sessionId);
@@ -75,7 +74,7 @@ class UserManagement {
 	}
 
 	getLoggedInUser(sessionId) {
-		const tokens = sessionManager.getSession(sessionId);
+		const tokens = this.sessionManager.getSession(sessionId);
 		if (tokens == null) {
 			console.log("No logged in user for " + sessionId);
 			return tokens;
