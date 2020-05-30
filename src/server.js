@@ -13,10 +13,18 @@ app.use(cookieParser())
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+const sessionCookieKey = "friendsdrinks-session-id";
 
-// This responds with "Hello World" on the homepage
 app.get('/', function (req, res) {
-   res.sendFile( __dirname + "/views/" + "index.html" );
+	console.log(req.cookies);
+	const sessiondId = req.cookies[sessionCookieKey];
+	console.log("session id: " + sessiondId);
+	if (!sessiondId) {
+		res.redirect('/login');
+	} else {
+		const username = awsAuth.user.getLoggedInUser(sessiondId);
+		res.render('index', { username: username });
+	}
 })
 
 app.get('/signup', function (req, res) {
@@ -58,7 +66,10 @@ app.post('/login', function (req, res) {
 		res.send('You need to provide a password');	
 	}
 	awsAuth.user.login(email, password).then(function (data) {
-
+		var sessionId = data.sessionId;
+		console.log("Setting session id in cookie to " + sessionId);
+		res.cookie(sessionCookieKey, sessionId);
+		res.redirect('/');
 	}).catch(function (err) {
 		res.send(console.error(err));
 	});

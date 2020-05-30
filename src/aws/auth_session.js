@@ -1,14 +1,16 @@
-var uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 function Manager() {
     this.map = new Map(),
-    this.storeSession = function (tokens) {
-        const uuid = uuid.uuidv4();
-        this.map.insert(uuid, tokens);
-    },
-    this.getSession = function (uuid) {
-        return this.map.get(uuid);
-    }
+        this.storeSession = function (tokens) {
+            const uuid = uuidv4();
+            console.log("Generated uuid: " + uuid);
+            this.map.set(uuid, tokens);
+            return uuid;
+        },
+        this.getSession = function (uuid) {
+            return this.map.get(uuid);
+        }
 
 }
 

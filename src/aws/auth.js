@@ -2,6 +2,7 @@ global.fetch = require('node-fetch');
 
 var session = require('./auth_session');
 var User = require('./../auth').User;
+var LoggedInuser = require('./../auth').LoggedInUser;
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -40,7 +41,7 @@ var user = {
 		});
 		return promise;
 	},
-	login: function (email, password, res) {
+	login: function (email, password) {
 		var authenticationData = {
 			Username: email,
 			Password: password,
@@ -53,15 +54,27 @@ var user = {
 			Pool: this.userPool,
 		};
 		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-		cognitoUser.authenticateUser(authenticationDetails, {
-			onSuccess: function (result) {
-				res.send(result);
-			},
-
-			onFailure: function (err) {
-				res.send(JSON.stringify(err));
-			}
+		const promise = new Promise(function (resolve, reject) {
+			cognitoUser.authenticateUser(authenticationDetails, {
+				onSuccess: function (result) {
+					console.log(result);
+					const sessionId = sessionManager.storeSession(result);
+					var payload = result.getIdToken().decodePayload();
+					var user = new User(payload['email']);
+					var loggedInuser = new LoggedInuser(user, sessionId);
+					resolve(loggedInuser);
+				},
+				onFailure: function (err) {
+					reject(err);
+				}
+			});
 		});
+		return promise;
+	},
+	getLoggedInUser: function(sessionId) {
+		const tokens = sessionManager.getSession(sessionId);
+		console.log(tokens);
+		return tokens.getIdToken().decodePayload()['email'];
 	},
 	forgotPassword: function (email, res) {
 		var userData = {
