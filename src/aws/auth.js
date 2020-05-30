@@ -1,9 +1,9 @@
 global.fetch = require('node-fetch');
 
 var session = require('./auth_session');
+var User = require('./../auth').User;
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-var CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 
 var poolData = {
     UserPoolId: 'us-east-1_sFPmZMOoq', // Your user pool id here
@@ -14,9 +14,9 @@ var sessionManager = new session.Manager();
 
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-var awsSignup = {
-	userPool: new AmazonCognitoIdentity.CognitoUserPool(poolData),
-	signup: function (email, password, res) {
+var user = {
+	userPool: userPool,
+	signup: function (email, password) {
 		var attributeList = [];
 
 		var dataEmail = {
@@ -28,12 +28,17 @@ var awsSignup = {
 
 		attributeList.push(attributeEmail);
 
-		this.userPool.signUp(email, password, attributeList, null, (err, data) => {
-			if (err) {
-				return console.error(err);
-			}
-			return res.send(data.user);
+		userPool = this.userPool;
+		const promise = new Promise(function (resolve, reject) {
+			userPool.signUp(email, password, attributeList, null, (err, data) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(new User(data.user.username));
+				}
+			});
 		});
+		return promise;
 	},
 	login: function (email, password, res) {
 		var authenticationData = {
@@ -92,6 +97,6 @@ var awsSignup = {
 
 
 module.exports = {
-	awsSignup: awsSignup,
+	user: user,
 	userPool: userPool,
 }

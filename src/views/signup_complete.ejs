@@ -1,0 +1,14 @@
+<html lang="en">
+<div id="div1">
+</div>
+<script>
+    var username = <% - JSON.stringify(username) %>;
+    var para = document.createElement("p");
+    var node = document.createTextNode("Welcome " + username + "! Please check your email for a verification link to complete your signup.");
+    para.appendChild(node);
+
+    var element = document.getElementById("div1");
+    element.appendChild(para);
+</script>
+
+</html>
