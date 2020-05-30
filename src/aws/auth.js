@@ -1,6 +1,6 @@
 global.fetch = require('node-fetch');
 
-var session = require('./auth_session');
+var SessionManager = require('./auth_session');
 var User = require('./../auth').User;
 var LoggedInuser = require('./../auth').LoggedInUser;
 
@@ -11,13 +11,14 @@ var poolData = {
     ClientId: '3f1crpdsji4vsav79b3s9qfjld', // Your client id here
 };
 
-var sessionManager = new session.Manager();
+var sessionManager = new SessionManager();
 
-var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+class UserManagement {
+    constructor() {
+        this.userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+	}
 
-var user = {
-	userPool: userPool,
-	signup: function (email, password) {
+	signup(email, password) {
 		var attributeList = [];
 
 		var dataEmail = {
@@ -40,8 +41,9 @@ var user = {
 			});
 		});
 		return promise;
-	},
-	login: function (email, password) {
+	}
+
+	login(email, password) {
 		var authenticationData = {
 			Username: email,
 			Password: password,
@@ -70,8 +72,9 @@ var user = {
 			});
 		});
 		return promise;
-	},
-	getLoggedInUser: function (sessionId) {
+	}
+
+	getLoggedInUser(sessionId) {
 		const tokens = sessionManager.getSession(sessionId);
 		if (tokens == null) {
 			console.log("No logged in user for " + sessionId);
@@ -79,8 +82,9 @@ var user = {
 		}
 		console.log("Returned tokens: " + tokens);
 		return tokens.getIdToken().decodePayload()['email'];
-	},
-	forgotPassword: function (email, res) {
+	}
+
+	forgotPassword(email, res) {
 		var userData = {
 			Username: email,
 			Pool: this.userPool,
@@ -94,8 +98,9 @@ var user = {
 				res.send(JSON.stringify(err));
 			}
 		});
-	},
-	resetPassword: function (verificationCode, email, newPassword, res) {
+	}
+
+	resetPassword(verificationCode, email, newPassword, res) {
 		var userData = {
 			Username: email,
 			Pool: this.userPool,
@@ -112,8 +117,4 @@ var user = {
 	}
 }
 
-
-module.exports = {
-	user: user,
-	userPool: userPool,
-}
+module.exports = UserManagement

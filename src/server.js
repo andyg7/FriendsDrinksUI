@@ -2,7 +2,9 @@ global.fetch = require('node-fetch');
 
 var express = require('express');
 var app = express();
-var awsAuth = require('./aws/auth')
+var AwsUserManagement = require('./aws/auth')
+
+var awsUserManagement = new AwsUserManagement();
 
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
@@ -22,7 +24,7 @@ app.get('/', function (req, res) {
 	if (!sessiondId) {
 		res.redirect('/login');
 	} else {
-		const username = awsAuth.user.getLoggedInUser(sessiondId);
+		const username = awsUserManagement.getLoggedInUser(sessiondId);
 		if (username == null) {
 			res.redirect('/login')
 		} else {
@@ -46,7 +48,7 @@ app.post('/signup', function (req, res) {
 		res.statusCode = 400;
 		res.send('You need to provide a password');	
 	}
-	awsAuth.user.signup(email, password).then(function (user) {
+	awsUserManagement.signup(email, password).then(function (user) {
 		res.render('signup_complete', {username: user.username});
 	}).catch(function (err) {
 		res.send(console.error(err));
@@ -69,7 +71,7 @@ app.post('/login', function (req, res) {
 		res.statusCode = 400;
 		res.send('You need to provide a password');	
 	}
-	awsAuth.user.login(email, password).then(function (data) {
+	awsUserManagement.login(email, password).then(function (data) {
 		var sessionId = data.sessionId;
 		console.log("Setting session id in cookie to " + sessionId);
 		res.cookie(sessionCookieKey, sessionId);
@@ -89,7 +91,7 @@ app.post('/forgotpassword', function (req, res) {
 		res.statusCode = 400;
 		res.send('You need to provide an email');	
 	}
-	awsAuth.user.forgotPassword(email, res);
+	awsUserManagement.forgotPassword(email, res);
 })
 
 app.get('/resetpassword', function (req, res) {
@@ -112,7 +114,7 @@ app.post('/resetpassword', function (req, res) {
 		res.statusCode = 400;
 		res.send('You need to provide a new password');	
 	}
-	awsAuth.user.resetPassword(verificationCode, email, newPassword, res);
+	awsUserManagement.resetPassword(verificationCode, email, newPassword, res);
 })
 
 var server = app.listen(8080, function () {
