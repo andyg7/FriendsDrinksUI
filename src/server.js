@@ -57,7 +57,11 @@ app.post('/login', function (req, res) {
 		res.statusCode = 400;
 		res.send('You need to provide a password');	
 	}
-	awsAuth.user.login(email, password, res);
+	awsAuth.user.login(email, password).then(function (data) {
+
+	}).catch(function (err) {
+		res.send(console.error(err));
+	});
 })
 
 app.get('/forgotpassword', function (req, res) {
