@@ -4,6 +4,8 @@ var express = require('express');
 var app = express();
 var AwsUserManagement = require('./aws/auth')
 
+var auth = require('./auth');
+
 var awsUserManagement = new AwsUserManagement();
 
 var bodyParser = require('body-parser')
@@ -22,10 +24,6 @@ app.get('/', function (req, res) {
 	const sessiondId = req.cookies[sessionCookieKey];
 	console.log("session id received from browser: " + sessiondId);
 	if (!sessiondId) {
-		res.cookie(sessionCookieKey, "", {
-			path: '/',
-			expires: new Date(1)
-		});
 		res.redirect('/login');
 	} else {
 		const username = awsUserManagement.getLoggedInUser(sessiondId);
@@ -90,6 +88,36 @@ app.post('/login', function (req, res) {
 		res.send(console.error(err));
 	});
 })
+
+app.get('/logout', function (req, res) {
+	res.render('logout');
+});
+
+app.post('/logout', function (req, res) {
+	console.log(req.cookies);
+	const sessiondId = req.cookies[sessionCookieKey];
+	console.log("session id received from browser: " + sessiondId);
+	if (!sessiondId) {
+		res.redirect('/login');
+	} else {
+		const username = awsUserManagement.getLoggedInUser(sessiondId);
+		if (username == null) {
+			res.cookie(sessionCookieKey, "", {
+				path: '/',
+				expires: new Date(1)
+			});
+			res.redirect('/login')
+		} else {
+			var loggedInUser = new auth.LoggedInUser(new auth.User(username), sessiondId);
+			awsUserManagement.logout(loggedInUser);
+			res.cookie(sessionCookieKey, "", {
+				path: '/',
+				expires: new Date(1)
+			});
+			res.send("You're logged out!");
+		}
+	}
+});
 
 app.get('/forgotpassword', function (req, res) {
    res.sendFile( __dirname + "/views/" + "forgot_password.html" );

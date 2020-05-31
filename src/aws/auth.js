@@ -73,6 +73,16 @@ class UserManagement {
 		return promise;
 	}
 
+	logout(loggedInUser) {
+		this.sessionManager.deleteSession(loggedInUser.getSessionId());
+		var userData = {
+			Username: loggedInUser.getUser().getUsername(),
+			Pool: this.userPool,
+		};
+		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+		cognitoUser.signOut();
+	}
+
 	getLoggedInUser(sessionId) {
 		const tokens = this.sessionManager.getSession(sessionId);
 		if (tokens == null) {

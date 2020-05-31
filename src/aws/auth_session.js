@@ -15,6 +15,10 @@ class Manager {
     getSession(uuid) {
         return this.map.get(uuid);
     }
+
+    deleteSession(uuid) {
+        return this.map.delete(uuid);
+    }
 }
 
 module.exports = Manager
