@@ -20,12 +20,20 @@ const sessionCookieKey = "friendsdrinks-session-id";
 app.get('/', function (req, res) {
 	console.log(req.cookies);
 	const sessiondId = req.cookies[sessionCookieKey];
-	console.log("session id: " + sessiondId);
+	console.log("session id received from browser: " + sessiondId);
 	if (!sessiondId) {
+		res.cookie(sessionCookieKey, "", {
+			path: '/',
+			expires: new Date(1)
+		});
 		res.redirect('/login');
 	} else {
 		const username = awsUserManagement.getLoggedInUser(sessiondId);
 		if (username == null) {
+			res.cookie(sessionCookieKey, "", {
+				path: '/',
+				expires: new Date(1)
+			});
 			res.redirect('/login')
 		} else {
 			res.render('index', { username: username });
@@ -74,7 +82,9 @@ app.post('/login', function (req, res) {
 	awsUserManagement.login(email, password).then(function (data) {
 		var sessionId = data.sessionId;
 		console.log("Setting session id in cookie to " + sessionId);
-		res.cookie(sessionCookieKey, sessionId);
+		res.cookie(sessionCookieKey, sessionId, {
+			path: '/'
+		});
 		res.redirect('/');
 	}).catch(function (err) {
 		res.send(console.error(err));
