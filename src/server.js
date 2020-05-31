@@ -57,7 +57,8 @@ app.post('/signup', function (req, res) {
 	awsUserManagement.signup(email, password).then(function (user) {
 		res.render('signup_complete', {username: user.username});
 	}).catch(function (err) {
-		res.send(console.error(err));
+		console.log(err);
+		res.send("Whoops! Something went wrong :(");
 	});
 
 })
@@ -85,7 +86,8 @@ app.post('/login', function (req, res) {
 		});
 		res.redirect('/');
 	}).catch(function (err) {
-		res.send(console.error(err));
+		console.log(err);
+		res.send("Whoops! Something went wrong :(");
 	});
 })
 
