@@ -1,18 +1,25 @@
-function User(username) {
-    this.username = username;
-    this.getUsername = function () {
+
+class User {
+    constructor(username) {
+        this.username = username;
+    }
+
+    getUsername() {
         return this.username;
     }
 }
 
-function LoggedInUser(user, sessionId) {
-    this.user = user;
-    this.sessionId = sessionId;
+class LoggedInUser {
+    constructor(user, sessionId) {
+        this.user = user;
+        this.sessionId = sessionId;
+    }
 
-    this.getSessionId = function () {
+    getSessionId() {
         return this.sessionId;
     }
-    this.getUser = function () {
+
+    getUser() {
         return this.user;
     }
 }

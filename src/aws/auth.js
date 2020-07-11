@@ -1,8 +1,7 @@
 global.fetch = require('node-fetch');
 
 var SessionManager = require('./auth_session');
-var User = require('./../auth').User;
-var LoggedInuser = require('./../auth').LoggedInUser;
+var auth = require('./../auth')
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -34,7 +33,7 @@ class UserManagement {
 				if (err) {
 					reject(err);
 				} else {
-					resolve(new User(data.user.username));
+					resolve(new auth.User(data.user.username));
 				}
 			});
 		});
@@ -61,9 +60,9 @@ class UserManagement {
 					console.log(result);
 					const sessionId = sessionManager.storeSession(result);
 					var payload = result.getIdToken().decodePayload();
-					var user = new User(payload['email']);
-					var loggedInuser = new LoggedInuser(user, sessionId);
-					resolve(loggedInuser);
+					var user = new auth.User(payload['email']);
+					var loggedInUser = new auth.LoggedInUser(user, sessionId);
+					resolve(loggedInUser);
 				},
 				onFailure: function (err) {
 					reject(err);
