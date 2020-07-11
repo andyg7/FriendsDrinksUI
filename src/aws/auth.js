@@ -3,7 +3,7 @@ global.fetch = require('node-fetch');
 var SessionManager = require('./auth_session');
 var auth = require('./../auth')
 
-var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
+var amazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 class UserManagement {
 	constructor() {
@@ -11,7 +11,7 @@ class UserManagement {
 			UserPoolId: 'us-east-1_sFPmZMOoq', // Your user pool id here
 			ClientId: '3f1crpdsji4vsav79b3s9qfjld', // Your client id here
 		};
-        this.userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        this.userPool = new amazonCognitoIdentity.CognitoUserPool(poolData);
 		this.sessionManager = new SessionManager();
 	}
 
@@ -23,7 +23,7 @@ class UserManagement {
 			Value: email,
 		};
 
-		var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+		var attributeEmail = new amazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
 		attributeList.push(attributeEmail);
 
@@ -45,14 +45,14 @@ class UserManagement {
 			Username: email,
 			Password: password,
 		};
-		var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+		var authenticationDetails = new amazonCognitoIdentity.AuthenticationDetails(
 			authenticationData
 		);
 		var userData = {
 			Username: email,
 			Pool: this.userPool,
 		};
-		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		var sessionManager = this.sessionManager;
 		const promise = new Promise(function (resolve, reject) {
 			cognitoUser.authenticateUser(authenticationDetails, {
@@ -78,7 +78,7 @@ class UserManagement {
 			Username: loggedInUser.getUser().getUsername(),
 			Pool: this.userPool,
 		};
-		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		cognitoUser.signOut();
 	}
 
@@ -97,7 +97,7 @@ class UserManagement {
 			Username: email,
 			Pool: this.userPool,
 		};
-		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		const promise = new Promise(function (resolve, reject) {
     		cognitoUser.forgotPassword({
 			    onSuccess: function (result) {
@@ -117,7 +117,7 @@ class UserManagement {
 			Username: email,
 			Pool: this.userPool,
 		};
-		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		const promise = new Promise(function (resolve, reject) {
             cognitoUser.confirmPassword(verificationCode, newPassword, {
                 onSuccess: function () {
