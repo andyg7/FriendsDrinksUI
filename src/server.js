@@ -60,7 +60,6 @@ app.post('/signup', function (req, res) {
 		console.log(err);
 		res.send("Whoops! Something went wrong :(");
 	});
-
 })
 
 app.get('/login', function (req, res) {
@@ -131,7 +130,14 @@ app.post('/forgotpassword', function (req, res) {
 		res.statusCode = 400;
 		res.send('You need to provide an email');	
 	}
-	awsUserManagement.forgotPassword(email, res);
+	awsUserManagement.forgotPassword(email, res).then(function (data) {
+        console.log('redirecting')
+		res.redirect('/resetpassword');
+	}).catch(function (err) {
+		console.log(err);
+		res.send("Whoops! Something went wrong :(");
+	});
+
 })
 
 app.get('/resetpassword', function (req, res) {
@@ -154,7 +160,13 @@ app.post('/resetpassword', function (req, res) {
 		res.statusCode = 400;
 		res.send('You need to provide a new password');	
 	}
-	awsUserManagement.resetPassword(verificationCode, email, newPassword, res);
+	awsUserManagement.resetPassword(verificationCode, email, newPassword, res).then(function (data) {
+	    console.log('redirecting')
+		res.redirect('/login');
+	}).catch(function (err) {
+		console.log(err);
+		res.send("Whoops! Something went wrong :(");
+	});
 })
 
 var server = app.listen(8080, function () {

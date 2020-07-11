@@ -99,14 +99,18 @@ class UserManagement {
 			Pool: this.userPool,
 		};
 		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-		cognitoUser.forgotPassword({
-			onSuccess: function (result) {
-				res.send(result);
-			},
-			onFailure: function (err) {
-				res.send(JSON.stringify(err));
-			}
+		const promise = new Promise(function (resolve, reject) {
+    		cognitoUser.forgotPassword({
+			    onSuccess: function (result) {
+			        console.log(result);
+                    resolve(result);
+			    },
+			    onFailure: function (err) {
+                    reject(err);
+			    }
+		    });
 		});
+		return promise;
 	}
 
 	resetPassword(verificationCode, email, newPassword, res) {
@@ -115,14 +119,17 @@ class UserManagement {
 			Pool: this.userPool,
 		};
 		var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-		cognitoUser.confirmPassword(verificationCode, newPassword, {
-			onSuccess: function () {
-				res.send('Successfully reset password!');
-			},
-			onFailure: function (err) {
-				res.send(JSON.stringify(err));
-			}
+		const promise = new Promise(function (resolve, reject) {
+            cognitoUser.confirmPassword(verificationCode, newPassword, {
+                onSuccess: function () {
+                    resolve('Success');
+                },
+                onFailure: function (err) {
+                    reject(err);
+                }
+            });
 		});
+		return promise;
 	}
 }
 
