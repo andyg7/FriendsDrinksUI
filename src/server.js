@@ -1,7 +1,8 @@
 global.fetch = require('node-fetch');
 
-var express = require('express');
-var app = express();
+var createApplication = require('express');
+var app = createApplication();
+
 var AwsUserManagement = require('./aws/auth')
 
 var auth = require('./auth');
@@ -19,10 +20,15 @@ app.set('view engine', 'ejs');
 
 const sessionCookieKey = "friendsdrinks-session-id";
 
+app.use(function(req, res, next) {
+    console.log("request:", req.method, req.url, req.body);
+    next();
+});
+
 app.get('/', function (req, res) {
 	console.log(req.cookies);
 	const sessiondId = req.cookies[sessionCookieKey];
-	console.log("session id received from browser: " + sessiondId);
+	console.log("session id received from browser: ", sessiondId);
 	if (!sessiondId) {
 		res.redirect('/login');
 	} else {
@@ -58,6 +64,7 @@ app.post('/signup', function (req, res) {
 		res.render('signup_complete', {username: user.username});
 	}).catch(function (err) {
 		console.log(err);
+		res.status(500);
 		res.send("Whoops! Something went wrong :(");
 	});
 })
@@ -86,7 +93,13 @@ app.post('/login', function (req, res) {
 		res.redirect('/');
 	}).catch(function (err) {
 		console.log(err);
-		res.send("Whoops! Something went wrong :(");
+		if (err.code === 'NotAuthorizedException') {
+		    res.status(403);
+		    res.send("Wrong password");
+		} else {
+		    res.status(500);
+		    res.send("Whoops! Something went wrong :(");
+		}
 	});
 })
 
@@ -135,6 +148,7 @@ app.post('/forgotpassword', function (req, res) {
 		res.redirect('/resetpassword');
 	}).catch(function (err) {
 		console.log(err);
+		res.status(500);
 		res.send("Whoops! Something went wrong :(");
 	});
 
@@ -165,6 +179,7 @@ app.post('/resetpassword', function (req, res) {
 		res.redirect('/login');
 	}).catch(function (err) {
 		console.log(err);
+		res.status(500);
 		res.send("Whoops! Something went wrong :(");
 	});
 })

@@ -57,7 +57,9 @@ class UserManagement {
 		const promise = new Promise(function (resolve, reject) {
 			cognitoUser.authenticateUser(authenticationDetails, {
 				onSuccess: function (result) {
+					console.log("result from logging in: ");
 					console.log(result);
+					console.log("done");
 					const sessionId = sessionManager.storeSession(result);
 					var payload = result.getIdToken().decodePayload();
 					var user = new auth.User(payload['email']);
@@ -88,7 +90,7 @@ class UserManagement {
 			console.log("No logged in user for " + sessionId);
 			return tokens;
 		}
-		console.log("Returned tokens: " + tokens);
+		console.log("Returned email: " + tokens.getIdToken().decodePayload()['email']);
 		return tokens.getIdToken().decodePayload()['email'];
 	}
 
