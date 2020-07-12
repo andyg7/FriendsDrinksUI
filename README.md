@@ -1,1 +1,1 @@
-# FriendsDrinksFrontend
+# FriendsDrinksUI
