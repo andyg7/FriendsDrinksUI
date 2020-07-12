@@ -1,7 +1,7 @@
 global.fetch = require('node-fetch');
 
-var createApplication = require('express');
-var app = createApplication();
+var express = require('express');
+var app = express();
 
 var AwsUserManagement = require('./aws/auth')
 
@@ -17,6 +17,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+
+app.use(express.static(__dirname + '/public'));
 
 const sessionCookieKey = "friendsdrinks-session-id";
 
