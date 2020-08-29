@@ -7,7 +7,9 @@ var AwsUserManagement = require('./aws/auth')
 
 var auth = require('./auth');
 
-var awsUserManagement = new AwsUserManagement();
+var myArgs = process.argv.slice(2);
+
+var awsUserManagement = new AwsUserManagement(myArgs[0], myArgs[1]);
 
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')

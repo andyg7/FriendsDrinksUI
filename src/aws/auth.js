@@ -6,10 +6,10 @@ var auth = require('./../auth')
 var amazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 class UserManagement {
-	constructor() {
+	constructor(poolId, clientId) {
 		var poolData = {
-			UserPoolId: 'us-east-1_sFPmZMOoq', // Your user pool id here
-			ClientId: '3f1crpdsji4vsav79b3s9qfjld', // Your client id here
+			UserPoolId: poolId,
+			ClientId: clientId
 		};
         this.userPool = new amazonCognitoIdentity.CognitoUserPool(poolData);
 		this.sessionManager = new SessionManager();
