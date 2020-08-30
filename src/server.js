@@ -32,12 +32,12 @@ class ServerFactory {
 
         app.get('/', function (req, res) {
             console.log(req.cookies);
-            const sessiondId = req.cookies[sessionCookieKey];
-            console.log("session id received from browser: ", sessiondId);
-            if (!sessiondId) {
+            const sessionId = req.cookies[sessionCookieKey];
+            console.log("session id received from browser: ", sessionId);
+            if (!sessionId) {
                 res.redirect('/login');
             } else {
-                const username = userManagement.getLoggedInUser(sessiondId);
+                const username = userManagement.getLoggedInUser(sessionId);
                 if (username == null) {
                     res.cookie(sessionCookieKey, "", {
                         path: '/',
@@ -45,7 +45,10 @@ class ServerFactory {
                     });
                     res.redirect('/login')
                 } else {
-                    res.render('index', { username: username });
+                    res.render('index', {
+                    username: username,
+                    friendsDrinks: [{name: "name", schedule: "schedule"}]
+                    });
                 }
             }
         })
@@ -114,12 +117,12 @@ class ServerFactory {
 
         app.post('/logout', function (req, res) {
             console.log(req.cookies);
-            const sessiondId = req.cookies[sessionCookieKey];
-            console.log("session id received from browser: " + sessiondId);
-            if (!sessiondId) {
+            const sessionId = req.cookies[sessionCookieKey];
+            console.log("session id received from browser: " + sessionId);
+            if (!sessionId) {
                 res.redirect('/login');
             } else {
-                const username = userManagement.getLoggedInUser(sessiondId);
+                const username = userManagement.getLoggedInUser(sessionId);
                 if (username == null) {
                     res.cookie(sessionCookieKey, "", {
                         path: '/',
@@ -127,7 +130,7 @@ class ServerFactory {
                     });
                     res.redirect('/login')
                 } else {
-                    let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessiondId);
+                    let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
                     userManagement.logout(loggedInUser);
                     res.cookie(sessionCookieKey, "", {
                         path: '/',

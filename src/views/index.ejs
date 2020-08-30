@@ -10,7 +10,19 @@
         <a href="/logout">Logout</a>
     </header>
     <section>
-        <h1>Welcome! FriendsDrinks lets you schedule drinks with your friends!</h1>
+        <h1>Welcome <%= username %>! FriendsDrinks lets you schedule drinks with your friends!</h1>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Schedule</th>
+          </tr>
+            <% for (var i = 0; i < friendsDrinks.length; i++) { %>
+              <tr>
+                <td><%= friendsDrinks[i].name %></td>
+                <td><%= friendsDrinks[i].schedule %></td>
+              </tr>
+           <% } %>
+        </table>
     </section>
     </div>
 </body>
