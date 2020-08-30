@@ -37,7 +37,7 @@ class Session {
     constructor(uuid, tokens) {
         this.uuid = uuid;
         this.tokens = tokens;
-        var expirationDate = new Date();
+        let expirationDate = new Date();
         expirationDate.setMinutes(expirationDate.getMinutes() + 5);
         this.expiration = expirationDate.toISOString();
         console.log("expiration: ", this.expiration);

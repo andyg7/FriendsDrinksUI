@@ -1,13 +1,13 @@
 global.fetch = require('node-fetch');
 
-var SessionManager = require('./auth_session');
-var auth = require('./../auth')
+let SessionManager = require('./auth_session');
+let auth = require('./../auth')
 
-var amazonCognitoIdentity = require('amazon-cognito-identity-js');
+let amazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 class UserManagement {
 	constructor(poolId, clientId) {
-		var poolData = {
+		let poolData = {
 			UserPoolId: poolId,
 			ClientId: clientId
 		};
@@ -16,14 +16,14 @@ class UserManagement {
 	}
 
 	signup(email, password) {
-		var attributeList = [];
+		let attributeList = [];
 
-		var dataEmail = {
+		let dataEmail = {
 			Name: 'email',
 			Value: email,
 		};
 
-		var attributeEmail = new amazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+		let attributeEmail = new amazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
 		attributeList.push(attributeEmail);
 
@@ -41,27 +41,27 @@ class UserManagement {
 	}
 
 	login(email, password) {
-		var authenticationData = {
+		let authenticationData = {
 			Username: email,
 			Password: password,
 		};
-		var authenticationDetails = new amazonCognitoIdentity.AuthenticationDetails(
+		let authenticationDetails = new amazonCognitoIdentity.AuthenticationDetails(
 			authenticationData
 		);
-		var userData = {
+		let userData = {
 			Username: email,
 			Pool: this.userPool,
 		};
-		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
-		var sessionManager = this.sessionManager;
+		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
+		let sessionManager = this.sessionManager;
 		const promise = new Promise(function (resolve, reject) {
 			cognitoUser.authenticateUser(authenticationDetails, {
 				onSuccess: function (result) {
 					console.log("result from logging in: ", result);
 					const sessionId = sessionManager.storeSession(result);
-					var payload = result.getIdToken().decodePayload();
-					var user = new auth.User(payload['email']);
-					var loggedInUser = new auth.LoggedInUser(user, sessionId);
+					let payload = result.getIdToken().decodePayload();
+					let user = new auth.User(payload['email']);
+					let loggedInUser = new auth.LoggedInUser(user, sessionId);
 					resolve(loggedInUser);
 				},
 				onFailure: function (err) {
@@ -74,11 +74,11 @@ class UserManagement {
 
 	logout(loggedInUser) {
 		this.sessionManager.deleteSession(loggedInUser.getSessionId());
-		var userData = {
+		let userData = {
 			Username: loggedInUser.getUser().getUsername(),
 			Pool: this.userPool,
 		};
-		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
+		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		cognitoUser.signOut();
 	}
 
@@ -93,11 +93,11 @@ class UserManagement {
 	}
 
 	forgotPassword(email, res) {
-		var userData = {
+		let userData = {
 			Username: email,
 			Pool: this.userPool,
 		};
-		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
+		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		const promise = new Promise(function (resolve, reject) {
     		cognitoUser.forgotPassword({
 			    onSuccess: function (result) {
@@ -113,11 +113,11 @@ class UserManagement {
 	}
 
 	resetPassword(verificationCode, email, newPassword, res) {
-		var userData = {
+		let userData = {
 			Username: email,
 			Pool: this.userPool,
 		};
-		var cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
+		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		const promise = new Promise(function (resolve, reject) {
             cognitoUser.confirmPassword(verificationCode, newPassword, {
                 onSuccess: function () {
