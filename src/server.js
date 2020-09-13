@@ -50,9 +50,9 @@ function createServer(userManagement, backendConfig) {
                     var req = http.get(options, function(backendRes) {
                       console.log('STATUS: ' + backendRes.statusCode);
                       console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-                      if (statusCode != 200) {
+                      if (backendRes.statusCode != 200) {
                          backendRes.resume();
-                         throw new Error("");
+                         throw new Error("Failed to call backend service");
                       }
 
                       var bodyChunks = [];
@@ -61,9 +61,10 @@ function createServer(userManagement, backendConfig) {
                       }).on('end', function() {
                         var body = Buffer.concat(bodyChunks);
                         console.log('BODY: ' + body);
+                        const obj = JSON.parse(body);
                         res.render('index', {
                         username: username,
-                        friendsDrinks: [{name: "name", schedule: "schedule", friends: "friends", body: body}]
+                        friendsDrinks: [{name: obj.adminFriendsDrinks[0].name, friends: obj.adminFriendsDrinks[0].userIds, body: body}]
                         });
                       })
                     });

@@ -14,13 +14,12 @@
         <table>
           <tr>
             <th>Name</th>
-            <th>Schedule</th>
             <th>Friends</th>
+            <th>Raw Backend Response</th>
           </tr>
             <% for (var i = 0; i < friendsDrinks.length; i++) { %>
               <tr>
                 <td><%= friendsDrinks[i].name %></td>
-                <td><%= friendsDrinks[i].schedule %></td>
                 <td><%= friendsDrinks[i].friends %></td>
                 <td><%= friendsDrinks[i].body %></td>
               </tr>
