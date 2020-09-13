@@ -10,7 +10,6 @@ if (args.length != 3) {
 }
 
 var properties = propertiesReader('src/config/config.properties');
-var property = properties.get('some.property.name');
 let backendConfig = {}
 backendConfig.hostname = properties.get(args[2] + '.' + 'backendHostname')
 backendConfig.port = properties.get(args[2] + '.' + 'backendPort')
