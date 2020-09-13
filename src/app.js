@@ -1,18 +1,23 @@
 var AwsUserManagement = require('./aws/auth')
+var propertiesReader = require('properties-reader');
 
 let createServer = require('./server')
 
 let args = process.argv.slice(2);
 console.log(args)
-if (args.length < 4) {
-   throw new Error("Must provide user pool ID, client ID, backend hostname and backend port. Raw args: " + process.argv)
+if (args.length != 3) {
+   throw new Error("Must provide user pool ID, client ID and stage. Raw args: " + process.argv)
 }
 
-let awsUserManagement = new AwsUserManagement(args[0], args[1])
-
+var properties = propertiesReader('src/config/config.properties');
+var property = properties.get('some.property.name');
 let backendConfig = {}
-backendConfig.hostname = args[2]
-backendConfig.port = args[3]
+backendConfig.hostname = properties.get(args[2] + '.' + 'backendHostname')
+backendConfig.port = properties.get(args[2] + '.' + 'backendPort')
+console.log('Backend hostname: ' + backendConfig.hostname)
+console.log('Backend port: ' + backendConfig.port)
+
+let awsUserManagement = new AwsUserManagement(args[0], args[1])
 
 let server = createServer(awsUserManagement, backendConfig)
 

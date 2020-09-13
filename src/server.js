@@ -55,10 +55,8 @@ function createServer(userManagement, backendConfig) {
                          throw new Error("");
                       }
 
-                      // Buffer the body entirely for processing as a whole.
                       var bodyChunks = [];
                       backendRes.on('data', function(chunk) {
-                        // You can process streamed parts here...
                         bodyChunks.push(chunk);
                       }).on('end', function() {
                         var body = Buffer.concat(bodyChunks);
