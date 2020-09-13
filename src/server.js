@@ -1,11 +1,12 @@
 global.fetch = require('node-fetch');
 
+let http = require('http');
 let express = require('express');
 let auth = require('./auth');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
-function createServer(userManagement) {
+function createServer(userManagement, backendConfig) {
         let app = express();
         app.use(bodyParser.json())
         app.use(bodyParser.urlencoded({extended: true}));
@@ -22,6 +23,8 @@ function createServer(userManagement) {
             next();
         });
 
+        let backendHostname = backendConfig.hostname
+        let backendPort = backendConfig.port
         app.get('/', function (req, res) {
             console.log(req.cookies);
             const sessionId = req.cookies[sessionCookieKey];
@@ -37,10 +40,42 @@ function createServer(userManagement) {
                     });
                     res.redirect('/login')
                 } else {
-                    res.render('index', {
-                    username: username,
-                    friendsDrinks: [{name: "name", schedule: "schedule"}]
+                    let path = "/v1/friendsdrinks/" + username
+                    var options = {
+                      host: backendHostname,
+                      port: backendPort,
+                      path: path
+                    };
+
+                    var req = http.get(options, function(backendRes) {
+                      console.log('STATUS: ' + backendRes.statusCode);
+                      console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                      if (statusCode != 200) {
+                         backendRes.resume();
+                         throw new Error("");
+                      }
+
+                      // Buffer the body entirely for processing as a whole.
+                      var bodyChunks = [];
+                      backendRes.on('data', function(chunk) {
+                        // You can process streamed parts here...
+                        bodyChunks.push(chunk);
+                      }).on('end', function() {
+                        var body = Buffer.concat(bodyChunks);
+                        console.log('BODY: ' + body);
+                        res.render('index', {
+                        username: username,
+                        friendsDrinks: [{name: "name", schedule: "schedule", friends: "friends", body: body}]
+                        });
+                      })
                     });
+
+                    req.on('error', function(e) {
+                      console.log('ERROR: ' + e.message);
+                      res.status(500);
+                      res.send("Whoops! Something went wrong :(");
+                    });
+
                 }
             }
         })
