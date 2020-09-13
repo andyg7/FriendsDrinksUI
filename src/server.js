@@ -5,14 +5,7 @@ let auth = require('./auth');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
-class ServerFactory {
-
-    constructor(userManagement) {
-       this.userManagement = userManagement
-       this.sessionCookieKey = "friendsdrinks-session-id";
-    }
-
-    createServer() {
+function createServer(userManagement) {
         let app = express();
         app.use(bodyParser.json())
         app.use(bodyParser.urlencoded({extended: true}));
@@ -22,8 +15,7 @@ class ServerFactory {
 
         app.use(express.static(__dirname + '/public'));
 
-        let userManagement = this.userManagement;
-        let sessionCookieKey = this.sessionCookieKey;
+       let sessionCookieKey = "friendsdrinks-session-id";
 
         app.use(function(req, res, next) {
             console.log("request:", req.method, req.url, req.body);
@@ -192,9 +184,8 @@ class ServerFactory {
             });
         })
         return app
-    }
 }
 
-module.exports = ServerFactory
+module.exports = createServer
 
 

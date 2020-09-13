@@ -1,6 +1,6 @@
 var AwsUserManagement = require('./aws/auth')
 
-let ServerFactory = require('./server')
+let createServer = require('./server')
 
 let args = process.argv.slice(2);
 console.log(args)
@@ -10,8 +10,7 @@ if (args.length != 2) {
 
 let awsUserManagement = new AwsUserManagement(args[0], args[1])
 
-let serverFactory = new ServerFactory(awsUserManagement)
-let server = serverFactory.createServer();
+let server = createServer(awsUserManagement)
 
 var serverListening = server.listen(8080, function () {
 	let host = serverListening.address().address
