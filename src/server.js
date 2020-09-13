@@ -62,9 +62,30 @@ function createServer(userManagement, backendConfig) {
                         var body = Buffer.concat(bodyChunks);
                         console.log('BODY: ' + body);
                         const obj = JSON.parse(body);
+                        adminFriends = []
+                        adminFriends.push(obj.adminFriendsDrinks[0].adminUserId)
+                        adminFriends = adminFriends.concat(obj.adminFriendsDrinks[0].userIds)
+
+                        memberFriends = []
+                        memberFriends.push(obj.memberFriendsDrinks[0].adminUserId)
+                        memberFriends = memberFriends.concat(obj.memberFriendsDrinks[0].userIds)
+
                         res.render('index', {
                         username: username,
-                        friendsDrinks: [{name: obj.adminFriendsDrinks[0].name, friends: obj.adminFriendsDrinks[0].userIds, body: body}]
+                        adminFriendsDrinks:
+                        [
+                            {
+                                name: obj.adminFriendsDrinks[0].name,
+                                friends: adminFriends
+                            }
+                        ],
+                        memberFriendsDrinks:
+                        [
+                            {
+                                name: obj.memberFriendsDrinks[0].name,
+                                friends: memberFriends
+                            }
+                        ]
                         });
                       })
                     });

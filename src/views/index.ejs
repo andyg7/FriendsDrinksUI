@@ -15,13 +15,23 @@
           <tr>
             <th>Name</th>
             <th>Friends</th>
-            <th>Raw Backend Response</th>
           </tr>
-            <% for (var i = 0; i < friendsDrinks.length; i++) { %>
+            <% for (var i = 0; i < adminFriendsDrinks.length; i++) { %>
               <tr>
-                <td><%= friendsDrinks[i].name %></td>
-                <td><%= friendsDrinks[i].friends %></td>
-                <td><%= friendsDrinks[i].body %></td>
+                <td><%= adminFriendsDrinks[i].name %></td>
+                <td><%= adminFriendsDrinks[i].friends %></td>
+              </tr>
+           <% } %>
+        </table>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Friends</th>
+          </tr>
+            <% for (var i = 0; i < memberFriendsDrinks.length; i++) { %>
+              <tr>
+                <td><%= memberFriendsDrinks[i].name %></td>
+                <td><%= memberFriendsDrinks[i].friends %></td>
               </tr>
            <% } %>
         </table>
