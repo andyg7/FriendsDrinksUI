@@ -54,6 +54,7 @@ class UserManagement {
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		let sessionManager = this.sessionManager;
+
 		const promise = new Promise(function (resolve, reject) {
 			cognitoUser.authenticateUser(authenticationDetails, {
 				onSuccess: function (result) {

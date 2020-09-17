@@ -52,7 +52,8 @@ function createServer(userManagement, backendConfig) {
                       console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
                       if (backendRes.statusCode != 200) {
                          backendRes.resume();
-                         throw new Error("Failed to call backend service");
+                         res.status(500);
+                         res.send("Whoops! Something went wrong :(");
                       }
 
                       var bodyChunks = [];
@@ -62,6 +63,37 @@ function createServer(userManagement, backendConfig) {
                         var body = Buffer.concat(bodyChunks);
                         console.log('BODY: ' + body);
                         const obj = JSON.parse(body);
+
+                        adminFriendsDrinks = []
+                        if (obj.adminFriendsDrinks && obj.adminFriendsDrinks.length > 0) {
+                            obj.adminFriendsDrinks.forEach(function (item, index) {
+                                friends = []
+                                friends = item.adminUserId
+                                friends = friends.concat(item.userIds)
+                                adminFriendsDrinks.push(
+                                   {
+                                      name: item.name,
+                                      friends: friends
+                                   }
+                                )
+                            });
+                        }
+
+                        memberFriendsDrinks = []
+                        if (obj.memberFriendsDrinks && obj.memberFriendsDrinks.length > 0) {
+                            obj.memberFriendsDrinks.forEach(function (item, index) {
+                                friends = []
+                                friends = item.adminUserId
+                                friends = friends.concat(item.userIds)
+                                memberFriendsDrinks.push(
+                                   {
+                                      name: item.name,
+                                      friends: friends
+                                   }
+                                )
+                            });
+                        }
+                        /*
                         adminFriends = []
                         adminFriends.push(obj.adminFriendsDrinks[0].adminUserId)
                         adminFriends = adminFriends.concat(obj.adminFriendsDrinks[0].userIds)
@@ -69,33 +101,23 @@ function createServer(userManagement, backendConfig) {
                         memberFriends = []
                         memberFriends.push(obj.memberFriendsDrinks[0].adminUserId)
                         memberFriends = memberFriends.concat(obj.memberFriendsDrinks[0].userIds)
+                        */
 
                         res.render('index', {
-                        username: username,
-                        adminFriendsDrinks:
-                        [
-                            {
-                                name: obj.adminFriendsDrinks[0].name,
-                                friends: adminFriends
-                            }
-                        ],
-                        memberFriendsDrinks:
-                        [
-                            {
-                                name: obj.memberFriendsDrinks[0].name,
-                                friends: memberFriends
-                            }
-                        ]
+                            username: username,
+                            adminFriendsDrinks: adminFriendsDrinks,
+                            memberFriendsDrinks: memberFriendsDrinks
                         });
                       })
                     });
+                    console.log('Set up http.get callback')
 
                     req.on('error', function(e) {
                       console.log('ERROR: ' + e.message);
                       res.status(500);
                       res.send("Whoops! Something went wrong :(");
                     });
-
+                    console.log("Leaving /")
                 }
             }
         })
@@ -122,6 +144,7 @@ function createServer(userManagement, backendConfig) {
                 res.status(500);
                 res.send("Whoops! Something went wrong :(");
             });
+            console.log('Leaving /signup synchronous path')
         })
 
         app.get('/login', function (req, res) {
@@ -156,6 +179,7 @@ function createServer(userManagement, backendConfig) {
                     res.send("Whoops! Something went wrong :(");
                 }
             });
+            console.log("Leaving /login")
         })
 
         app.get('/logout', function (req, res) {

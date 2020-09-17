@@ -3,7 +3,7 @@ var propertiesReader = require('properties-reader');
 
 let createServer = require('./server')
 
-let args = process.argv.slice(2);
+let args = process.argv.slice(2)
 console.log(args)
 if (args.length != 3) {
    throw new Error("Must provide user pool ID, client ID and stage. Raw args: " + process.argv)
@@ -23,5 +23,5 @@ let server = createServer(awsUserManagement, backendConfig)
 var serverListening = server.listen(8080, function () {
 	let host = serverListening.address().address
 	let port = serverListening.address().port
-	console.log("Example app listening at http://%s:%s", host, port)
+	console.log("App is listening at http://%s:%s", host, port)
 })
