@@ -28,7 +28,7 @@ class UserManagement {
 		attributeList.push(attributeEmail);
 
 		userPool = this.userPool;
-		const promise = new Promise(function (resolve, reject) {
+		let promise = new Promise(function (resolve, reject) {
 			userPool.signUp(email, password, attributeList, null, (err, data) => {
 				if (err) {
 					reject(err);
@@ -55,11 +55,11 @@ class UserManagement {
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		let sessionManager = this.sessionManager;
 
-		const promise = new Promise(function (resolve, reject) {
+		let promise = new Promise(function (resolve, reject) {
 			cognitoUser.authenticateUser(authenticationDetails, {
 				onSuccess: function (result) {
 					console.log("result from logging in: ", result);
-					const sessionId = sessionManager.storeSession(result);
+					let sessionId = sessionManager.storeSession(result);
 					let payload = result.getIdToken().decodePayload();
 					let user = new auth.User(payload['email']);
 					let loggedInUser = new auth.LoggedInUser(user, sessionId);
@@ -84,10 +84,10 @@ class UserManagement {
 	}
 
 	getLoggedInUser(sessionId) {
-		const tokens = this.sessionManager.getSession(sessionId);
-		if (!tokens) {
+		let tokens = this.sessionManager.getSession(sessionId);
+		if (tokens === null) {
 			console.log("No logged in user for " + sessionId);
-			return tokens;
+			return null
 		}
 		console.log("Returned email: " + tokens.getIdToken().decodePayload()['email']);
 		return tokens.getIdToken().decodePayload()['email'];
@@ -99,7 +99,7 @@ class UserManagement {
 			Pool: this.userPool,
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
-		const promise = new Promise(function (resolve, reject) {
+		let promise = new Promise(function (resolve, reject) {
     		cognitoUser.forgotPassword({
 			    onSuccess: function (result) {
 			        console.log(result);
@@ -119,7 +119,7 @@ class UserManagement {
 			Pool: this.userPool,
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
-		const promise = new Promise(function (resolve, reject) {
+		let promise = new Promise(function (resolve, reject) {
             cognitoUser.confirmPassword(verificationCode, newPassword, {
                 onSuccess: function () {
                     resolve('Success');
