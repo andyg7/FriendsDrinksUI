@@ -8,15 +8,15 @@ let cookieParser = require('cookie-parser')
 
 function createServer(userManagement, backendConfig) {
         let app = express();
+
         app.use(bodyParser.json())
         app.use(bodyParser.urlencoded({extended: true}));
         app.use(cookieParser())
         app.set('views', __dirname + '/views');
         app.set('view engine', 'ejs');
-
         app.use(express.static(__dirname + '/public'));
 
-       let sessionCookieKey = "friendsdrinks-session-id";
+       const SESSION_KEY = "friendsdrinks-session-id";
 
         app.use(function(req, res, next) {
             console.log("request:", req.method, req.url, req.body);
@@ -25,16 +25,17 @@ function createServer(userManagement, backendConfig) {
 
         let backendHostname = backendConfig.hostname
         let backendPort = backendConfig.port
+
         app.get('/', function (req, res) {
-            console.log(req.cookies);
-            const sessionId = req.cookies[sessionCookieKey];
+            console.log('/ cookies: ' + req.cookies);
+            const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
                 res.redirect('/login');
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(sessionCookieKey, "", {
+                    res.cookie(SESSION_KEY, "", {
                         path: '/',
                         expires: new Date(1)
                     });
@@ -158,7 +159,7 @@ function createServer(userManagement, backendConfig) {
             userManagement.login(email, password).then(function (data) {
                 let sessionId = data.sessionId;
                 console.log("Setting session id in cookie to " + sessionId);
-                res.cookie(sessionCookieKey, sessionId, {
+                res.cookie(SESSION_KEY, sessionId, {
                     path: '/'
                 });
                 res.redirect('/');
@@ -181,14 +182,14 @@ function createServer(userManagement, backendConfig) {
 
         app.post('/logout', function (req, res) {
             console.log(req.cookies);
-            const sessionId = req.cookies[sessionCookieKey];
+            const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: " + sessionId);
             if (!sessionId) {
                 res.redirect('/login');
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(sessionCookieKey, "", {
+                    res.cookie(SESSION_KEY, "", {
                         path: '/',
                         expires: new Date(1)
                     });
@@ -196,7 +197,7 @@ function createServer(userManagement, backendConfig) {
                 } else {
                     let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
                     userManagement.logout(loggedInUser);
-                    res.cookie(sessionCookieKey, "", {
+                    res.cookie(SESSION_KEY, "", {
                         path: '/',
                         expires: new Date(1)
                     });
@@ -216,14 +217,12 @@ function createServer(userManagement, backendConfig) {
                 res.send('You need to provide an email');
             }
             userManagement.forgotPassword(email, res).then(function (data) {
-                console.log('redirecting')
                 res.redirect('/resetpassword');
             }).catch(function (err) {
                 console.log(err);
                 res.status(500);
                 res.send("Whoops! Something went wrong :(");
             });
-
         })
 
         app.get('/resetpassword', function (req, res) {
@@ -236,16 +235,19 @@ function createServer(userManagement, backendConfig) {
                 res.statusCode = 400;
                 res.send('You need to provide a verification code');
             }
+
             let email = req.body.email;
             if (!email) {
                 res.statusCode = 400;
                 res.send('You need to provide an email');
             }
+
             let newPassword = req.body.newPassword;
             if (!newPassword) {
                 res.statusCode = 400;
                 res.send('You need to provide a new password');
             }
+
             userManagement.resetPassword(verificationCode, email, newPassword, res).then(function (data) {
                 console.log('redirecting')
                 res.redirect('/login');
