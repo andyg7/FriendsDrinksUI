@@ -6,6 +6,7 @@ let auth = require('./../auth')
 let amazonCognitoIdentity = require('amazon-cognito-identity-js');
 
 class UserManagement {
+
 	constructor(poolId, clientId) {
 		let poolData = {
 			UserPoolId: poolId,
@@ -28,7 +29,7 @@ class UserManagement {
 		attributeList.push(attributeEmail);
 
 		userPool = this.userPool;
-		let promise = new Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
 			userPool.signUp(email, password, attributeList, null, (err, data) => {
 				if (err) {
 					reject(err);
@@ -37,7 +38,6 @@ class UserManagement {
 				}
 			});
 		});
-		return promise;
 	}
 
 	login(email, password) {
@@ -55,7 +55,7 @@ class UserManagement {
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		let sessionManager = this.sessionManager;
 
-		let promise = new Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
 			cognitoUser.authenticateUser(authenticationDetails, {
 				onSuccess: function (result) {
 					console.log("result from logging in: ", result);
@@ -70,7 +70,6 @@ class UserManagement {
 				}
 			});
 		});
-		return promise;
 	}
 
 	logout(loggedInUser) {
@@ -99,7 +98,7 @@ class UserManagement {
 			Pool: this.userPool,
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
-		let promise = new Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
     		cognitoUser.forgotPassword({
 			    onSuccess: function (result) {
 			        console.log(result);
@@ -110,7 +109,6 @@ class UserManagement {
 			    }
 		    });
 		});
-		return promise;
 	}
 
 	resetPassword(verificationCode, email, newPassword, res) {
@@ -119,7 +117,7 @@ class UserManagement {
 			Pool: this.userPool,
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
-		let promise = new Promise(function (resolve, reject) {
+		return new Promise(function (resolve, reject) {
             cognitoUser.confirmPassword(verificationCode, newPassword, {
                 onSuccess: function () {
                     resolve('Success');
@@ -129,7 +127,6 @@ class UserManagement {
                 }
             });
 		});
-		return promise;
 	}
 }
 
