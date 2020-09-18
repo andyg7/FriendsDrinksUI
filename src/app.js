@@ -1,5 +1,5 @@
-var AwsUserManagement = require('./aws/auth')
-var propertiesReader = require('properties-reader');
+let AwsUserManagement = require('./aws/auth')
+let propertiesReader = require('properties-reader');
 
 let createServer = require('./server')
 
@@ -9,7 +9,7 @@ if (args.length < 3) {
    throw new Error("Must provide user pool ID, client ID, stage and optionally backend port. Raw args: " + process.argv)
 }
 
-var properties = propertiesReader('src/config/config.properties');
+let properties = propertiesReader('src/config/config.properties');
 let backendConfig = {}
 backendConfig.hostname = properties.get(args[2] + '.' + 'backendHostname')
 
@@ -30,7 +30,7 @@ let awsUserManagement = new AwsUserManagement(args[0], args[1])
 
 let server = createServer(awsUserManagement, backendConfig)
 
-var serverListening = server.listen(8080, function () {
+let serverListening = server.listen(8080, function () {
 	let host = serverListening.address().address
 	let port = serverListening.address().port
 	console.log("App is listening at http://%s:%s", host, port)

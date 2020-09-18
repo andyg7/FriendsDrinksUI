@@ -41,13 +41,13 @@ function createServer(userManagement, backendConfig) {
                     res.redirect('/login')
                 } else {
                     let path = "/v1/friendsdrinks/" + username
-                    var options = {
+                    let options = {
                       host: backendHostname,
                       port: backendPort,
                       path: path
                     };
 
-                    var req = http.get(options, function(backendRes) {
+                    let req = http.get(options, function(backendRes) {
                       console.log('STATUS: ' + backendRes.statusCode);
                       console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
                       if (backendRes.statusCode != 200) {
@@ -56,11 +56,11 @@ function createServer(userManagement, backendConfig) {
                          res.send("Whoops! Something went wrong :(");
                       }
 
-                      var bodyChunks = [];
+                      let bodyChunks = [];
                       backendRes.on('data', function(chunk) {
                         bodyChunks.push(chunk);
                       }).on('end', function() {
-                        var body = Buffer.concat(bodyChunks);
+                        let body = Buffer.concat(bodyChunks);
                         console.log('BODY: ' + body);
                         const obj = JSON.parse(body);
 
