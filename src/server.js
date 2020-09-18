@@ -33,7 +33,7 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login');
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
-                if (username == null) {
+                if (username === null) {
                     res.cookie(sessionCookieKey, "", {
                         path: '/',
                         expires: new Date(1)
@@ -187,7 +187,7 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login');
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
-                if (username == null) {
+                if (username === null) {
                     res.cookie(sessionCookieKey, "", {
                         path: '/',
                         expires: new Date(1)
