@@ -5,14 +5,24 @@ let createServer = require('./server')
 
 let args = process.argv.slice(2)
 console.log(args)
-if (args.length != 3) {
-   throw new Error("Must provide user pool ID, client ID and stage. Raw args: " + process.argv)
+if (args.length < 3) {
+   throw new Error("Must provide user pool ID, client ID, stage and optionally backend port. Raw args: " + process.argv)
 }
 
 var properties = propertiesReader('src/config/config.properties');
 let backendConfig = {}
 backendConfig.hostname = properties.get(args[2] + '.' + 'backendHostname')
-backendConfig.port = properties.get(args[2] + '.' + 'backendPort')
+
+console.log('Port from config file: ' + properties.get(args[2] + '.' + 'backendPort'))
+console.log('Port from command line: ' + args[3])
+if (properties.get(args[2] + '.' + 'backendPort')) {
+    backendConfig.port = properties.get(args[2] + '.' + 'backendPort')
+} else if (args[3]) {
+    backendConfig.port = args[3]
+} else {
+    throw new Error("Must provide backend port via either the src/config/config.properties file or the command line")
+}
+
 console.log('Backend hostname: ' + backendConfig.hostname)
 console.log('Backend port: ' + backendConfig.port)
 

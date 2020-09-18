@@ -93,21 +93,14 @@ function createServer(userManagement, backendConfig) {
                                 )
                             });
                         }
-                        /*
-                        adminFriends = []
-                        adminFriends.push(obj.adminFriendsDrinks[0].adminUserId)
-                        adminFriends = adminFriends.concat(obj.adminFriendsDrinks[0].userIds)
 
-                        memberFriends = []
-                        memberFriends.push(obj.memberFriendsDrinks[0].adminUserId)
-                        memberFriends = memberFriends.concat(obj.memberFriendsDrinks[0].userIds)
-                        */
-
+                        console.log("Sending HTML")
                         res.render('index', {
                             username: username,
                             adminFriendsDrinks: adminFriendsDrinks,
                             memberFriendsDrinks: memberFriendsDrinks
                         });
+                        console.log("Sent HTML")
                       })
                     });
                     console.log('Set up http.get callback')
