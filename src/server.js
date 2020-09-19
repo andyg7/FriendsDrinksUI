@@ -77,7 +77,8 @@ function createServer(userManagement, backendConfig) {
                                 adminFriendsDrinks.push(
                                    {
                                       name: item.name,
-                                      friends: friends
+                                      friends: friends,
+                                      id: item.id
                                    }
                                 )
                             });
@@ -92,7 +93,8 @@ function createServer(userManagement, backendConfig) {
                                 memberFriendsDrinks.push(
                                    {
                                       name: item.name,
-                                      friends: friends
+                                      friends: friends,
+                                      id: item.id
                                    }
                                 )
                             });
