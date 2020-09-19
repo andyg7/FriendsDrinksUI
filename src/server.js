@@ -31,6 +31,7 @@ function createServer(userManagement, backendConfig) {
             const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
+                res.redirect('/login');
                 return;
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
