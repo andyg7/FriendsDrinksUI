@@ -124,7 +124,7 @@ function createServer(userManagement, backendConfig) {
            return;
         })
 
-        app.post('/createfriendsdrinks', function (req, res){
+        app.post('/createfriendsdrinks', function (req, res) {
             console.log('/ cookies: ', req.cookies);
             const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: ", sessionId);
@@ -141,13 +141,13 @@ function createServer(userManagement, backendConfig) {
                     res.redirect('/login')
                     return;
                 } else {
-                    const postObj = {
+                    let postObj = {
                         adminUserId: username,
                         userIds: [req.body.friend],
                         name: req.body.name,
                         scheduleType: 'OnDemand'
                     }
-                    const postData = JSON. stringify(postObj)
+                    const postData = JSON.stringify(postObj)
 
                     let options = {
                       host: backendHostname,
@@ -168,9 +168,16 @@ function createServer(userManagement, backendConfig) {
                          res.send("Whoops! Something went wrong :(");
                          return;
                       } else {
+                          let bodyChunks = [];
                           backendRes.on('data', (chunk) => {
+                            bodyChunks.push(chunk)
                           });
                           backendRes.on('end', () => {
+                            let body = Buffer.concat(bodyChunks);
+                            console.log('BODY: ' + body);
+                            const obj = JSON.parse(body);
+                            console.log('Result ', obj.result);
+
                             console.log('No more data in response - redirecting to /');
                             res.redirect('/')
                             return;
@@ -188,6 +195,7 @@ function createServer(userManagement, backendConfig) {
                     console.log("Sending POST request", postData)
                     backendReq.write(postData);
                     backendReq.end();
+                    return;
                 }
             }
         })
