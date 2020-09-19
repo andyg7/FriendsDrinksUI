@@ -51,10 +51,11 @@ function createServer(userManagement, backendConfig) {
                     let backendReq = http.get(options, function(backendRes) {
                       console.log('STATUS: ' + backendRes.statusCode);
                       console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-                      if (backendRes.statusCode != 200) {
+                      if (backendRes.statusCode !== 200) {
                          backendRes.resume();
                          res.status(500);
                          res.send("Whoops! Something went wrong :(");
+                         return;
                       }
 
                       let bodyChunks = [];
@@ -110,6 +111,7 @@ function createServer(userManagement, backendConfig) {
                       console.log('ERROR: ' + e.message);
                       res.status(500);
                       res.send("Whoops! Something went wrong :(");
+                      return;
                     });
                     console.log("Leaving /")
                 }
@@ -118,6 +120,7 @@ function createServer(userManagement, backendConfig) {
 
         app.get('/signup', function (req, res) {
            res.sendFile( __dirname + "/views/" + "signup.html" );
+           return;
         })
 
         app.post('/createfriendsdrinks', function (req, res){
@@ -160,9 +163,9 @@ function createServer(userManagement, backendConfig) {
                          backendRes.resume();
                          res.status(500);
                          res.send("Whoops! Something went wrong :(");
+                         return;
                       } else {
                           backendRes.on('data', (chunk) => {
-                            console.log(`BODY: ${chunk}`);
                           });
                           backendRes.on('end', () => {
                             console.log('No more data in response - redirecting to /');
@@ -175,8 +178,10 @@ function createServer(userManagement, backendConfig) {
                       console.log('ERROR: ' + e.message);
                       res.status(500);
                       res.send("Whoops! Something went wrong :(");
+                      return;
                     });
 
+                    console.log("Sending POST request", postData)
                     backendReq.write(postData);
                     backendReq.end();
                 }
@@ -188,11 +193,13 @@ function createServer(userManagement, backendConfig) {
             if (!email) {
                 res.statusCode = 400;
                 res.send('You need to provide an email');
+                return;
             }
             let password = req.body.password;
             if (!password) {
                 res.statusCode = 400;
                 res.send('You need to provide a password');
+                return;
             }
             userManagement.signup(email, password).then(function (user) {
                 res.render('signup_complete', {username: user.username});
@@ -200,12 +207,14 @@ function createServer(userManagement, backendConfig) {
                 console.log(err);
                 res.status(500);
                 res.send("Whoops! Something went wrong :(");
+                return;
             });
             console.log('Leaving /signup synchronous path')
         })
 
         app.get('/login', function (req, res) {
            res.sendFile( __dirname + "/views/" + "login.html" );
+           return;
         })
 
         app.post('/login', function (req, res) {
@@ -213,11 +222,13 @@ function createServer(userManagement, backendConfig) {
             if (!email) {
                 res.statusCode = 400;
                 res.send('You need to provide an email');
+                return;
             }
             let password = req.body.password;
             if (!password) {
                 res.statusCode = 400;
                 res.send('You need to provide a password');
+                return;
             }
             userManagement.login(email, password).then(function (data) {
                 let sessionId = data.sessionId;
@@ -231,9 +242,11 @@ function createServer(userManagement, backendConfig) {
                 if (err.code === 'NotAuthorizedException') {
                     res.status(403);
                     res.send("Wrong password");
+                    return;
                 } else {
                     res.status(500);
                     res.send("Whoops! Something went wrong :(");
+                    return;
                 }
             });
             console.log("Leaving /login")
@@ -265,12 +278,14 @@ function createServer(userManagement, backendConfig) {
                         expires: new Date(1)
                     });
                     res.send("You're logged out!");
+                    return;
                 }
             }
         });
 
         app.get('/forgotpassword', function (req, res) {
            res.sendFile( __dirname + "/views/" + "forgot_password.html" );
+           return;
         })
 
         app.post('/forgotpassword', function (req, res) {
@@ -278,6 +293,7 @@ function createServer(userManagement, backendConfig) {
             if (!email) {
                 res.statusCode = 400;
                 res.send('You need to provide an email');
+                return;
             }
             userManagement.forgotPassword(email, res).then(function (data) {
                 res.redirect('/resetpassword');
@@ -285,11 +301,13 @@ function createServer(userManagement, backendConfig) {
                 console.log(err);
                 res.status(500);
                 res.send("Whoops! Something went wrong :(");
+                return;
             });
         })
 
         app.get('/resetpassword', function (req, res) {
            res.sendFile( __dirname + "/views/" + "reset_password.html" );
+           return;
         })
 
         app.post('/resetpassword', function (req, res) {
@@ -297,18 +315,21 @@ function createServer(userManagement, backendConfig) {
             if (!verificationCode) {
                 res.statusCode = 400;
                 res.send('You need to provide a verification code');
+                return;
             }
 
             let email = req.body.email;
             if (!email) {
                 res.statusCode = 400;
                 res.send('You need to provide an email');
+                return;
             }
 
             let newPassword = req.body.newPassword;
             if (!newPassword) {
                 res.statusCode = 400;
                 res.send('You need to provide a new password');
+                return;
             }
 
             userManagement.resetPassword(verificationCode, email, newPassword, res).then(function (data) {
@@ -318,6 +339,7 @@ function createServer(userManagement, backendConfig) {
                 console.log(err);
                 res.status(500);
                 res.send("Whoops! Something went wrong :(");
+                return;
             });
         })
         return app
