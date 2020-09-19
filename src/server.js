@@ -31,7 +31,7 @@ function createServer(userManagement, backendConfig) {
             const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
-                res.redirect('/login');
+                return;
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
@@ -40,6 +40,7 @@ function createServer(userManagement, backendConfig) {
                         expires: new Date(1)
                     });
                     res.redirect('/login')
+                    return;
                 } else {
                     let path = "/v1/friendsdrinks/" + username
                     let options = {
@@ -113,7 +114,6 @@ function createServer(userManagement, backendConfig) {
                       res.send("Whoops! Something went wrong :(");
                       return;
                     });
-                    console.log("Leaving /")
                 }
             }
         })
@@ -129,6 +129,7 @@ function createServer(userManagement, backendConfig) {
             console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
                 res.redirect('/login')
+                return;
              } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
@@ -137,6 +138,7 @@ function createServer(userManagement, backendConfig) {
                         expires: new Date(1)
                     });
                     res.redirect('/login')
+                    return;
                 } else {
                     const postObj = {
                         adminUserId: username,
@@ -159,7 +161,7 @@ function createServer(userManagement, backendConfig) {
                     let backendReq = http.request(options, function(backendRes) {
                       console.log('STATUS: ' + backendRes.statusCode);
                       console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-                      if (backendRes.statusCode != 200) {
+                      if (backendRes.statusCode !== 200) {
                          backendRes.resume();
                          res.status(500);
                          res.send("Whoops! Something went wrong :(");
@@ -170,6 +172,7 @@ function createServer(userManagement, backendConfig) {
                           backendRes.on('end', () => {
                             console.log('No more data in response - redirecting to /');
                             res.redirect('/')
+                            return;
                           });
                       }
                     });
@@ -209,7 +212,6 @@ function createServer(userManagement, backendConfig) {
                 res.send("Whoops! Something went wrong :(");
                 return;
             });
-            console.log('Leaving /signup synchronous path')
         })
 
         app.get('/login', function (req, res) {
@@ -237,6 +239,7 @@ function createServer(userManagement, backendConfig) {
                     path: '/'
                 });
                 res.redirect('/');
+                return;
             }).catch(function (err) {
                 console.log(err);
                 if (err.code === 'NotAuthorizedException') {
@@ -249,7 +252,6 @@ function createServer(userManagement, backendConfig) {
                     return;
                 }
             });
-            console.log("Leaving /login")
         })
 
         app.get('/logout', function (req, res) {
@@ -262,6 +264,7 @@ function createServer(userManagement, backendConfig) {
             console.log("session id received from browser: " + sessionId);
             if (!sessionId) {
                 res.redirect('/login');
+                return;
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
@@ -270,6 +273,7 @@ function createServer(userManagement, backendConfig) {
                         expires: new Date(1)
                     });
                     res.redirect('/login')
+                    return;
                 } else {
                     let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
                     userManagement.logout(loggedInUser);
@@ -297,6 +301,7 @@ function createServer(userManagement, backendConfig) {
             }
             userManagement.forgotPassword(email, res).then(function (data) {
                 res.redirect('/resetpassword');
+                return;
             }).catch(function (err) {
                 console.log(err);
                 res.status(500);
@@ -335,6 +340,7 @@ function createServer(userManagement, backendConfig) {
             userManagement.resetPassword(verificationCode, email, newPassword, res).then(function (data) {
                 console.log('redirecting')
                 res.redirect('/login');
+                return;
             }).catch(function (err) {
                 console.log(err);
                 res.status(500);
