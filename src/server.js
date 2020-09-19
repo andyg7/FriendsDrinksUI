@@ -27,7 +27,7 @@ function createServer(userManagement, backendConfig) {
         let backendPort = backendConfig.port
 
         app.get('/', function (req, res) {
-            console.log('/ cookies: ' + req.cookies);
+            console.log('/ cookies: ', req.cookies);
             const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
@@ -48,7 +48,7 @@ function createServer(userManagement, backendConfig) {
                       path: path
                     };
 
-                    let req = http.get(options, function(backendRes) {
+                    let backendReq = http.get(options, function(backendRes) {
                       console.log('STATUS: ' + backendRes.statusCode);
                       console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
                       if (backendRes.statusCode != 200) {
@@ -106,7 +106,7 @@ function createServer(userManagement, backendConfig) {
                     });
                     console.log('Set up http.get callback')
 
-                    req.on('error', function(e) {
+                    backendReq.on('error', function(e) {
                       console.log('ERROR: ' + e.message);
                       res.status(500);
                       res.send("Whoops! Something went wrong :(");
@@ -118,6 +118,69 @@ function createServer(userManagement, backendConfig) {
 
         app.get('/signup', function (req, res) {
            res.sendFile( __dirname + "/views/" + "signup.html" );
+        })
+
+        app.post('/createfriendsdrinks', function (req, res){
+            console.log('/ cookies: ', req.cookies);
+            const sessionId = req.cookies[SESSION_KEY];
+            console.log("session id received from browser: ", sessionId);
+            if (!sessionId) {
+                res.redirect('/login')
+             } else {
+                const username = userManagement.getLoggedInUser(sessionId);
+                if (username === null) {
+                    res.cookie(SESSION_KEY, "", {
+                        path: '/',
+                        expires: new Date(1)
+                    });
+                    res.redirect('/login')
+                } else {
+                    const postObj = {
+                        adminUserId: username,
+                        userIds: [req.body.friend],
+                        name: req.body.name,
+                        scheduleType: 'OnDemand'
+                    }
+                    const postData = JSON. stringify(postObj)
+
+                    let options = {
+                      host: backendHostname,
+                      port: backendPort,
+                      path: "/v1/friendsdrinks/",
+                      method: 'POST',
+                      headers: {
+                          'Content-Length': Buffer.byteLength(postData),
+                          'Content-Type': 'application/json'
+                      }
+                    };
+                    let backendReq = http.request(options, function(backendRes) {
+                      console.log('STATUS: ' + backendRes.statusCode);
+                      console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                      if (backendRes.statusCode != 200) {
+                         backendRes.resume();
+                         res.status(500);
+                         res.send("Whoops! Something went wrong :(");
+                      } else {
+                          backendRes.on('data', (chunk) => {
+                            console.log(`BODY: ${chunk}`);
+                          });
+                          backendRes.on('end', () => {
+                            console.log('No more data in response - redirecting to /');
+                            res.redirect('/')
+                          });
+                      }
+                    });
+
+                    backendReq.on('error', function(e) {
+                      console.log('ERROR: ' + e.message);
+                      res.status(500);
+                      res.send("Whoops! Something went wrong :(");
+                    });
+
+                    backendReq.write(postData);
+                    backendReq.end();
+                }
+            }
         })
 
         app.post('/signup', function (req, res) {
@@ -158,7 +221,7 @@ function createServer(userManagement, backendConfig) {
             }
             userManagement.login(email, password).then(function (data) {
                 let sessionId = data.sessionId;
-                console.log("Setting session id in cookie to " + sessionId);
+                console.log("Setting session id in cookie to ", sessionId);
                 res.cookie(SESSION_KEY, sessionId, {
                     path: '/'
                 });

@@ -1,7 +1,11 @@
-global.fetch = require('node-fetch');
+require('cross-fetch/polyfill')
 
-let SessionManager = require('./auth_session');
+let SessionManager = require('./auth_session')
 let auth = require('./../auth')
+
+/**
+See https://github.com/aws-amplify/amplify-js/tree/master/packages/amazon-cognito-identity-js
+**/
 
 let amazonCognitoIdentity = require('amazon-cognito-identity-js');
 
