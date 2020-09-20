@@ -1,25 +1,25 @@
 global.fetch = require('node-fetch');
 
+let { v4: uuidv4 } = require('uuid');
 let http = require('http');
 let express = require('express');
 let auth = require('./auth');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
+const SESSION_KEY = "friendsdrinks-session-id";
+
 function createServer(userManagement, backendConfig) {
         let app = express();
 
-        app.use(bodyParser.json())
-        app.use(bodyParser.urlencoded({extended: true}));
-        app.use(cookieParser())
         app.set('views', __dirname + '/views');
         app.set('view engine', 'ejs');
+
+        app.use(bodyParser.urlencoded({extended: true}));
+        app.use(cookieParser())
         app.use(express.static(__dirname + '/public'));
-
-       const SESSION_KEY = "friendsdrinks-session-id";
-
         app.use(function(req, res, next) {
-            console.log("request:", req.method, req.url, req.body);
+            console.log("request:", req.method, req.url, req.body, req.cookies);
             next();
         });
 
@@ -27,7 +27,6 @@ function createServer(userManagement, backendConfig) {
         let backendPort = backendConfig.port
 
         app.get('/', function (req, res) {
-            console.log('/ cookies: ', req.cookies);
             const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
@@ -126,10 +125,69 @@ function createServer(userManagement, backendConfig) {
            return;
         })
 
-        app.post('/createfriendsdrinks', function (req, res) {
-            console.log('/ cookies: ', req.cookies);
+        app.delete('/friendsdrinks', function (req, res) {
+          const sessionId = req.cookies[SESSION_KEY]
+          if (!sessionId) {
+            res.redirect('/login')
+            return;
+          }
+          const username = userManagement.getLoggedInUser(sessionId);
+          if (username === null) {
+            res.cookie(SESSION_KEY, "", {
+                path: '/',
+                expires: new Date(1)
+            });
+            res.redirect('/login')
+            return;
+          }
+          path = "/v1/friendsdrinks" + req.body.id
+          options = {
+             host: backendHostname,
+             port: backendPort,
+             method: 'DELETE',
+             path: path
+          }
+
+          let backendReq = http.request(options, function(backendRes) {
+              console.log('STATUS:' + backendRes.statusCode);
+              console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+              if (backendRes.statusCode !== 200) {
+                 backendRes.resume();
+                 res.status(500);
+                 res.send("Whoops! Something went wrong :(");
+                 return;
+              } else {
+                  let bodyChunks = [];
+                  backendRes.on('data', (chunk) => {
+                    bodyChunks.push(chunk)
+                  });
+                  backendRes.on('end', () => {
+                    let body = Buffer.concat(bodyChunks);
+                    console.log('BODY: ' + body);
+                    const obj = JSON.parse(body);
+                    console.log('Result ', obj.result);
+
+                    console.log('No more data in response - redirecting to /');
+                    res.redirect('/')
+                    return;
+                  });
+              }
+          })
+
+          backendReq.on('error', function(e) {
+            console.log('ERROR: ' + e.message);
+            res.status(500);
+            res.send("Whoops! Something went wrong :(");
+            return;
+          });
+
+          console.log("Sending DELETE request", options)
+          backendRes.end();
+          return;
+        })
+
+        app.post('/friendsdrinks', function (req, res) {
             const sessionId = req.cookies[SESSION_KEY];
-            console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
                 res.redirect('/login')
                 return;
@@ -151,10 +209,14 @@ function createServer(userManagement, backendConfig) {
                     }
                     const postData = JSON.stringify(postObj)
 
+                    // UUID is for new friends drinks ID
+                    const uuid = uuidv4();
+                    console.log("Generated uuid for friends drinks: ", uuid);
+                    let path = "/v1/friendsdrinks/" + uuid;
                     let options = {
                       host: backendHostname,
                       port: backendPort,
-                      path: "/v1/friendsdrinks/",
+                      path: path,
                       method: 'POST',
                       headers: {
                           'Content-Length': Buffer.byteLength(postData),
@@ -270,7 +332,6 @@ function createServer(userManagement, backendConfig) {
         });
 
         app.post('/logout', function (req, res) {
-            console.log(req.cookies);
             const sessionId = req.cookies[SESSION_KEY];
             console.log("session id received from browser: " + sessionId);
             if (!sessionId) {

@@ -25,7 +25,7 @@
               </tr>
            <% } %>
         </table>
-        <form action = "/createfriendsdrinks" method = "POST">
+        <form action = "/friendsdrinks" method = "POST">
             <div>
                 <label>Name</label>
                 <input type = "text" name = "name"> <br>
@@ -35,6 +35,13 @@
                 <input type = "text" name = "friend"> <br>
             </div>
             <input type = "submit" value = "Create!">
+        </form>
+        <form action = "/friendsdrinks" method = "DELETE">
+            <div>
+                <label>ID</label>
+                <input type = "text" name = "id"> <br>
+            </div>
+            <input type = "submit" value = "Delete!">
         </form>
         <table>
           <tr>
