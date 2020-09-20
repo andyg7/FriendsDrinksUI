@@ -125,12 +125,14 @@ function createServer(userManagement, backendConfig) {
            return;
         })
 
-        app.delete('/friendsdrinks', function (req, res) {
-          const sessionId = req.cookies[SESSION_KEY]
+        app.post('/deletefriendsdrinks', function (req, res) {
+          const sessionId = req.cookies[SESSION_KEY];
           if (!sessionId) {
+            console.log('bye')
             res.redirect('/login')
             return;
           }
+          console.log('hola')
           const username = userManagement.getLoggedInUser(sessionId);
           if (username === null) {
             res.cookie(SESSION_KEY, "", {
@@ -140,13 +142,14 @@ function createServer(userManagement, backendConfig) {
             res.redirect('/login')
             return;
           }
-          path = "/v1/friendsdrinks" + req.body.id
+          path = "/v1/friendsdrinks/" + req.body.id;
           options = {
              host: backendHostname,
              port: backendPort,
              method: 'DELETE',
              path: path
           }
+          console.log('setting up request')
 
           let backendReq = http.request(options, function(backendRes) {
               console.log('STATUS:' + backendRes.statusCode);
@@ -182,7 +185,7 @@ function createServer(userManagement, backendConfig) {
           });
 
           console.log("Sending DELETE request", options)
-          backendRes.end();
+          backendReq.end();
           return;
         })
 
@@ -217,7 +220,7 @@ function createServer(userManagement, backendConfig) {
                       host: backendHostname,
                       port: backendPort,
                       path: path,
-                      method: 'POST',
+                      method: 'PUT',
                       headers: {
                           'Content-Length': Buffer.byteLength(postData),
                           'Content-Type': 'application/json'
