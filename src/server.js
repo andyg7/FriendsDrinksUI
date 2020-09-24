@@ -1,6 +1,5 @@
 global.fetch = require('node-fetch');
 
-let { v4: uuidv4 } = require('uuid');
 let http = require('http');
 let express = require('express');
 let auth = require('./auth');
@@ -204,23 +203,33 @@ function createServer(userManagement, backendConfig) {
                     res.redirect('/login')
                     return;
                 } else {
-                    let postObj = {
+                    let postObj = null;
+                    let method = null;
+                    let path = "/v1/friendsdrinks";
+                    if (req.body.id) {
+                      postObj = {
+                        name: req.body.name,
+                        updateType: 'Partial'
+                      }
+                      method = 'PUT';
+                      path = path + '/' + req.body.id;
+                    } else {
+                      postObj = {
                         adminUserId: username,
                         userIds: [req.body.friend],
                         name: req.body.name,
                         scheduleType: 'OnDemand'
+                      }
+                      method = 'POST';
                     }
+
                     const postData = JSON.stringify(postObj)
 
-                    // UUID is for new friends drinks ID
-                    const uuid = uuidv4();
-                    console.log("Generated uuid for friends drinks: ", uuid);
-                    let path = "/v1/friendsdrinks/" + uuid;
                     let options = {
                       host: backendHostname,
                       port: backendPort,
                       path: path,
-                      method: 'PUT',
+                      method: method,
                       headers: {
                           'Content-Length': Buffer.byteLength(postData),
                           'Content-Type': 'application/json'
@@ -259,7 +268,7 @@ function createServer(userManagement, backendConfig) {
                       return;
                     });
 
-                    console.log("Sending POST request", postData)
+                    console.log("Sending request", postData)
                     backendReq.write(postData);
                     backendReq.end();
                     return;
