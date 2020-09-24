@@ -204,14 +204,12 @@ function createServer(userManagement, backendConfig) {
                     return;
                 } else {
                     let postObj = null;
-                    let method = null;
                     let path = "/v1/friendsdrinks";
                     if (req.body.id) {
                       postObj = {
                         name: req.body.name,
                         updateType: 'Partial'
                       }
-                      method = 'PUT';
                       path = path + '/' + req.body.id;
                     } else {
                       postObj = {
@@ -220,7 +218,6 @@ function createServer(userManagement, backendConfig) {
                         name: req.body.name,
                         scheduleType: 'OnDemand'
                       }
-                      method = 'POST';
                     }
 
                     const postData = JSON.stringify(postObj)
@@ -229,7 +226,7 @@ function createServer(userManagement, backendConfig) {
                       host: backendHostname,
                       port: backendPort,
                       path: path,
-                      method: method,
+                      method: 'POST',
                       headers: {
                           'Content-Length': Buffer.byteLength(postData),
                           'Content-Type': 'application/json'
