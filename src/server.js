@@ -41,11 +41,10 @@ function createServer(userManagement, backendConfig) {
                     res.redirect('/login')
                     return;
                 } else {
-                    let path = "/v1/friendsdrinks/" + "?userId=" + username
                     let options = {
                       host: backendHostname,
                       port: backendPort,
-                      path: path
+                      path: "/v1/users/" + username + "/friendsdrinks/"
                     };
 
                     let backendReq = http.get(options, function(backendRes) {
@@ -141,7 +140,7 @@ function createServer(userManagement, backendConfig) {
             res.redirect('/login')
             return;
           }
-          path = "/v1/friendsdrinks/" + req.body.id;
+          path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id;
           options = {
              host: backendHostname,
              port: backendPort,
@@ -204,24 +203,21 @@ function createServer(userManagement, backendConfig) {
                     return;
                 } else {
                     let postObj = null;
-                    let path = "/v1/friendsdrinks";
+                    let path = "/v1/users/" + username + "/friendsdrinks"
                     if (req.body.id) {
                       postObj = {
                         name: req.body.name,
                         updateType: 'Partial'
                       }
-                      path = path + '/' + req.body.id;
+                      path = path + '/' + req.body.id
                     } else {
                       postObj = {
-                        adminUserId: username,
-                        userIds: [req.body.friend],
-                        name: req.body.name,
-                        scheduleType: 'OnDemand'
-                      }
+                          userIds: [req.body.friend],
+                          name: req.body.name,
+                          scheduleType: 'OnDemand'
+                     }
                     }
-
                     const postData = JSON.stringify(postObj)
-
                     let options = {
                       host: backendHostname,
                       port: backendPort,
