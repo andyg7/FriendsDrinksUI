@@ -32,7 +32,7 @@ class UserManagement {
 
 		attributeList.push(attributeEmail);
 
-		userPool = this.userPool;
+		let userPool = this.userPool;
 		return new Promise(function (resolve, reject) {
 			userPool.signUp(email, password, attributeList, null, (err, data) => {
 				if (err) {
