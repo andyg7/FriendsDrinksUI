@@ -41,7 +41,7 @@ function createServer(userManagement, backendConfig) {
                     res.redirect('/login')
                     return;
                 } else {
-                    let path = "/v1/friendsdrinks/" + username
+                    let path = "/v1/friendsdrinks/" + "?userId=" + username
                     let options = {
                       host: backendHostname,
                       port: backendPort,
