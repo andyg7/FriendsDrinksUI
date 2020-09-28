@@ -207,14 +207,13 @@ function createServer(userManagement, backendConfig) {
                     if (req.body.id) {
                       postObj = {
                         name: req.body.name,
-                        updateType: 'Partial'
+                        updateType: 'PARTIAL'
                       }
                       path = path + '/' + req.body.id
                     } else {
                       postObj = {
-                          userIds: [req.body.friend],
                           name: req.body.name,
-                          scheduleType: 'OnDemand'
+                          scheduleType: 'ON_DEMAND'
                      }
                     }
                     const postData = JSON.stringify(postObj)
