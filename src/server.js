@@ -44,7 +44,7 @@ function createServer(userManagement, backendConfig) {
                     let options = {
                       host: backendHostname,
                       port: backendPort,
-                      path: "/v1/users/" + username + "/friendsdrinks/"
+                      path: "/v1/users/" + username
                     };
 
                     let backendReq = http.get(options, function(backendRes) {
@@ -97,11 +97,27 @@ function createServer(userManagement, backendConfig) {
                             });
                         }
 
+                        invitations = []
+                        if (obj.invitations && obj.invitations.length > 0) {
+                            obj.invitations.forEach(function (item, index) {
+                                invitations.push(
+                                   {
+                                      message: item.message,
+                                      adminUserId: item.adminUserId,
+                                      friendsDrinksId: item.friendsDrinksId
+                                   }
+                                )
+                            });
+                        }
+
+                        console.log("Sending HTML")
+                        console.log(invitations)
                         console.log("Sending HTML")
                         res.render('index', {
                             username: username,
                             adminFriendsDrinks: adminFriendsDrinks,
-                            memberFriendsDrinks: memberFriendsDrinks
+                            memberFriendsDrinks: memberFriendsDrinks,
+                            invitations: invitations
                         });
                         console.log("Sent HTML")
                       })
@@ -205,18 +221,29 @@ function createServer(userManagement, backendConfig) {
                     let postObj = null;
                     let path = "/v1/users/" + username + "/friendsdrinks"
                     if (req.body.id) {
-                      postObj = {
-                        name: req.body.name,
-                        updateType: 'PARTIAL'
+                      // Update request
+                      if (req.body.name) {
+                        // "Normal" update of FriendsDrinks
+                        postObj = {
+                          name: req.body.name
+                        }
+                      } else {
+                        // ADD_FRIEND update
+                        postObj = {
+                          userId: req.body.userId,
+                          updateType: 'INVITE_FRIEND'
+                        }
                       }
                       path = path + '/' + req.body.id
                     } else {
+                      // Create request
                       postObj = {
                           name: req.body.name,
                           scheduleType: 'ON_DEMAND'
                      }
                     }
                     const postData = JSON.stringify(postObj)
+                    console.log("POST data we're sending to backend ", postData)
                     let options = {
                       host: backendHostname,
                       port: backendPort,

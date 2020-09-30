@@ -25,6 +25,28 @@
               </tr>
            <% } %>
         </table>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Friends</th>
+          </tr>
+            <% for (var i = 0; i < memberFriendsDrinks.length; i++) { %>
+              <tr>
+                <td><%= memberFriendsDrinks[i].name %></td>
+                <td><%= memberFriendsDrinks[i].friends %></td>
+              </tr>
+           <% } %>
+        </table>
+        <table>
+          <tr>
+            <th>Friends ID invitations</th>
+          </tr>
+            <% for (var i = 0; i < invitations.length; i++) { %>
+              <tr>
+                <td><%= invitations[i].friendsDrinksId %></td>
+              </tr>
+           <% } %>
+        </table>
         <form action = "/friendsdrinks" method = "POST">
             <div>
                 <label>Name</label>
@@ -48,6 +70,18 @@
             <input type = "submit" value = "Update!">
         </form>
 
+        <form action = "/friendsdrinks" method = "POST">
+            <div>
+                <label>ID</label>
+                <input type = "text" name = "id" required="required"> <br>
+            </div>
+            <div>
+                <label>Name</label>
+                <input type = "text" name = "userId" required="required"> <br>
+            </div>
+            <input type = "submit" value = "Add friend!">
+        </form>
+
         <form action = "/deletefriendsdrinks" method = "POST">
             <div>
                 <label>ID</label>
@@ -55,18 +89,6 @@
             </div>
             <input type = "submit" value = "Delete!">
         </form>
-        <table>
-          <tr>
-            <th>Name</th>
-            <th>Friends</th>
-          </tr>
-            <% for (var i = 0; i < memberFriendsDrinks.length; i++) { %>
-              <tr>
-                <td><%= memberFriendsDrinks[i].name %></td>
-                <td><%= memberFriendsDrinks[i].friends %></td>
-              </tr>
-           <% } %>
-        </table>
     </section>
     </div>
 </body>
