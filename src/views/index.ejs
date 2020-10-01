@@ -13,27 +13,21 @@
         <h1>Welcome <%= username %>! FriendsDrinks lets you schedule drinks with your friends!</h1>
         <table>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Friends</th>
+            <th>FriendsDrinks you're the admin of</th>
           </tr>
             <% for (var i = 0; i < adminFriendsDrinks.length; i++) { %>
               <tr>
                 <td><%= adminFriendsDrinks[i].id %></td>
-                <td><%= adminFriendsDrinks[i].name %></td>
-                <td><%= adminFriendsDrinks[i].friends %></td>
               </tr>
            <% } %>
         </table>
         <table>
           <tr>
-            <th>Name</th>
-            <th>Friends</th>
+            <th>FriendsDrinks you're a member of</th>
           </tr>
             <% for (var i = 0; i < memberFriendsDrinks.length; i++) { %>
               <tr>
-                <td><%= memberFriendsDrinks[i].name %></td>
-                <td><%= memberFriendsDrinks[i].friends %></td>
+                <td><%= memberFriendsDrinks[i].id %></td>
               </tr>
            <% } %>
         </table>
@@ -80,6 +74,21 @@
                 <input type = "text" name = "userId" required="required"> <br>
             </div>
             <input type = "submit" value = "Add friend!">
+        </form>
+        <form action = "/friendsdrinks" method = "POST">
+            <div>
+                <label>ID</label>
+                <input type = "text" name = "id" required="required"> <br>
+            </div>
+            <div>
+                <label>Admin user ID</label>
+                <input type = "text" name = "adminUserId" required="required"> <br>
+            </div>
+            <div>
+                <label>Reply</label>
+                <input type = "text" name = "invitationReply" required="required"> <br>
+            </div>
+            <input type = "submit" value = "Reply to invitation">
         </form>
 
         <form action = "/deletefriendsdrinks" method = "POST">

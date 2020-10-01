@@ -66,32 +66,26 @@ function createServer(userManagement, backendConfig) {
                         const obj = JSON.parse(body);
 
                         adminFriendsDrinks = []
-                        if (obj.adminFriendsDrinks && obj.adminFriendsDrinks.length > 0) {
-                            obj.adminFriendsDrinks.forEach(function (item, index) {
-                                friends = []
-                                friends = item.adminUserId
-                                friends = friends.concat(item.userIds)
+                        if (obj.adminFriendsDrinksIds && obj.adminFriendsDrinksIds.length > 0) {
+                            obj.adminFriendsDrinksIds.forEach(function (item, index) {
+                                friendsDrinksId = item.friendsDrinksId
+                                // http.get(...) on this id to get more info
                                 adminFriendsDrinks.push(
                                    {
-                                      name: item.name,
-                                      friends: friends,
-                                      id: item.id
+                                      id: friendsDrinksId
                                    }
                                 )
                             });
                         }
 
                         memberFriendsDrinks = []
-                        if (obj.memberFriendsDrinks && obj.memberFriendsDrinks.length > 0) {
-                            obj.memberFriendsDrinks.forEach(function (item, index) {
-                                friends = []
-                                friends = item.adminUserId
-                                friends = friends.concat(item.userIds)
+                        if (obj.memberFriendsDrinksIds && obj.memberFriendsDrinksIds.length > 0) {
+                            obj.memberFriendsDrinksIds.forEach(function (item, index) {
+                                friendsDrinksId = item.friendsDrinksId
+                                // http.get(...) on this id to get more info
                                 memberFriendsDrinks.push(
                                    {
-                                      name: item.name,
-                                      friends: friends,
-                                      id: item.id
+                                      id: friendsDrinksId
                                    }
                                 )
                             });
@@ -219,24 +213,37 @@ function createServer(userManagement, backendConfig) {
                     return;
                 } else {
                     let postObj = null;
-                    let path = "/v1/users/" + username + "/friendsdrinks"
+                    let path = null;
                     if (req.body.id) {
-                      // Update request
+                      // Update FriendsDrinks
                       if (req.body.name) {
                         // "Normal" update of FriendsDrinks
                         postObj = {
                           name: req.body.name
                         }
-                      } else {
-                        // ADD_FRIEND update
+                        path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id
+                      } if (req.body.userId) {
+                        // INVITE_FRIEND POST
                         postObj = {
                           userId: req.body.userId,
-                          updateType: 'INVITE_FRIEND'
+                          updateType: 'INVITE_FRIEND',
+                          adminUserId: username,
+                          friendsDrinksId: req.body.id
                         }
+                        path = "/v1/users/" + username
+                      } else {
+                        //  update
+                        postObj = {
+                          updateType: 'REPLY_TO_INVITATION',
+                          adminUserId: req.body.adminUserId,
+                          friendsDrinksId: req.body.id,
+                          invitationReply: req.body.invitationReply
+                        }
+                        path = "/v1/users/" + username
                       }
-                      path = path + '/' + req.body.id
                     } else {
                       // Create request
+                      path = "/v1/users/" + username + "/friendsdrinks"
                       postObj = {
                           name: req.body.name,
                           scheduleType: 'ON_DEMAND'
