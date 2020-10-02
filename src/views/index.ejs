@@ -37,6 +37,8 @@
           </tr>
             <% for (var i = 0; i < invitations.length; i++) { %>
               <tr>
+                <td><%= invitations[i].message %></td>
+                <td><%= invitations[i].adminUserId %></td>
                 <td><%= invitations[i].friendsDrinksId %></td>
               </tr>
            <% } %>
@@ -45,10 +47,6 @@
             <div>
                 <label>Name</label>
                 <input type = "text" name = "name" required="required" > <br>
-            </div>
-            <div>
-                <label>Friend</label>
-                <input type = "text" name = "friend" required="required"> <br>
             </div>
             <input type = "submit" value = "Create!">
         </form>

@@ -226,7 +226,7 @@ function createServer(userManagement, backendConfig) {
                         // INVITE_FRIEND POST
                         postObj = {
                           userId: req.body.userId,
-                          updateType: 'INVITE_FRIEND',
+                          eventType: 'INVITE_FRIEND',
                           adminUserId: username,
                           friendsDrinksId: req.body.id
                         }
@@ -234,7 +234,7 @@ function createServer(userManagement, backendConfig) {
                       } else {
                         //  update
                         postObj = {
-                          updateType: 'REPLY_TO_INVITATION',
+                          eventType: 'REPLY_TO_INVITATION',
                           adminUserId: req.body.adminUserId,
                           friendsDrinksId: req.body.id,
                           invitationReply: req.body.invitationReply
@@ -245,12 +245,11 @@ function createServer(userManagement, backendConfig) {
                       // Create request
                       path = "/v1/users/" + username + "/friendsdrinks"
                       postObj = {
-                          name: req.body.name,
-                          scheduleType: 'ON_DEMAND'
+                          name: req.body.name
                      }
                     }
                     const postData = JSON.stringify(postObj)
-                    console.log("POST data we're sending to backend ", postData)
+                    console.log(path)
                     let options = {
                       host: backendHostname,
                       port: backendPort,
