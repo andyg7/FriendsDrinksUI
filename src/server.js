@@ -150,7 +150,7 @@ function createServer(userManagement, backendConfig) {
             res.redirect('/login')
             return;
           }
-          path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id;
+          path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id;
           options = {
              host: backendHostname,
              port: backendPort,
@@ -221,7 +221,7 @@ function createServer(userManagement, backendConfig) {
                         postObj = {
                           name: req.body.name
                         }
-                        path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id
+                        path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id
                       } if (req.body.userId) {
                         // INVITE_FRIEND POST
                         postObj = {
@@ -243,7 +243,7 @@ function createServer(userManagement, backendConfig) {
                       }
                     } else {
                       // Create request
-                      path = "/v1/users/" + username + "/friendsdrinks"
+                      path = "/v1/users/" + username + "/adminfriendsdrinks"
                       postObj = {
                           name: req.body.name
                      }
