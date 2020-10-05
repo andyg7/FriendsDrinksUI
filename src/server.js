@@ -66,26 +66,24 @@ function createServer(userManagement, backendConfig) {
                         const obj = JSON.parse(body);
 
                         adminFriendsDrinks = []
+                        // http.get(...) on batch of IDs
                         if (obj.adminFriendsDrinksIds && obj.adminFriendsDrinksIds.length > 0) {
                             obj.adminFriendsDrinksIds.forEach(function (item, index) {
-                                friendsDrinksId = item.friendsDrinksId
-                                // http.get(...) on this id to get more info
                                 adminFriendsDrinks.push(
                                    {
-                                      id: friendsDrinksId
+                                      id: item.uuid
                                    }
                                 )
                             });
                         }
 
                         memberFriendsDrinks = []
+                        // http.get(...) on batch of IDs
                         if (obj.memberFriendsDrinksIds && obj.memberFriendsDrinksIds.length > 0) {
                             obj.memberFriendsDrinksIds.forEach(function (item, index) {
-                                friendsDrinksId = item.friendsDrinksId
-                                // http.get(...) on this id to get more info
                                 memberFriendsDrinks.push(
                                    {
-                                      id: friendsDrinksId
+                                      id: item.uuid
                                    }
                                 )
                             });
@@ -98,7 +96,7 @@ function createServer(userManagement, backendConfig) {
                                    {
                                       message: item.message,
                                       adminUserId: item.adminUserId,
-                                      friendsDrinksId: item.friendsDrinksId
+                                      friendsDrinksId: item.uuid
                                    }
                                 )
                             });
@@ -227,16 +225,20 @@ function createServer(userManagement, backendConfig) {
                         postObj = {
                           userId: req.body.userId,
                           eventType: 'INVITE_FRIEND',
-                          adminUserId: username,
-                          friendsDrinksId: req.body.id
+                          friendsDrinksId: {
+                              adminUserId: username,
+                              uuid: req.body.id
+                          }
                         }
                         path = "/v1/users/" + username
                       } else {
                         //  update
                         postObj = {
                           eventType: 'REPLY_TO_INVITATION',
-                          adminUserId: req.body.adminUserId,
-                          friendsDrinksId: req.body.id,
+                          friendsDrinksId: {
+                              adminUserId: req.body.adminUserId,
+                              uuid: req.body.id
+                          },
                           invitationReply: req.body.invitationReply
                         }
                         path = "/v1/users/" + username
