@@ -6,7 +6,7 @@ let auth = require('./auth');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
-const SESSION_KEY = "friendsdrinks-session-id";
+const SESSION_KEY = "X-Friendsdrinks-Session-Id";
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
@@ -65,7 +65,10 @@ function createServer(userManagement, backendConfig) {
                 adminFriendsDrinks = []
                 // http.get(...) on batch of IDs
                 if (obj.adminFriendsDrinksIds && obj.adminFriendsDrinksIds.length > 0) {
+                    let listOfFriendsDrinksUuids = obj.adminFriendsDrinksIds.map(x => x.uuid)
+
                     obj.adminFriendsDrinksIds.forEach(function (item, index) {
+                        let friendsDrinksUuid = item.uuid;
                         adminFriendsDrinks.push(
                            {
                               id: item.uuid
@@ -186,9 +189,8 @@ function createServer(userManagement, backendConfig) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
-            let postObj = null;
             let path = "/v1/users/" + username
-            postObj = {
+            let postObj = {
               userIdToRemove: username,
               eventType: 'REMOVE_USER',
               adminUserId: req.body.adminUserId,
