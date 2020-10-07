@@ -8,6 +8,8 @@ let cookieParser = require('cookie-parser')
 
 const SESSION_KEY = "friendsdrinks-session-id";
 
+const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
+
 function createServer(userManagement, backendConfig) {
         let app = express();
 
@@ -27,18 +29,13 @@ function createServer(userManagement, backendConfig) {
 
         app.get('/', function (req, res) {
             const sessionId = req.cookies[SESSION_KEY];
-            console.log("session id received from browser: ", sessionId);
             if (!sessionId) {
                 res.redirect('/login');
                 return;
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.redirect('/login')
+                    resetHttpResponseCookie(res)
                     return;
                 } else {
                     let options = {
@@ -53,7 +50,7 @@ function createServer(userManagement, backendConfig) {
                       if (backendRes.statusCode !== 200) {
                          backendRes.resume();
                          res.status(500);
-                         res.send("Whoops! Something went wrong :(");
+                         res.send(INTERNAL_ERROR_MESSAGE);
                          return;
                       }
 
@@ -119,7 +116,7 @@ function createServer(userManagement, backendConfig) {
                     backendReq.on('error', function(e) {
                       console.log('ERROR: ' + e.message);
                       res.status(500);
-                      res.send("Whoops! Something went wrong :(");
+                      res.send(INTERNAL_ERROR_MESSAGE);
                       return;
                     });
                 }
@@ -141,11 +138,7 @@ function createServer(userManagement, backendConfig) {
           console.log('hola')
           const username = userManagement.getLoggedInUser(sessionId);
           if (username === null) {
-            res.cookie(SESSION_KEY, "", {
-                path: '/',
-                expires: new Date(1)
-            });
-            res.redirect('/login')
+            resetHttpResponseCookie(res)
             return;
           }
           path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id;
@@ -163,7 +156,7 @@ function createServer(userManagement, backendConfig) {
               if (backendRes.statusCode !== 200) {
                  backendRes.resume();
                  res.status(500);
-                 res.send("Whoops! Something went wrong :(");
+                 res.send(INTERNAL_ERROR_MESSAGE);
                  return;
               } else {
                   let bodyChunks = [];
@@ -186,7 +179,7 @@ function createServer(userManagement, backendConfig) {
           backendReq.on('error', function(e) {
             console.log('ERROR: ' + e.message);
             res.status(500);
-            res.send("Whoops! Something went wrong :(");
+            res.send(INTERNAL_ERROR_MESSAGE);
             return;
           });
 
@@ -203,11 +196,7 @@ function createServer(userManagement, backendConfig) {
              } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.redirect('/login')
+                    resetHttpResponseCookie(res)
                     return;
                 } else {
                     let postObj = null;
@@ -249,12 +238,8 @@ function createServer(userManagement, backendConfig) {
              } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.redirect('/login')
-                    return;
+                    resetHttpResponseCookie(res)
+                    return
                 } else {
                     let postObj = {
                       userId: req.body.userId,
@@ -294,12 +279,8 @@ function createServer(userManagement, backendConfig) {
              } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.redirect('/login')
-                    return;
+                    resetHttpResponseCookie(res)
+                    return
                 } else {
                     let postObj = {
                       eventType: 'REPLY_TO_INVITATION',
@@ -340,11 +321,7 @@ function createServer(userManagement, backendConfig) {
              } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.redirect('/login')
+                    resetHttpResponseCookie(res)
                     return;
                 } else {
                     let postObj = {
@@ -383,11 +360,7 @@ function createServer(userManagement, backendConfig) {
              } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.redirect('/login')
+                    resetHttpResponseCookie(res)
                     return;
                 } else {
                     let path = "/v1/users/" + username + "/adminfriendsdrinks"
@@ -411,7 +384,7 @@ function createServer(userManagement, backendConfig) {
                     backendReq.on('error', function(e) {
                       console.log('ERROR: ' + e.message);
                       res.status(500);
-                      res.send("Whoops! Something went wrong :(");
+                      res.send(INTERNAL_ERROR_MESSAGE);
                       return;
                     });
 
@@ -430,7 +403,7 @@ function createServer(userManagement, backendConfig) {
               if (backendRes.statusCode !== 200) {
                  backendRes.resume();
                  res.status(500);
-                 res.send("Whoops! Something went wrong :(");
+                 res.send(INTERNAL_ERROR_MESSAGE);
                  return;
               } else {
                   let bodyChunks = [];
@@ -453,7 +426,7 @@ function createServer(userManagement, backendConfig) {
             backendReq.on('error', function(e) {
               console.log('ERROR: ' + e.message);
               res.status(500);
-              res.send("Whoops! Something went wrong :(");
+              res.send(INTERNAL_ERROR_MESSAGE);
               return;
             });
 
@@ -478,7 +451,7 @@ function createServer(userManagement, backendConfig) {
             }).catch(function (err) {
                 console.log(err);
                 res.status(500);
-                res.send("Whoops! Something went wrong :(");
+                res.send(INTERNAL_ERROR_MESSAGE);
                 return;
             });
         })
@@ -517,7 +490,7 @@ function createServer(userManagement, backendConfig) {
                     return;
                 } else {
                     res.status(500);
-                    res.send("Whoops! Something went wrong :(");
+                    res.send(INTERNAL_ERROR_MESSAGE);
                     return;
                 }
             });
@@ -536,11 +509,7 @@ function createServer(userManagement, backendConfig) {
             } else {
                 const username = userManagement.getLoggedInUser(sessionId);
                 if (username === null) {
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.redirect('/login')
+                    resetHttpResponseCookie(res)
                     return;
                 } else {
                     let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
@@ -573,7 +542,7 @@ function createServer(userManagement, backendConfig) {
             }).catch(function (err) {
                 console.log(err);
                 res.status(500);
-                res.send("Whoops! Something went wrong :(");
+                res.send(INTERNAL_ERROR_MESSAGE);
                 return;
             });
         })
@@ -612,10 +581,19 @@ function createServer(userManagement, backendConfig) {
             }).catch(function (err) {
                 console.log(err);
                 res.status(500);
-                res.send("Whoops! Something went wrong :(");
+                res.send(INTERNAL_ERROR_MESSAGE);
                 return;
             });
         })
+
+        function resetHttpResponseCookie(res) {
+            console.log("Resetting http cookies")
+            res.cookie(SESSION_KEY, "", {
+                path: '/',
+                expires: new Date(1)
+            });
+            res.redirect('/login')
+        }
 
         return app
 }
