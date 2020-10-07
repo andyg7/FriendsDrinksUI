@@ -35,7 +35,7 @@ function createServer(userManagement, backendConfig) {
             }
             const username = userManagement.getLoggedInUser(sessionId);
             if (username === null) {
-                resetHttpResponseCookie(res)
+                resetHttpResponseCookieAndRedirect(res)
                 return;
             }
             let options = {
@@ -118,12 +118,7 @@ function createServer(userManagement, backendConfig) {
 
         })
 
-        app.get('/signup', function (req, res) {
-           res.sendFile( __dirname + "/views/" + "signup.html" );
-           return;
-        })
-
-        app.post('/deletefriendsdrinks', function (req, res) {
+        app.post('/friendsdrinks/delete', function (req, res) {
           const sessionId = req.cookies[SESSION_KEY];
           if (!sessionId) {
             res.redirect('/login')
@@ -131,7 +126,7 @@ function createServer(userManagement, backendConfig) {
           }
           const username = userManagement.getLoggedInUser(sessionId);
           if (username === null) {
-            resetHttpResponseCookie(res)
+            resetHttpResponseCookieAndRedirect(res)
             return;
           }
           path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id;
@@ -188,7 +183,7 @@ function createServer(userManagement, backendConfig) {
              }
             const username = userManagement.getLoggedInUser(sessionId);
             if (username === null) {
-                resetHttpResponseCookie(res)
+                resetHttpResponseCookieAndRedirect(res)
                 return;
             }
             let postObj = null;
@@ -213,7 +208,7 @@ function createServer(userManagement, backendConfig) {
               }
             };
 
-            let backendReq = buildHttpPostRequest(options, res)
+            let backendReq = buildHttpRequest(options, res)
             console.log("Sending request", postData)
             backendReq.write(postData);
             backendReq.end();
@@ -228,7 +223,7 @@ function createServer(userManagement, backendConfig) {
              }
             const username = userManagement.getLoggedInUser(sessionId);
             if (username === null) {
-                resetHttpResponseCookie(res)
+                resetHttpResponseCookieAndRedirect(res)
                 return
             }
             let postObj = {
@@ -251,7 +246,7 @@ function createServer(userManagement, backendConfig) {
               }
             };
 
-            let backendReq = buildHttpPostRequest(options, res)
+            let backendReq = buildHttpRequest(options, res)
 
             console.log("Sending request", postData)
             backendReq.write(postData);
@@ -267,7 +262,7 @@ function createServer(userManagement, backendConfig) {
              }
             const username = userManagement.getLoggedInUser(sessionId);
             if (username === null) {
-                resetHttpResponseCookie(res)
+                resetHttpResponseCookieAndRedirect(res)
                 return
             }
             let postObj = {
@@ -291,7 +286,7 @@ function createServer(userManagement, backendConfig) {
               }
             };
 
-            let backendReq = buildHttpPostRequest(options, res)
+            let backendReq = buildHttpRequest(options, res)
 
             console.log("Sending request", postData)
             backendReq.write(postData);
@@ -307,7 +302,7 @@ function createServer(userManagement, backendConfig) {
              }
             const username = userManagement.getLoggedInUser(sessionId);
             if (username === null) {
-                resetHttpResponseCookie(res)
+                resetHttpResponseCookieAndRedirect(res)
                 return;
             }
             let postObj = {
@@ -328,7 +323,7 @@ function createServer(userManagement, backendConfig) {
               }
             };
 
-            let backendReq = buildHttpPostRequest(options, res)
+            let backendReq = buildHttpRequest(options, res)
 
             console.log("Sending request", postData)
             backendReq.write(postData);
@@ -344,7 +339,7 @@ function createServer(userManagement, backendConfig) {
              }
             const username = userManagement.getLoggedInUser(sessionId);
             if (username === null) {
-                resetHttpResponseCookie(res)
+                resetHttpResponseCookieAndRedirect(res)
                 return;
             }
             let path = "/v1/users/" + username + "/adminfriendsdrinks"
@@ -362,7 +357,7 @@ function createServer(userManagement, backendConfig) {
                   'Content-Type': 'application/json'
               }
             };
-            let backendReq = buildHttpPostRequest(options, res)
+            let backendReq = buildHttpRequest(options, res)
 
             console.log("Sending request", postData)
             backendReq.write(postData);
@@ -370,7 +365,7 @@ function createServer(userManagement, backendConfig) {
             return;
         })
 
-        function buildHttpPostRequest(options, res) {
+        function buildHttpRequest(options, res) {
             let backendReq = http.request(options, function(backendRes) {
               console.log('STATUS: ' + backendRes.statusCode);
               console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
@@ -406,6 +401,12 @@ function createServer(userManagement, backendConfig) {
 
             return backendReq;
         }
+
+        app.get('/signup', function (req, res) {
+           res.sendFile( __dirname + "/views/" + "signup.html" );
+           return;
+        })
+
 
         app.post('/signup', function (req, res) {
             let email = req.body.email;
@@ -483,18 +484,17 @@ function createServer(userManagement, backendConfig) {
             }
             const username = userManagement.getLoggedInUser(sessionId);
             if (username === null) {
-                resetHttpResponseCookie(res)
-                return;
-            } else {
-                let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
-                userManagement.logout(loggedInUser);
-                res.cookie(SESSION_KEY, "", {
-                    path: '/',
-                    expires: new Date(1)
-                });
-                res.send("You're logged out!");
+                resetHttpResponseCookieAndRedirect(res)
                 return;
             }
+            let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
+            userManagement.logout(loggedInUser);
+            res.cookie(SESSION_KEY, "", {
+                path: '/',
+                expires: new Date(1)
+            });
+            res.send("You're logged out!");
+            return;
         });
 
         app.get('/forgotpassword', function (req, res) {
@@ -559,7 +559,7 @@ function createServer(userManagement, backendConfig) {
             });
         })
 
-        function resetHttpResponseCookie(res) {
+        function resetHttpResponseCookieAndRedirect(res) {
             console.log("Resetting http cookies")
             res.cookie(SESSION_KEY, "", {
                 path: '/',
