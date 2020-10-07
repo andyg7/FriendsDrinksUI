@@ -32,90 +32,90 @@ function createServer(userManagement, backendConfig) {
             if (!sessionId) {
                 res.redirect('/login');
                 return;
-            } else {
-                const username = userManagement.getLoggedInUser(sessionId);
-                if (username === null) {
-                    resetHttpResponseCookie(res)
-                    return;
-                } else {
-                    let options = {
-                      host: backendHostname,
-                      port: backendPort,
-                      path: "/v1/users/" + username
-                    };
+            }
+            const username = userManagement.getLoggedInUser(sessionId);
+            if (username === null) {
+                resetHttpResponseCookie(res)
+                return;
+            }
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: "/v1/users/" + username
+            };
 
-                    let backendReq = http.get(options, function(backendRes) {
-                      console.log('STATUS: ' + backendRes.statusCode);
-                      console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-                      if (backendRes.statusCode !== 200) {
-                         backendRes.resume();
-                         res.status(500);
-                         res.send(INTERNAL_ERROR_MESSAGE);
-                         return;
-                      }
+            let backendReq = http.get(options, function(backendRes) {
+              console.log('STATUS: ' + backendRes.statusCode);
+              console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+              if (backendRes.statusCode !== 200) {
+                 backendRes.resume();
+                 res.status(500);
+                 res.send(INTERNAL_ERROR_MESSAGE);
+                 return;
+              }
 
-                      let bodyChunks = [];
-                      backendRes.on('data', function(chunk) {
-                        bodyChunks.push(chunk);
-                      }).on('end', function() {
-                        let body = Buffer.concat(bodyChunks);
-                        console.log('BODY: ' + body);
-                        const obj = JSON.parse(body);
+              let bodyChunks = [];
+              backendRes.on('data', function(chunk) {
+                bodyChunks.push(chunk);
+              }).on('end', function() {
+                let body = Buffer.concat(bodyChunks);
+                console.log('BODY: ' + body);
+                const obj = JSON.parse(body);
 
-                        adminFriendsDrinks = []
-                        // http.get(...) on batch of IDs
-                        if (obj.adminFriendsDrinksIds && obj.adminFriendsDrinksIds.length > 0) {
-                            obj.adminFriendsDrinksIds.forEach(function (item, index) {
-                                adminFriendsDrinks.push(
-                                   {
-                                      id: item.uuid
-                                   }
-                                )
-                            });
-                        }
-
-                        memberFriendsDrinks = []
-                        // http.get(...) on batch of IDs
-                        if (obj.memberFriendsDrinksIds && obj.memberFriendsDrinksIds.length > 0) {
-                            obj.memberFriendsDrinksIds.forEach(function (item, index) {
-                                memberFriendsDrinks.push(
-                                   {
-                                      id: item.uuid
-                                   }
-                                )
-                            });
-                        }
-
-                        invitations = []
-                        if (obj.invitations && obj.invitations.length > 0) {
-                            obj.invitations.forEach(function (item, index) {
-                                invitations.push(
-                                   {
-                                      message: item.message,
-                                      adminUserId: item.friendsDrinksId.adminUserId,
-                                      friendsDrinksUuid: item.friendsDrinksId.uuid
-                                   }
-                                )
-                            });
-                        }
-
-                        res.render('index', {
-                            username: username,
-                            adminFriendsDrinks: adminFriendsDrinks,
-                            memberFriendsDrinks: memberFriendsDrinks,
-                            invitations: invitations
-                        });
-                      })
-                    });
-
-                    backendReq.on('error', function(e) {
-                      console.log('ERROR: ' + e.message);
-                      res.status(500);
-                      res.send(INTERNAL_ERROR_MESSAGE);
-                      return;
+                adminFriendsDrinks = []
+                // http.get(...) on batch of IDs
+                if (obj.adminFriendsDrinksIds && obj.adminFriendsDrinksIds.length > 0) {
+                    obj.adminFriendsDrinksIds.forEach(function (item, index) {
+                        adminFriendsDrinks.push(
+                           {
+                              id: item.uuid
+                           }
+                        )
                     });
                 }
-            }
+
+                memberFriendsDrinks = []
+                // http.get(...) on batch of IDs
+                if (obj.memberFriendsDrinksIds && obj.memberFriendsDrinksIds.length > 0) {
+                    obj.memberFriendsDrinksIds.forEach(function (item, index) {
+                        memberFriendsDrinks.push(
+                           {
+                              id: item.uuid
+                           }
+                        )
+                    });
+                }
+
+                invitations = []
+                if (obj.invitations && obj.invitations.length > 0) {
+                    obj.invitations.forEach(function (item, index) {
+                        invitations.push(
+                           {
+                              message: item.message,
+                              adminUserId: item.friendsDrinksId.adminUserId,
+                              friendsDrinksUuid: item.friendsDrinksId.uuid
+                           }
+                        )
+                    });
+                }
+
+                res.render('index', {
+                    username: username,
+                    adminFriendsDrinks: adminFriendsDrinks,
+                    memberFriendsDrinks: memberFriendsDrinks,
+                    invitations: invitations
+                });
+              })
+            });
+
+            backendReq.on('error', function(e) {
+              console.log('ERROR: ' + e.message);
+              res.status(500);
+              res.send(INTERNAL_ERROR_MESSAGE);
+              return;
+            });
+
+
         })
 
         app.get('/signup', function (req, res) {
@@ -150,22 +150,22 @@ function createServer(userManagement, backendConfig) {
                  res.status(500);
                  res.send(INTERNAL_ERROR_MESSAGE);
                  return;
-              } else {
-                  let bodyChunks = [];
-                  backendRes.on('data', (chunk) => {
-                    bodyChunks.push(chunk)
-                  });
-                  backendRes.on('end', () => {
-                    let body = Buffer.concat(bodyChunks);
-                    console.log('BODY: ' + body);
-                    const obj = JSON.parse(body);
-                    console.log('Result ', obj.result);
-
-                    console.log('No more data in response - redirecting to /');
-                    res.redirect('/')
-                    return;
-                  });
               }
+              let bodyChunks = [];
+              backendRes.on('data', (chunk) => {
+                bodyChunks.push(chunk)
+              });
+              backendRes.on('end', () => {
+                let body = Buffer.concat(bodyChunks);
+                console.log('BODY: ' + body);
+                const obj = JSON.parse(body);
+                console.log('Result ', obj.result);
+
+                console.log('No more data in response - redirecting to /');
+                res.redirect('/')
+                return;
+              });
+
           })
 
           backendReq.on('error', function(e) {
@@ -185,41 +185,39 @@ function createServer(userManagement, backendConfig) {
             if (!sessionId) {
                 res.redirect('/login')
                 return;
-             } else {
-                const username = userManagement.getLoggedInUser(sessionId);
-                if (username === null) {
-                    resetHttpResponseCookie(res)
-                    return;
-                } else {
-                    let postObj = null;
-                    let path = "/v1/users/" + username
-                    postObj = {
-                      userId: username,
-                      eventType: 'REMOVE_USER',
-                      friendsDrinksId: {
-                          adminUserId: username,
-                          uuid: req.body.id
-                      }
-                    }
-                    const postData = JSON.stringify(postObj)
-                    let options = {
-                      host: backendHostname,
-                      port: backendPort,
-                      path: path,
-                      method: 'POST',
-                      headers: {
-                          'Content-Length': Buffer.byteLength(postData),
-                          'Content-Type': 'application/json'
-                      }
-                    };
-
-                    let backendReq = buildHttpPostRequest(options, res)
-                    console.log("Sending request", postData)
-                    backendReq.write(postData);
-                    backendReq.end();
-                    return;
-                }
+             }
+            const username = userManagement.getLoggedInUser(sessionId);
+            if (username === null) {
+                resetHttpResponseCookie(res)
+                return;
             }
+            let postObj = null;
+            let path = "/v1/users/" + username
+            postObj = {
+              userId: username,
+              eventType: 'REMOVE_USER',
+              friendsDrinksId: {
+                  adminUserId: username,
+                  uuid: req.body.id
+              }
+            }
+            const postData = JSON.stringify(postObj)
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: path,
+              method: 'POST',
+              headers: {
+                  'Content-Length': Buffer.byteLength(postData),
+                  'Content-Type': 'application/json'
+              }
+            };
+
+            let backendReq = buildHttpPostRequest(options, res)
+            console.log("Sending request", postData)
+            backendReq.write(postData);
+            backendReq.end();
+            return;
         })
 
         app.post('/friendsdrinks/addUser', function (req, res) {
@@ -227,40 +225,38 @@ function createServer(userManagement, backendConfig) {
             if (!sessionId) {
                 res.redirect('/login')
                 return;
-             } else {
-                const username = userManagement.getLoggedInUser(sessionId);
-                if (username === null) {
-                    resetHttpResponseCookie(res)
-                    return
-                } else {
-                    let postObj = {
-                      userId: req.body.userId,
-                      eventType: 'ADD_USER',
-                      friendsDrinksUuid: req.body.id
-                    }
-                    let path = "/v1/users/" + username
-
-                    const postData = JSON.stringify(postObj)
-
-                    let options = {
-                      host: backendHostname,
-                      port: backendPort,
-                      path: path,
-                      method: 'POST',
-                      headers: {
-                          'Content-Length': Buffer.byteLength(postData),
-                          'Content-Type': 'application/json'
-                      }
-                    };
-
-                    let backendReq = buildHttpPostRequest(options, res)
-
-                    console.log("Sending request", postData)
-                    backendReq.write(postData);
-                    backendReq.end();
-                    return;
-                }
+             }
+            const username = userManagement.getLoggedInUser(sessionId);
+            if (username === null) {
+                resetHttpResponseCookie(res)
+                return
             }
+            let postObj = {
+              userId: req.body.userId,
+              eventType: 'ADD_USER',
+              friendsDrinksUuid: req.body.id
+            }
+            let path = "/v1/users/" + username
+
+            const postData = JSON.stringify(postObj)
+
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: path,
+              method: 'POST',
+              headers: {
+                  'Content-Length': Buffer.byteLength(postData),
+                  'Content-Type': 'application/json'
+              }
+            };
+
+            let backendReq = buildHttpPostRequest(options, res)
+
+            console.log("Sending request", postData)
+            backendReq.write(postData);
+            backendReq.end();
+            return;
         })
 
         app.post('/friendsdrinks/replyToInvitation', function (req, res) {
@@ -268,41 +264,39 @@ function createServer(userManagement, backendConfig) {
             if (!sessionId) {
                 res.redirect('/login')
                 return;
-             } else {
-                const username = userManagement.getLoggedInUser(sessionId);
-                if (username === null) {
-                    resetHttpResponseCookie(res)
-                    return
-                } else {
-                    let postObj = {
-                      eventType: 'REPLY_TO_INVITATION',
-                      adminUserId: req.body.adminUserId,
-                      friendsDrinksUuid: req.body.id,
-                      invitationReply: req.body.invitationReply
-                    }
-                    let path = "/v1/users/" + username
-
-                    const postData = JSON.stringify(postObj)
-
-                    let options = {
-                      host: backendHostname,
-                      port: backendPort,
-                      path: path,
-                      method: 'POST',
-                      headers: {
-                          'Content-Length': Buffer.byteLength(postData),
-                          'Content-Type': 'application/json'
-                      }
-                    };
-
-                    let backendReq = buildHttpPostRequest(options, res)
-
-                    console.log("Sending request", postData)
-                    backendReq.write(postData);
-                    backendReq.end();
-                    return;
-                }
+             }
+            const username = userManagement.getLoggedInUser(sessionId);
+            if (username === null) {
+                resetHttpResponseCookie(res)
+                return
             }
+            let postObj = {
+              eventType: 'REPLY_TO_INVITATION',
+              adminUserId: req.body.adminUserId,
+              friendsDrinksUuid: req.body.id,
+              invitationReply: req.body.invitationReply
+            }
+            let path = "/v1/users/" + username
+
+            const postData = JSON.stringify(postObj)
+
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: path,
+              method: 'POST',
+              headers: {
+                  'Content-Length': Buffer.byteLength(postData),
+                  'Content-Type': 'application/json'
+              }
+            };
+
+            let backendReq = buildHttpPostRequest(options, res)
+
+            console.log("Sending request", postData)
+            backendReq.write(postData);
+            backendReq.end();
+            return;
         })
 
         app.post('/friendsdrinks/update', function (req, res) {
@@ -310,38 +304,36 @@ function createServer(userManagement, backendConfig) {
             if (!sessionId) {
                 res.redirect('/login')
                 return;
-             } else {
-                const username = userManagement.getLoggedInUser(sessionId);
-                if (username === null) {
-                    resetHttpResponseCookie(res)
-                    return;
-                } else {
-                    let postObj = {
-                      name: req.body.name
-                    }
-                    let path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id
-
-                    const postData = JSON.stringify(postObj)
-
-                    let options = {
-                      host: backendHostname,
-                      port: backendPort,
-                      path: path,
-                      method: 'POST',
-                      headers: {
-                          'Content-Length': Buffer.byteLength(postData),
-                          'Content-Type': 'application/json'
-                      }
-                    };
-
-                    let backendReq = buildHttpPostRequest(options, res)
-
-                    console.log("Sending request", postData)
-                    backendReq.write(postData);
-                    backendReq.end();
-                    return;
-                }
+             }
+            const username = userManagement.getLoggedInUser(sessionId);
+            if (username === null) {
+                resetHttpResponseCookie(res)
+                return;
             }
+            let postObj = {
+              name: req.body.name
+            }
+            let path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id
+
+            const postData = JSON.stringify(postObj)
+
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: path,
+              method: 'POST',
+              headers: {
+                  'Content-Length': Buffer.byteLength(postData),
+                  'Content-Type': 'application/json'
+              }
+            };
+
+            let backendReq = buildHttpPostRequest(options, res)
+
+            console.log("Sending request", postData)
+            backendReq.write(postData);
+            backendReq.end();
+            return;
         })
 
         app.post('/friendsdrinks/create', function (req, res) {
@@ -349,35 +341,33 @@ function createServer(userManagement, backendConfig) {
             if (!sessionId) {
                 res.redirect('/login')
                 return;
-             } else {
-                const username = userManagement.getLoggedInUser(sessionId);
-                if (username === null) {
-                    resetHttpResponseCookie(res)
-                    return;
-                } else {
-                    let path = "/v1/users/" + username + "/adminfriendsdrinks"
-                    let postObj = {
-                      name: req.body.name
-                    }
-                    const postData = JSON.stringify(postObj)
-                    let options = {
-                      host: backendHostname,
-                      port: backendPort,
-                      path: path,
-                      method: 'POST',
-                      headers: {
-                          'Content-Length': Buffer.byteLength(postData),
-                          'Content-Type': 'application/json'
-                      }
-                    };
-                    let backendReq = buildHttpPostRequest(options, res)
-
-                    console.log("Sending request", postData)
-                    backendReq.write(postData);
-                    backendReq.end();
-                    return;
-                }
+             }
+            const username = userManagement.getLoggedInUser(sessionId);
+            if (username === null) {
+                resetHttpResponseCookie(res)
+                return;
             }
+            let path = "/v1/users/" + username + "/adminfriendsdrinks"
+            let postObj = {
+              name: req.body.name
+            }
+            const postData = JSON.stringify(postObj)
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: path,
+              method: 'POST',
+              headers: {
+                  'Content-Length': Buffer.byteLength(postData),
+                  'Content-Type': 'application/json'
+              }
+            };
+            let backendReq = buildHttpPostRequest(options, res)
+
+            console.log("Sending request", postData)
+            backendReq.write(postData);
+            backendReq.end();
+            return;
         })
 
         function buildHttpPostRequest(options, res) {
@@ -490,21 +480,20 @@ function createServer(userManagement, backendConfig) {
             if (!sessionId) {
                 res.redirect('/login');
                 return;
+            }
+            const username = userManagement.getLoggedInUser(sessionId);
+            if (username === null) {
+                resetHttpResponseCookie(res)
+                return;
             } else {
-                const username = userManagement.getLoggedInUser(sessionId);
-                if (username === null) {
-                    resetHttpResponseCookie(res)
-                    return;
-                } else {
-                    let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
-                    userManagement.logout(loggedInUser);
-                    res.cookie(SESSION_KEY, "", {
-                        path: '/',
-                        expires: new Date(1)
-                    });
-                    res.send("You're logged out!");
-                    return;
-                }
+                let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
+                userManagement.logout(loggedInUser);
+                res.cookie(SESSION_KEY, "", {
+                    path: '/',
+                    expires: new Date(1)
+                });
+                res.send("You're logged out!");
+                return;
             }
         });
 
