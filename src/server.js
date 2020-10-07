@@ -99,19 +99,14 @@ function createServer(userManagement, backendConfig) {
                             });
                         }
 
-                        console.log("Sending HTML")
-                        console.log(invitations)
-                        console.log("Sending HTML")
                         res.render('index', {
                             username: username,
                             adminFriendsDrinks: adminFriendsDrinks,
                             memberFriendsDrinks: memberFriendsDrinks,
                             invitations: invitations
                         });
-                        console.log("Sent HTML")
                       })
                     });
-                    console.log('Set up http.get callback')
 
                     backendReq.on('error', function(e) {
                       console.log('ERROR: ' + e.message);
@@ -131,11 +126,9 @@ function createServer(userManagement, backendConfig) {
         app.post('/deletefriendsdrinks', function (req, res) {
           const sessionId = req.cookies[SESSION_KEY];
           if (!sessionId) {
-            console.log('bye')
             res.redirect('/login')
             return;
           }
-          console.log('hola')
           const username = userManagement.getLoggedInUser(sessionId);
           if (username === null) {
             resetHttpResponseCookie(res)
@@ -148,7 +141,6 @@ function createServer(userManagement, backendConfig) {
              method: 'DELETE',
              path: path
           }
-          console.log('setting up request')
 
           let backendReq = http.request(options, function(backendRes) {
               console.log('STATUS:' + backendRes.statusCode);
@@ -368,7 +360,6 @@ function createServer(userManagement, backendConfig) {
                       name: req.body.name
                     }
                     const postData = JSON.stringify(postObj)
-                    console.log(path)
                     let options = {
                       host: backendHostname,
                       port: backendPort,
@@ -380,13 +371,6 @@ function createServer(userManagement, backendConfig) {
                       }
                     };
                     let backendReq = buildHttpPostRequest(options, res)
-
-                    backendReq.on('error', function(e) {
-                      console.log('ERROR: ' + e.message);
-                      res.status(500);
-                      res.send(INTERNAL_ERROR_MESSAGE);
-                      return;
-                    });
 
                     console.log("Sending request", postData)
                     backendReq.write(postData);
