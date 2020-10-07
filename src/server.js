@@ -189,12 +189,10 @@ function createServer(userManagement, backendConfig) {
             let postObj = null;
             let path = "/v1/users/" + username
             postObj = {
-              userId: username,
+              userIdToRemove: username,
               eventType: 'REMOVE_USER',
-              friendsDrinksId: {
-                  adminUserId: username,
-                  uuid: req.body.id
-              }
+              adminUserId: req.body.adminUserId,
+              friendsDrinksUuid: req.body.id
             }
             const postData = JSON.stringify(postObj)
             let options = {
