@@ -39,17 +39,18 @@
               <tr>
                 <td><%= invitations[i].message %></td>
                 <td><%= invitations[i].adminUserId %></td>
+                <td><%= invitations[i].friendsDrinksUuid %></td>
               </tr>
            <% } %>
         </table>
-        <form action = "/friendsdrinks" method = "POST">
+        <form action = "/friendsdrinks/create" method = "POST">
             <div>
                 <label>Name</label>
                 <input type = "text" name = "name" required="required" > <br>
             </div>
             <input type = "submit" value = "Create!">
         </form>
-        <form action = "/friendsdrinks" method = "POST">
+        <form action = "/friendsdrinks/update" method = "POST">
             <div>
                 <label>ID</label>
                 <input type = "text" name = "id" required="required"> <br>
@@ -61,7 +62,7 @@
             <input type = "submit" value = "Update!">
         </form>
 
-        <form action = "/friendsdrinks" method = "POST">
+        <form action = "/friendsdrinks/addUser" method = "POST">
             <div>
                 <label>ID</label>
                 <input type = "text" name = "id" required="required"> <br>
@@ -72,7 +73,16 @@
             </div>
             <input type = "submit" value = "Add friend!">
         </form>
-        <form action = "/friendsdrinks" method = "POST">
+
+        <form action = "/friendsdrinks/removeUser" method = "POST">
+            <div>
+                <label>ID</label>
+                <input type = "text" name = "id" required="required"> <br>
+            </div>
+            <input type = "submit" value = "Remove self from FriendsDrinks">
+        </form>
+
+        <form action = "/friendsdrinks/replyToInvitation" method = "POST">
             <div>
                 <label>ID</label>
                 <input type = "text" name = "id" required="required"> <br>
