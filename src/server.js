@@ -65,13 +65,10 @@ function createServer(userManagement, backendConfig) {
                 adminFriendsDrinks = []
                 // http.get(...) on batch of IDs
                 if (obj.adminFriendsDrinksIds && obj.adminFriendsDrinksIds.length > 0) {
-                    let listOfFriendsDrinksUuids = obj.adminFriendsDrinksIds.map(x => x.uuid)
-
                     obj.adminFriendsDrinksIds.forEach(function (item, index) {
-                        let friendsDrinksUuid = item.uuid;
                         adminFriendsDrinks.push(
                            {
-                              id: item.uuid
+                              id: item
                            }
                         )
                     });
@@ -83,7 +80,7 @@ function createServer(userManagement, backendConfig) {
                     obj.memberFriendsDrinksIds.forEach(function (item, index) {
                         memberFriendsDrinks.push(
                            {
-                              id: item.uuid
+                              id: item
                            }
                         )
                     });
@@ -95,8 +92,7 @@ function createServer(userManagement, backendConfig) {
                         invitations.push(
                            {
                               message: item.message,
-                              adminUserId: item.friendsDrinksId.adminUserId,
-                              friendsDrinksUuid: item.friendsDrinksId.uuid
+                              friendsDrinksUuid: item.friendsDrinksId
                            }
                         )
                     });
@@ -189,13 +185,13 @@ function createServer(userManagement, backendConfig) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
-            let path = "/v1/users/" + username
             let postObj = {
-              userIdToRemove: username,
               eventType: 'REMOVE_USER',
-              adminUserId: req.body.adminUserId,
-              friendsDrinksUuid: req.body.id
+              removeUserRequest: {
+                 userId: username
+              }
             }
+            let path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id + "/membership"
             const postData = JSON.stringify(postObj)
             let options = {
               host: backendHostname,
@@ -227,11 +223,12 @@ function createServer(userManagement, backendConfig) {
                 return
             }
             let postObj = {
-              userId: req.body.userId,
               eventType: 'ADD_USER',
-              friendsDrinksUuid: req.body.id
+              addUserRequest: {
+                 userId: req.body.userId
+              }
             }
-            let path = "/v1/users/" + username
+            let path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id + "/membership"
 
             const postData = JSON.stringify(postObj)
 
@@ -267,11 +264,11 @@ function createServer(userManagement, backendConfig) {
             }
             let postObj = {
               eventType: 'REPLY_TO_INVITATION',
-              adminUserId: req.body.adminUserId,
-              friendsDrinksUuid: req.body.id,
-              invitationReply: req.body.invitationReply
+              replyToInvitationRequest: {
+                 response: req.body.invitationReply
+              }
             }
-            let path = "/v1/users/" + username
+            let path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id + "/membership"
 
             const postData = JSON.stringify(postObj)
 
