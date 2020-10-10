@@ -106,7 +106,9 @@ class UserManagement {
 			return null
 		}
 		console.log("Returned email: " + tokens.getIdToken().decodePayload()['email']);
-		return tokens.getIdToken().decodePayload()['email'];
+		let payload = tokens.getIdToken().decodePayload();
+   	    let user = new auth.User(payload['email'], payload['custom:firstname'], payload['custom:lastname']);
+    	return new auth.LoggedInUser(user, sessionId);
 	}
 
 	forgotPassword(email, res) {

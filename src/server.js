@@ -33,11 +33,12 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login');
                 return;
             }
-            const username = userManagement.getLoggedInUser(sessionId);
-            if (username === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
+            let username = user.email
             let options = {
               host: backendHostname,
               port: backendPort,
@@ -123,11 +124,12 @@ function createServer(userManagement, backendConfig) {
             res.redirect('/login')
             return;
           }
-          const username = userManagement.getLoggedInUser(sessionId);
-          if (username === null) {
+          let user = userManagement.getLoggedInUser(sessionId);
+          if (user === null) {
             resetHttpResponseCookieAndRedirect(res)
             return;
           }
+          const username = user.email
           path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id;
           options = {
              host: backendHostname,
@@ -180,11 +182,12 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            const username = userManagement.getLoggedInUser(sessionId);
-            if (username === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
+            let username = user.email
             let postObj = {
               requestType: 'REMOVE_USER',
               removeUserRequest: {
@@ -217,11 +220,12 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            const username = userManagement.getLoggedInUser(sessionId);
-            if (username === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return
             }
+            let username = user.email
             let postObj = {
               requestType: 'ADD_USER',
               addUserRequest: {
@@ -257,11 +261,12 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            const username = userManagement.getLoggedInUser(sessionId);
-            if (username === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return
             }
+            let username = user.email
             let postObj = {
               requestType: 'REPLY_TO_INVITATION',
               replyToInvitationRequest: {
@@ -297,11 +302,12 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            const username = userManagement.getLoggedInUser(sessionId);
-            if (username === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
+            let username = user.email
             let postObj = {
               name: req.body.name
             }
@@ -334,11 +340,12 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            const username = userManagement.getLoggedInUser(sessionId);
-            if (username === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
+            let username = user.email
             let path = "/v1/users/" + username + "/adminfriendsdrinks"
             let postObj = {
               name: req.body.name
@@ -465,9 +472,11 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             userManagement.login(email, password).then(function (data) {
+                console.log("dataa ", data)
                 let sessionId = data.sessionId;
                 console.log("Setting session id in cookie to ", sessionId);
                 let input =  {
+                   userId: data.user.email,
                    eventType: 'LOGGED_IN',
                    loggedInEvent: {
                       firstName: data.user.firstName,
@@ -507,7 +516,7 @@ function createServer(userManagement, backendConfig) {
             if (input.eventType === "LOGGED_IN") {
                 postObj.loggedInEvent = input.loggedInEvent
             }
-            let path = "/v1/users/" + input.email
+            let path = "/v1/users/" + input.userId
             const postData = JSON.stringify(postObj)
             let options = {
               host: backendHostname,
@@ -567,15 +576,17 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login');
                 return;
             }
-            const username = userManagement.getLoggedInUser(sessionId);
-            if (username === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
+            let username = user.email
             let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
             userManagement.logout(loggedInUser);
 
             input = {
+               userId: username,
                eventType: 'LOGGED_OUT'
             }
             reportUserEvent(input).then(function (data) {
