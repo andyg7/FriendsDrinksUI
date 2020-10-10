@@ -475,11 +475,11 @@ function createServer(userManagement, backendConfig) {
                 let sessionId = data.sessionId;
                 let input =  {
                    userId: data.user.userId,
-                   email: data.user.email,
                    eventType: 'LOGGED_IN',
                    loggedInEvent: {
                       firstName: data.user.firstName,
-                      lastName: data.user.lastName
+                      lastName: data.user.lastName,
+                      email: data.user.email,
                    }
                 }
                 reportUserEvent(input).then(function (data) {
@@ -510,8 +510,7 @@ function createServer(userManagement, backendConfig) {
         function reportUserEvent(input) {
             console.log("input", input)
             let postObj = {
-              eventType: input.eventType,
-              email: input.email
+              eventType: input.eventType
             }
             if (input.eventType === "LOGGED_IN") {
                 postObj.loggedInEvent = input.loggedInEvent
@@ -584,7 +583,6 @@ function createServer(userManagement, backendConfig) {
 
             input = {
                userId: user.userId,
-               email: user.email,
                eventType: 'LOGGED_OUT'
             }
             reportUserEvent(input).then(function (data) {

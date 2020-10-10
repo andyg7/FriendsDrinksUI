@@ -23,13 +23,6 @@ class UserManagement {
 	signUp(input) {
 		let attributeList = [];
 
-		let dataEmail = {
-			Name: 'email',
-			Value: input.email,
-		};
-		let attributeEmail = new amazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-		attributeList.push(attributeEmail);
-
 		let dataFirstName = {
 			Name: 'custom:firstname',
 			Value: input.firstname,
