@@ -6,7 +6,7 @@ let auth = require('./auth');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
-const SESSION_KEY = "X-Friendsdrinks-Session-Id";
+const SESSION_KEY = "friendsdrinks-session-id";
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
