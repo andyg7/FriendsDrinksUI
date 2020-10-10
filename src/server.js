@@ -45,7 +45,7 @@ function createServer(userManagement, backendConfig) {
             let options = {
               host: backendHostname,
               port: backendPort,
-              path: "/v1/users/" + userId
+              path: "/v1/users/homepage/" + userId
             };
 
             let backendReq = http.get(options, function(backendRes) {
