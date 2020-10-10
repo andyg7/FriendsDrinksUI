@@ -50,8 +50,7 @@ class UserManagement {
 				if (err) {
 					reject(err);
 				} else {
-				    console.log("Data: ", data)
-					resolve(new auth.User(data.user.username, null, null));
+					resolve('Success');
 				}
 			});
 		});
@@ -78,7 +77,7 @@ class UserManagement {
 					console.log("result from logging in: ", result);
 					let sessionId = sessionManager.storeSession(result);
 					let payload = result.getIdToken().decodePayload();
-					let user = new auth.User(payload['email'], payload['custom:firstname'], payload['custom:lastname']);
+					let user = new auth.User(payload['sub'], payload['email'], payload['custom:firstname'], payload['custom:lastname']);
 					let loggedInUser = new auth.LoggedInUser(user, sessionId);
 					resolve(loggedInUser);
 				},
@@ -92,7 +91,7 @@ class UserManagement {
 	logout(loggedInUser) {
 		this.sessionManager.deleteSession(loggedInUser.getSessionId());
 		let userData = {
-			Username: loggedInUser.getUser().getUsername(),
+			Username: loggedInUser.getUser().getEmail(),
 			Pool: this.userPool,
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
@@ -107,7 +106,7 @@ class UserManagement {
 		}
 		console.log("Returned email: " + tokens.getIdToken().decodePayload()['email']);
 		let payload = tokens.getIdToken().decodePayload();
-   	    let user = new auth.User(payload['email'], payload['custom:firstname'], payload['custom:lastname']);
+   	    let user = new auth.User(payload['sub'], payload['email'], payload['custom:firstname'], payload['custom:lastname']);
     	return new auth.LoggedInUser(user, sessionId);
 	}
 
