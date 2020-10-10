@@ -20,7 +20,7 @@ class UserManagement {
 		this.sessionManager = new SessionManager();
 	}
 
-	signup(input) {
+	signUp(input) {
 		let attributeList = [];
 
 		let dataEmail = {
@@ -50,7 +50,8 @@ class UserManagement {
 				if (err) {
 					reject(err);
 				} else {
-					resolve(new auth.User(data.user.username));
+				    console.log("Data: ", data)
+					resolve(new auth.User(data.user.username, null, null));
 				}
 			});
 		});

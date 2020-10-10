@@ -436,7 +436,7 @@ function createServer(userManagement, backendConfig) {
                firstname: firstname,
                lastname: lastname
             }
-            userManagement.signup(input).then(function (user) {
+            userManagement.signUp(input).then(function (user) {
                 res.render('signup_complete', {username: user.username});
             }).catch(function (err) {
                 console.log(err);
@@ -465,7 +465,6 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             userManagement.login(email, password).then(function (data) {
-                console.log("User logged in ", data)
                 let sessionId = data.sessionId;
                 console.log("Setting session id in cookie to ", sessionId);
                 let input =  {
@@ -507,8 +506,6 @@ function createServer(userManagement, backendConfig) {
             }
             if (input.eventType === "LOGGED_IN") {
                 postObj.loggedInEvent = input.loggedInEvent
-            } else if (input.eventType === "SIGNED_UP") {
-                postObj.signedUpEvent = input.signedUpEvent
             }
             let path = "/v1/users/" + input.email
             const postData = JSON.stringify(postObj)
@@ -577,6 +574,21 @@ function createServer(userManagement, backendConfig) {
             }
             let loggedInUser = new auth.LoggedInUser(new auth.User(username), sessionId);
             userManagement.logout(loggedInUser);
+
+            input = {
+               eventType: 'LOGGED_OUT'
+            }
+            reportUserEvent(input).then(function (data) {
+                res.cookie(SESSION_KEY, sessionId, {
+                    path: '/'
+                });
+                res.redirect('/');
+                return;
+            }).catch (function (err) {
+               res.status(500)
+               res.send(INTERNAL_ERROR_MESSAGE);
+               return;
+            })
             res.cookie(SESSION_KEY, "", {
                 path: '/',
                 expires: new Date(1)
