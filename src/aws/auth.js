@@ -77,7 +77,7 @@ class UserManagement {
 					console.log("result from logging in: ", result);
 					let sessionId = sessionManager.storeSession(result);
 					let payload = result.getIdToken().decodePayload();
-					let user = new auth.User(payload['email']);
+					let user = new auth.User(payload['email'], payload['custom:firstname'], payload['custom:lastname']);
 					let loggedInUser = new auth.LoggedInUser(user, sessionId);
 					resolve(loggedInUser);
 				},

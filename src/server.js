@@ -186,7 +186,7 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             let postObj = {
-              eventType: 'REMOVE_USER',
+              requestType: 'REMOVE_USER',
               removeUserRequest: {
                  userId: username
               }
@@ -223,7 +223,7 @@ function createServer(userManagement, backendConfig) {
                 return
             }
             let postObj = {
-              eventType: 'ADD_USER',
+              requestType: 'ADD_USER',
               addUserRequest: {
                  userId: req.body.userId
               }
@@ -263,7 +263,7 @@ function createServer(userManagement, backendConfig) {
                 return
             }
             let postObj = {
-              eventType: 'REPLY_TO_INVITATION',
+              requestType: 'REPLY_TO_INVITATION',
               replyToInvitationRequest: {
                  response: req.body.invitationReply
               }
@@ -465,13 +465,27 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             userManagement.login(email, password).then(function (data) {
+                console.log("User logged in ", data)
                 let sessionId = data.sessionId;
                 console.log("Setting session id in cookie to ", sessionId);
-                res.cookie(SESSION_KEY, sessionId, {
-                    path: '/'
-                });
-                res.redirect('/');
-                return;
+                let input =  {
+                   eventType: 'LOGGED_IN',
+                   loggedInEvent: {
+                      firstName: data.user.firstName,
+                      lastName: data.user.lastName
+                   }
+                }
+                reportUserEvent(input).then(function (data) {
+                    res.cookie(SESSION_KEY, sessionId, {
+                        path: '/'
+                    });
+                    res.redirect('/');
+                    return;
+                }).catch (function (err) {
+                   res.status(500)
+                   res.send(INTERNAL_ERROR_MESSAGE);
+                   return;
+                })
             }).catch(function (err) {
                 console.log(err);
                 if (err.code === 'NotAuthorizedException') {
@@ -485,6 +499,65 @@ function createServer(userManagement, backendConfig) {
                 }
             });
         })
+
+        function reportUserEvent(input) {
+            console.log("input", input.loggedInEvent)
+            let postObj = {
+              eventType: input.eventType
+            }
+            if (input.eventType === "LOGGED_IN") {
+                postObj.loggedInEvent = input.loggedInEvent
+            } else if (input.eventType === "SIGNED_UP") {
+                postObj.signedUpEvent = input.signedUpEvent
+            }
+            let path = "/v1/users/" + input.email
+            const postData = JSON.stringify(postObj)
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: path,
+              method: 'POST',
+              headers: {
+                  'Content-Length': Buffer.byteLength(postData),
+                  'Content-Type': 'application/json'
+              }
+            };
+
+            return new Promise(function (resolve, reject) {
+                let backendReq = http.request(options, function(backendRes) {
+                  console.log('STATUS: ' + backendRes.statusCode);
+                  console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                  if (backendRes.statusCode !== 200) {
+                     backendRes.resume();
+                     reject(new Error("Did not get a 200 back. Instead got " + backendReq.statusCode));
+                     return;
+                  } else {
+                      let bodyChunks = [];
+                      backendRes.on('data', (chunk) => {
+                        bodyChunks.push(chunk)
+                      });
+                      backendRes.on('end', () => {
+                        let body = Buffer.concat(bodyChunks);
+                        console.log('BODY: ' + body);
+                        const obj = JSON.parse(body);
+                        console.log('Result ', obj.result);
+                        console.log('No more data in response - redirecting to /');
+                        resolve("Success")
+                      });
+                  }
+                });
+
+                backendReq.on('error', function(e) {
+                  console.log('ERROR: ' + e.message);
+                  reject(e)
+                  return;
+                });
+
+                console.log("Sending request", postData)
+                backendReq.write(postData);
+                backendReq.end();
+            })
+        }
 
         app.get('/logout', function (req, res) {
             res.render('logout');
