@@ -346,7 +346,7 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             let userId = user.userId
-            let path = "/v1/users/" + userId + "/adminfriendsdrinks"
+            let path = "/v1/users/" + userId + "/friendsdrinks"
             let postObj = {
               name: req.body.name
             }
