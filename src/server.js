@@ -39,6 +39,9 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             let userId = user.userId
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
             let options = {
               host: backendHostname,
               port: backendPort,
@@ -130,6 +133,9 @@ function createServer(userManagement, backendConfig) {
             return;
           }
           let userId = user.userId
+          if (!userId) {
+             throw new Error("userId should never be undefined or null")
+          }
           path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id;
           options = {
              host: backendHostname,
@@ -188,6 +194,9 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             let userId = user.userId
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
             let postObj = {
               requestType: 'REMOVE_USER',
               removeUserRequest: {
@@ -226,6 +235,9 @@ function createServer(userManagement, backendConfig) {
                 return
             }
             let userId = user.email
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
             let postObj = {
               requestType: 'ADD_USER',
               addUserRequest: {
@@ -267,6 +279,9 @@ function createServer(userManagement, backendConfig) {
                 return
             }
             let userId = user.userId
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
             let postObj = {
               requestType: 'REPLY_TO_INVITATION',
               replyToInvitationRequest: {
@@ -308,6 +323,9 @@ function createServer(userManagement, backendConfig) {
                 return;
             }
             let userId = user.userId
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
             let postObj = {
               name: req.body.name
             }
@@ -345,7 +363,11 @@ function createServer(userManagement, backendConfig) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
+            console.log("logged in user", user)
             let userId = user.userId
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
             let path = "/v1/users/" + userId + "/friendsdrinks"
             let postObj = {
               name: req.body.name
