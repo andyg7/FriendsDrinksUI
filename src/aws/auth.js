@@ -20,21 +20,33 @@ class UserManagement {
 		this.sessionManager = new SessionManager();
 	}
 
-	signup(email, password) {
+	signup(input) {
 		let attributeList = [];
 
 		let dataEmail = {
 			Name: 'email',
-			Value: email,
+			Value: input.email,
 		};
-
 		let attributeEmail = new amazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-
 		attributeList.push(attributeEmail);
+
+		let dataFirstName = {
+			Name: 'custom:firstname',
+			Value: input.firstname,
+		};
+		let attributeFirstName = new amazonCognitoIdentity.CognitoUserAttribute(dataFirstName);
+		attributeList.push(attributeFirstName);
+
+		let dataLastName = {
+			Name: 'custom:lastname',
+			Value: input.lastname,
+		};
+		let attributeLastName = new amazonCognitoIdentity.CognitoUserAttribute(dataLastName);
+		attributeList.push(attributeLastName);
 
 		let userPool = this.userPool;
 		return new Promise(function (resolve, reject) {
-			userPool.signUp(email, password, attributeList, null, (err, data) => {
+			userPool.signUp(input.email, input.password, attributeList, null, (err, data) => {
 				if (err) {
 					reject(err);
 				} else {

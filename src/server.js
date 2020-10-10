@@ -128,7 +128,7 @@ function createServer(userManagement, backendConfig) {
             resetHttpResponseCookieAndRedirect(res)
             return;
           }
-          path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id;
+          path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id;
           options = {
              host: backendHostname,
              port: backendPort,
@@ -305,7 +305,7 @@ function createServer(userManagement, backendConfig) {
             let postObj = {
               name: req.body.name
             }
-            let path = "/v1/users/" + username + "/adminfriendsdrinks/" + req.body.id
+            let path = "/v1/users/" + username + "/friendsdrinks/" + req.body.id
 
             const postData = JSON.stringify(postObj)
 
@@ -418,7 +418,25 @@ function createServer(userManagement, backendConfig) {
                 res.send('You need to provide a password');
                 return;
             }
-            userManagement.signup(email, password).then(function (user) {
+            let firstname = req.body.firstname;
+            if (!firstname) {
+                res.statusCode = 400;
+                res.send('You need to provide a first name');
+                return;
+            }
+            let lastname = req.body.lastname;
+            if (!lastname) {
+                res.statusCode = 400;
+                res.send('You need to provide a first name');
+                return;
+            }
+            input = {
+               email: email,
+               password: password,
+               firstname: firstname,
+               lastname: lastname
+            }
+            userManagement.signup(input).then(function (user) {
                 res.render('signup_complete', {username: user.username});
             }).catch(function (err) {
                 console.log(err);
