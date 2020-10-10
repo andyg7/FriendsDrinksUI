@@ -33,12 +33,11 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login');
                 return;
             }
-            let loggedInUser = userManagement.getLoggedInUser(sessionId)
-            if (loggedInUser === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
-            let user = loggedInUser.user
             let userId = user.userId
             let options = {
               host: backendHostname,
@@ -125,12 +124,11 @@ function createServer(userManagement, backendConfig) {
             res.redirect('/login')
             return;
           }
-          let loggedInUser = userManagement.getLoggedInUser(sessionId)
-          if (loggedInUser === null) {
-              resetHttpResponseCookieAndRedirect(res)
-              return;
+          let user = userManagement.getLoggedInUser(sessionId);
+          if (user === null) {
+            resetHttpResponseCookieAndRedirect(res)
+            return;
           }
-          let user = loggedInUser.user
           let userId = user.userId
           path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id;
           options = {
@@ -184,12 +182,11 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            let loggedInUser = userManagement.getLoggedInUser(sessionId)
-            if (loggedInUser === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
-            let user = loggedInUser.user
             let userId = user.userId
             let postObj = {
               requestType: 'REMOVE_USER',
@@ -223,19 +220,18 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            let loggedInUser = userManagement.getLoggedInUser(sessionId)
-            if (loggedInUser === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
-                return;
+                return
             }
-            let user = loggedInUser.user
+            let userId = user.email
             let postObj = {
               requestType: 'ADD_USER',
               addUserRequest: {
                  userId: req.body.userId
               }
             }
-            let userId = user.userId
             let path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id + "/membership"
 
             const postData = JSON.stringify(postObj)
@@ -265,12 +261,11 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            let loggedInUser = userManagement.getLoggedInUser(sessionId);
-            if (loggedInUser === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return
             }
-            let user = loggedInUser.user
             let userId = user.userId
             let postObj = {
               requestType: 'REPLY_TO_INVITATION',
@@ -307,12 +302,11 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            let loggedInUser = userManagement.getLoggedInUser(sessionId);
-            if (loggedInUser === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
-            let user = loggedInUser.user
             let userId = user.userId
             let postObj = {
               name: req.body.name
@@ -346,19 +340,16 @@ function createServer(userManagement, backendConfig) {
                 res.redirect('/login')
                 return;
              }
-            let loggedInUser = userManagement.getLoggedInUser(sessionId)
-            if (loggedInUser === null) {
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
-            let user = loggedInUser.user
             let userId = user.userId
-            let path = "/v1/users/" + userId + "/friendsdrinks"
+            let path = "/v1/users/" + userId + "/adminfriendsdrinks"
             let postObj = {
               name: req.body.name
             }
-            console.log("postobj", postObj)
-            console.log("user id", userId)
             const postData = JSON.stringify(postObj)
             let options = {
               host: backendHostname,
