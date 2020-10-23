@@ -190,7 +190,7 @@ function createServer(userManagement, backendConfig) {
 
         })
 
-        app.post('/friendsdrinks/delete', function (req, res) {
+        app.post('/friendsdrinks/delete/:friendsDrinksId', function (req, res) {
           let sessionId = req.cookies[SESSION_KEY];
           if (!sessionId) {
             res.redirect('/login')
@@ -205,8 +205,8 @@ function createServer(userManagement, backendConfig) {
           if (!userId) {
              throw new Error("userId should never be undefined or null")
           }
-          path = "/v1/friendsdrinkses/" + req.body.id;
-
+          let friendsDrinksId = req.params.friendsDrinksId,
+          path = "/v1/friendsdrinkses/" + friendsDrinksId
           options = {
              host: backendHostname,
              port: backendPort,
@@ -775,47 +775,6 @@ function createServer(userManagement, backendConfig) {
                 expires: new Date(1)
             });
             res.redirect('/login')
-        }
-
-        function getBackendUserInfo(userId) {
-            let options = {
-              host: backendHostname,
-              port: backendPort,
-              path: "/v1/users/" + userId
-            }
-            return new Promise(function (resolve, reject) {
-                let backendReq = http.get(options, function (backendRes) {
-                  console.log('STATUS: ' + backendRes.statusCode);
-                  console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-                  if (backendRes.statusCode !== 200) {
-                     backendRes.resume();
-                     res.status(500);
-                     res.send(INTERNAL_ERROR_MESSAGE);
-                     reject(new error("Did not get a 200 back. instead got " + backendreq.statuscode));
-                  }
-
-                  let bodyChunks = [];
-                  backendRes.on('data', function(chunk) {
-                    bodyChunks.push(chunk);
-                  }).on('end', function() {
-                    let body = Buffer.concat(bodyChunks);
-                    console.log('BODY: ' + body);
-                    let obj = JSON.parse(body);
-
-                    resolve({
-                        userId: obj.userId
-                    })
-                  })
-
-               })
-
-                backendReq.on('error', function(e) {
-                  console.log('ERROR: ' + e.message);
-                  res.status(500);
-                  res.send(INTERNAL_ERROR_MESSAGE);
-                  reject(e)
-                });
-            })
         }
 
         return app

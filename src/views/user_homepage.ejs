@@ -42,22 +42,13 @@
 
 <section>
 
-    <form action = "/friendsdrinks/delete" method = "POST">
-        <div>
-            <label>ID</label>
-            <input type = "text" name = "id" required="required"> <br>
-        </div>
-        <input type = "submit" value = "Delete!">
-    </form>
-
     <table>
         <tr>
-            <th>Friends ID invitations</th>
+            <th>FriendsDrinks invitations!</th>
         </tr>
         <% for (var i = 0; i < invitations.length; i++) { %>
         <tr>
             <td><%= invitations[i].message %></td>
-            <td><%= invitations[i].adminUserId %></td>
             <td><%= invitations[i].friendsDrinksUuid %></td>
         </tr>
         <% } %>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FriendsDrinks Invitations</title>
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<header>
+    <a href="/">Home</a>
+</header>
+
+<section>
+<form action = "/friendsdrinks/replyToInvitation" method = "POST">
+    <div>
+        <label>ID</label>
+        <input type = "text" name = "id" required="required"> <br>
+    </div>
+    <div>
+        <label>Reply</label>
+        <input type = "text" name = "invitationReply" required="required"> <br>
+    </div>
+    <input type = "submit" value = "Reply to invitation">
+</form>
+
+</section>
+
+</body>
+</html>
