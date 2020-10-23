@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FriendsDrinks Homepage</title>
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<header>
+    <h1>Welcome <%= firstName %>! FriendsDrinks lets you schedule drinks with your friends!</h1>
+    <nav>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<section>
+    <h2>Your FriendsDrinks!</h2>
+    <ul>
+        <% for (let i = 0; i < friendsDrinks.length; i++) {
+           let name = null;
+           if (friendsDrinks[i].type === "ADMIN") {
+              name = friendsDrinks[i].name + " (admin)"
+           } else {
+              name = friendsDrinks[i].name
+           }
+        %>
+        <li><a href="friendsdrinks_detail_page.html"><%= name %></a></li>
+        <% } %>
+    </ul>
+</section>
+
+<section>
+    <h2>Create a new FriendsDrinks!</h2>
+    <form action = "/friendsdrinks/create" method = "POST">
+        <div>
+            <label>Name</label>
+            <input type = "text" name = "name" required="required" > <br>
+        </div>
+        <input type = "submit" value = "Create!">
+    </form>
+</section>
+
+<section>
+    <form action = "/friendsdrinks/addUser" method = "POST">
+        <div>
+            <label>ID</label>
+            <input type = "text" name = "id" required="required"> <br>
+        </div>
+        <div>
+            <label>UserId</label>
+            <input type = "text" name = "userId" required="required"> <br>
+        </div>
+        <input type = "submit" value = "Add friend!">
+    </form>
+
+
+    <form action = "/friendsdrinks/delete" method = "POST">
+        <div>
+            <label>ID</label>
+            <input type = "text" name = "id" required="required"> <br>
+        </div>
+        <input type = "submit" value = "Delete!">
+    </form>
+
+    <table>
+        <tr>
+            <th>Friends ID invitations</th>
+        </tr>
+        <% for (var i = 0; i < invitations.length; i++) { %>
+        <tr>
+            <td><%= invitations[i].message %></td>
+            <td><%= invitations[i].adminUserId %></td>
+            <td><%= invitations[i].friendsDrinksUuid %></td>
+        </tr>
+        <% } %>
+    </table>
+
+
+    <form action = "/friendsdrinks/replyToInvitation" method = "POST">
+        <div>
+            <label>ID</label>
+            <input type = "text" name = "id" required="required"> <br>
+        </div>
+        <div>
+            <label>Reply</label>
+            <input type = "text" name = "invitationReply" required="required"> <br>
+        </div>
+        <input type = "submit" value = "Reply to invitation">
+    </form>
+
+</section>
+</body>
+</html>

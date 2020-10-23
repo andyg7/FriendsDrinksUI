@@ -82,9 +82,9 @@ class UserManagement {
 	}
 
 	logout(loggedInUser) {
-		this.sessionManager.deleteSession(loggedInUser.getSessionId());
+		this.sessionManager.deleteSession(loggedInUser.sessionId);
 		let userData = {
-			Username: loggedInUser.getUser().getEmail(),
+			Username: loggedInUser.user.email,
 			Pool: this.userPool,
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);

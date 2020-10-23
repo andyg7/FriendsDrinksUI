@@ -45,8 +45,9 @@ function createServer(userManagement, backendConfig) {
             let options = {
               host: backendHostname,
               port: backendPort,
-              path: "/v1/users/homepage/" + userId
+              path: "/v1/userhomepages/" + userId
             };
+            console.log("options ", options)
 
             let backendReq = http.get(options, function(backendRes) {
               console.log('STATUS: ' + backendRes.statusCode);
@@ -66,25 +67,28 @@ function createServer(userManagement, backendConfig) {
                 console.log('BODY: ' + body);
                 const obj = JSON.parse(body);
 
-                adminFriendsDrinks = []
+                friendsDrinks = []
                 // http.get(...) on batch of IDs
-                if (obj.adminFriendsDrinksIds && obj.adminFriendsDrinksIds.length > 0) {
-                    obj.adminFriendsDrinksIds.forEach(function (item, index) {
-                        adminFriendsDrinks.push(
+                if (obj.adminFriendsDrinksList && obj.adminFriendsDrinksList.length > 0) {
+                    obj.adminFriendsDrinksList.forEach(function (item, index) {
+                        friendsDrinks.push(
                            {
-                              id: item
+                              id: item.friendsDrinksId,
+                              name: item.name,
+                              type: "ADMIN"
                            }
                         )
                     });
                 }
 
-                memberFriendsDrinks = []
                 // http.get(...) on batch of IDs
-                if (obj.memberFriendsDrinksIds && obj.memberFriendsDrinksIds.length > 0) {
-                    obj.memberFriendsDrinksIds.forEach(function (item, index) {
-                        memberFriendsDrinks.push(
+                if (obj.memberFriendsDrinksList && obj.memberFriendsDrinksList.length > 0) {
+                    obj.memberFriendsDrinksList.forEach(function (item, index) {
+                        friendsDrinks.push(
                            {
-                              id: item
+                              id: item.friendsDrinksId,
+                              name: item.name,
+                              type: "MEMBER"
                            }
                         )
                     });
@@ -102,10 +106,9 @@ function createServer(userManagement, backendConfig) {
                     });
                 }
 
-                res.render('index', {
-                    email: user.email,
-                    adminFriendsDrinks: adminFriendsDrinks,
-                    memberFriendsDrinks: memberFriendsDrinks,
+                res.render('home', {
+                    firstName: user.firstName,
+                    friendsDrinks: friendsDrinks,
                     invitations: invitations
                 });
               })
@@ -118,7 +121,47 @@ function createServer(userManagement, backendConfig) {
               return;
             });
 
+        })
 
+        app.get("/friendsdrinks/:friendsDrinksId", function (req, res) {
+           let friendsDrinksId = req.params.friendsDrinksId;
+           let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: "/v1/friendsdrinks/" + friendsDrinksId
+           }
+           let backendReq = http.get(options, function(backendRes) {
+              console.log('STATUS: ' + backendRes.statusCode);
+              console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+              if (backendRes.statusCode !== 200) {
+                 backendRes.resume();
+                 res.status(500);
+                 res.send(INTERNAL_ERROR_MESSAGE);
+                 return;
+              }
+
+              let bodyChunks = []
+              backendRes.on('data', function(chunk) {
+                bodyChunks.push(chunk)
+              }).on('end', function() {
+                let body = Buffer.concat(bodyChunks);
+                console.log('BODY: ' + body);
+                const obj = JSON.parse(body);
+
+                res.render('friendsdrinks', {
+                   adminUserId: "hello",
+                   members: memberFriendsDrinks
+                });
+              })
+
+           })
+
+           backendReq.on('error', function(e) {
+             console.log('ERROR: ' + e.message);
+             res.status(500);
+             res.send(INTERNAL_ERROR_MESSAGE);
+             return;
+           });
         })
 
         app.post('/friendsdrinks/delete', function (req, res) {
@@ -136,7 +179,8 @@ function createServer(userManagement, backendConfig) {
           if (!userId) {
              throw new Error("userId should never be undefined or null")
           }
-          path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id;
+          path = "/v1/friendsdrinks/" + req.body.id;
+
           options = {
              host: backendHostname,
              port: backendPort,
@@ -199,11 +243,13 @@ function createServer(userManagement, backendConfig) {
             }
             let postObj = {
               requestType: 'REMOVE_USER',
+              userId: userId,
+              friendsDrinksId: req.body.id,
               removeUserRequest: {
                  userId: userId
               }
             }
-            let path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id + "/membership"
+            let path = "/v1/friendsdrinksmemberships"
             const postData = JSON.stringify(postObj)
             let options = {
               host: backendHostname,
@@ -234,17 +280,19 @@ function createServer(userManagement, backendConfig) {
                 resetHttpResponseCookieAndRedirect(res)
                 return
             }
-            let userId = user.email
+            let userId = user.userId
             if (!userId) {
                throw new Error("userId should never be undefined or null")
             }
             let postObj = {
+              userId: userId,
+              friendsDrinksId: req.body.id,
               requestType: 'ADD_USER',
               addUserRequest: {
                  userId: req.body.userId
               }
             }
-            let path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id + "/membership"
+            let path = "/v1/friendsdrinksmemberships"
 
             const postData = JSON.stringify(postObj)
 
@@ -283,12 +331,14 @@ function createServer(userManagement, backendConfig) {
                throw new Error("userId should never be undefined or null")
             }
             let postObj = {
+              userId: userId,
+              friendsDrinksId: req.body.id,
               requestType: 'REPLY_TO_INVITATION',
               replyToInvitationRequest: {
                  response: req.body.invitationReply
               }
             }
-            let path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id + "/membership"
+            let path = "/v1/friendsdrinksmemberships"
 
             const postData = JSON.stringify(postObj)
 
@@ -303,6 +353,47 @@ function createServer(userManagement, backendConfig) {
               }
             };
 
+            let backendReq = buildHttpRequest(options, res)
+
+            console.log("Sending request", postData, " to ", path)
+            backendReq.write(postData);
+            backendReq.end();
+            return;
+        })
+
+
+        app.post('/friendsdrinks/create', function (req, res) {
+            const sessionId = req.cookies[SESSION_KEY];
+            if (!sessionId) {
+                res.redirect('/login')
+                return;
+             }
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
+                resetHttpResponseCookieAndRedirect(res)
+                return;
+            }
+            console.log("logged in user", user)
+            let userId = user.userId
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
+            let path = "/v1/friendsdrinks/"
+            let postObj = {
+              adminUserId: userId,
+              name: req.body.name
+            }
+            const postData = JSON.stringify(postObj)
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: path,
+              method: 'POST',
+              headers: {
+                  'Content-Length': Buffer.byteLength(postData),
+                  'Content-Type': 'application/json'
+              }
+            };
             let backendReq = buildHttpRequest(options, res)
 
             console.log("Sending request", postData)
@@ -327,9 +418,10 @@ function createServer(userManagement, backendConfig) {
                throw new Error("userId should never be undefined or null")
             }
             let postObj = {
+              adminUserId: userId,
               name: req.body.name
             }
-            let path = "/v1/users/" + userId + "/friendsdrinks/" + req.body.id
+            let path = "/v1/friendsdrinks/" + req.body.id
 
             const postData = JSON.stringify(postObj)
 
@@ -344,45 +436,6 @@ function createServer(userManagement, backendConfig) {
               }
             };
 
-            let backendReq = buildHttpRequest(options, res)
-
-            console.log("Sending request", postData)
-            backendReq.write(postData);
-            backendReq.end();
-            return;
-        })
-
-        app.post('/friendsdrinks/create', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
-                res.redirect('/login')
-                return;
-             }
-            let user = userManagement.getLoggedInUser(sessionId);
-            if (user === null) {
-                resetHttpResponseCookieAndRedirect(res)
-                return;
-            }
-            console.log("logged in user", user)
-            let userId = user.userId
-            if (!userId) {
-               throw new Error("userId should never be undefined or null")
-            }
-            let path = "/v1/users/" + userId + "/friendsdrinks"
-            let postObj = {
-              name: req.body.name
-            }
-            const postData = JSON.stringify(postObj)
-            let options = {
-              host: backendHostname,
-              port: backendPort,
-              path: path,
-              method: 'POST',
-              headers: {
-                  'Content-Length': Buffer.byteLength(postData),
-                  'Content-Type': 'application/json'
-              }
-            };
             let backendReq = buildHttpRequest(options, res)
 
             console.log("Sending request", postData)
@@ -601,7 +654,7 @@ function createServer(userManagement, backendConfig) {
                 resetHttpResponseCookieAndRedirect(res)
                 return;
             }
-            userManagement.logout(user);
+            userManagement.logout(new auth.LoggedInUser(user, sessionId));
 
             input = {
                userId: user.userId,
