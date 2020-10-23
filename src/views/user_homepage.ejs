@@ -22,8 +22,9 @@
            } else {
               name = friendsDrinks[i].name
            }
+           let friendsDrinksId = friendsDrinks[i].id
         %>
-        <li><a href="friendsdrinks_detail_page.html"><%= name %></a></li>
+        <li><a href="/friendsdrinksdetailpages/<%= friendsDrinksId %>"> <%= name %></a></li>
         <% } %>
     </ul>
 </section>
@@ -40,18 +41,6 @@
 </section>
 
 <section>
-    <form action = "/friendsdrinks/addUser" method = "POST">
-        <div>
-            <label>ID</label>
-            <input type = "text" name = "id" required="required"> <br>
-        </div>
-        <div>
-            <label>UserId</label>
-            <input type = "text" name = "userId" required="required"> <br>
-        </div>
-        <input type = "submit" value = "Add friend!">
-    </form>
-
 
     <form action = "/friendsdrinks/delete" method = "POST">
         <div>
