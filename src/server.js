@@ -28,7 +28,7 @@ function createServer(userManagement, backendConfig) {
         let backendPort = backendConfig.port
 
         app.get('/friendsdrinksdetailpages/:friendsDrinksId', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login');
                 return;
@@ -66,9 +66,8 @@ function createServer(userManagement, backendConfig) {
               }).on('end', function() {
                 let body = Buffer.concat(bodyChunks);
                 console.log('BODY: ' + body);
-                const obj = JSON.parse(body);
+                let obj = JSON.parse(body);
                 members = []
-                // http.get(...) on batch of IDs
                 if (obj.members && obj.members.length > 0) {
                     obj.members.forEach(function (item, index) {
                         members.push(
@@ -99,7 +98,7 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.get('/', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login');
                 return;
@@ -135,10 +134,9 @@ function createServer(userManagement, backendConfig) {
               }).on('end', function() {
                 let body = Buffer.concat(bodyChunks);
                 console.log('BODY: ' + body);
-                const obj = JSON.parse(body);
+                let obj = JSON.parse(body);
 
                 friendsDrinks = []
-                // http.get(...) on batch of IDs
                 if (obj.adminFriendsDrinksList && obj.adminFriendsDrinksList.length > 0) {
                     obj.adminFriendsDrinksList.forEach(function (item, index) {
                         friendsDrinks.push(
@@ -151,7 +149,6 @@ function createServer(userManagement, backendConfig) {
                     });
                 }
 
-                // http.get(...) on batch of IDs
                 if (obj.memberFriendsDrinksList && obj.memberFriendsDrinksList.length > 0) {
                     obj.memberFriendsDrinksList.forEach(function (item, index) {
                         friendsDrinks.push(
@@ -194,7 +191,7 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/delete', function (req, res) {
-          const sessionId = req.cookies[SESSION_KEY];
+          let sessionId = req.cookies[SESSION_KEY];
           if (!sessionId) {
             res.redirect('/login')
             return;
@@ -208,7 +205,7 @@ function createServer(userManagement, backendConfig) {
           if (!userId) {
              throw new Error("userId should never be undefined or null")
           }
-          path = "/v1/friendsdrinks/" + req.body.id;
+          path = "/v1/friendsdrinkses/" + req.body.id;
 
           options = {
              host: backendHostname,
@@ -233,7 +230,7 @@ function createServer(userManagement, backendConfig) {
               backendRes.on('end', () => {
                 let body = Buffer.concat(bodyChunks);
                 console.log('BODY: ' + body);
-                const obj = JSON.parse(body);
+                let obj = JSON.parse(body);
                 console.log('Result ', obj.result);
 
                 console.log('No more data in response - redirecting to /');
@@ -256,7 +253,7 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/removeUser', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login')
                 return;
@@ -279,7 +276,7 @@ function createServer(userManagement, backendConfig) {
               }
             }
             let path = "/v1/friendsdrinksmemberships"
-            const postData = JSON.stringify(postObj)
+            let postData = JSON.stringify(postObj)
             let options = {
               host: backendHostname,
               port: backendPort,
@@ -299,7 +296,7 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/inviteUser/:friendsDrinksId', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login')
                 return;
@@ -313,6 +310,9 @@ function createServer(userManagement, backendConfig) {
             if (!userId) {
                throw new Error("userId should never be undefined or null")
             }
+
+            getBackendUserInfo(req.body.userEmail)
+
             let postObj = {
               userId: userId,
               friendsDrinksId: req.params.friendsDrinksId,
@@ -323,7 +323,7 @@ function createServer(userManagement, backendConfig) {
             }
             let path = "/v1/friendsdrinksmemberships"
 
-            const postData = JSON.stringify(postObj)
+            let postData = JSON.stringify(postObj)
 
             let options = {
               host: backendHostname,
@@ -345,7 +345,7 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/replyToInvitation', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login')
                 return;
@@ -369,7 +369,7 @@ function createServer(userManagement, backendConfig) {
             }
             let path = "/v1/friendsdrinksmemberships"
 
-            const postData = JSON.stringify(postObj)
+            let postData = JSON.stringify(postObj)
 
             let options = {
               host: backendHostname,
@@ -392,7 +392,7 @@ function createServer(userManagement, backendConfig) {
 
 
         app.post('/friendsdrinks/create', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login')
                 return;
@@ -407,12 +407,12 @@ function createServer(userManagement, backendConfig) {
             if (!userId) {
                throw new Error("userId should never be undefined or null")
             }
-            let path = "/v1/friendsdrinks/"
+            let path = "/v1/friendsdrinkses/"
             let postObj = {
               adminUserId: userId,
               name: req.body.name
             }
-            const postData = JSON.stringify(postObj)
+            let postData = JSON.stringify(postObj)
             let options = {
               host: backendHostname,
               port: backendPort,
@@ -432,7 +432,7 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/update', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login')
                 return;
@@ -450,9 +450,9 @@ function createServer(userManagement, backendConfig) {
               adminUserId: userId,
               name: req.body.name
             }
-            let path = "/v1/friendsdrinks/" + req.body.id
+            let path = "/v1/friendsdrinkses/" + req.body.id
 
-            const postData = JSON.stringify(postObj)
+            let postData = JSON.stringify(postObj)
 
             let options = {
               host: backendHostname,
@@ -490,7 +490,7 @@ function createServer(userManagement, backendConfig) {
                   backendRes.on('end', () => {
                     let body = Buffer.concat(bodyChunks);
                     console.log('BODY: ' + body);
-                    const obj = JSON.parse(body);
+                    let obj = JSON.parse(body);
                     console.log('Result ', obj.result);
 
                     console.log('No more data in response - redirecting to /');
@@ -612,7 +612,6 @@ function createServer(userManagement, backendConfig) {
         })
 
         function reportUserEvent(input) {
-            console.log("input", input)
             let postObj = {
               eventType: input.eventType
             }
@@ -620,7 +619,7 @@ function createServer(userManagement, backendConfig) {
                 postObj.loggedInEvent = input.loggedInEvent
             }
             let path = "/v1/users/" + input.userId
-            const postData = JSON.stringify(postObj)
+            let postData = JSON.stringify(postObj)
             let options = {
               host: backendHostname,
               port: backendPort,
@@ -638,8 +637,7 @@ function createServer(userManagement, backendConfig) {
                   console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
                   if (backendRes.statusCode !== 200) {
                      backendRes.resume();
-                     reject(new Error("Did not get a 200 back. Instead got " + backendReq.statusCode));
-                     return;
+                     reject(new error("Did not get a 200 back. instead got " + backendreq.statuscode));
                   } else {
                       let bodyChunks = [];
                       backendRes.on('data', (chunk) => {
@@ -648,7 +646,7 @@ function createServer(userManagement, backendConfig) {
                       backendRes.on('end', () => {
                         let body = Buffer.concat(bodyChunks);
                         console.log('BODY: ' + body);
-                        const obj = JSON.parse(body);
+                        let obj = JSON.parse(body);
                         console.log('Result ', obj.result);
                         console.log('No more data in response - redirecting to /');
                         resolve("Success")
@@ -673,7 +671,7 @@ function createServer(userManagement, backendConfig) {
         });
 
         app.post('/logout', function (req, res) {
-            const sessionId = req.cookies[SESSION_KEY];
+            let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login');
                 return;
@@ -777,6 +775,47 @@ function createServer(userManagement, backendConfig) {
                 expires: new Date(1)
             });
             res.redirect('/login')
+        }
+
+        function getBackendUserInfo(userId) {
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: "/v1/users/" + userId
+            }
+            return new Promise(function (resolve, reject) {
+                let backendReq = http.get(options, function (backendRes) {
+                  console.log('STATUS: ' + backendRes.statusCode);
+                  console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                  if (backendRes.statusCode !== 200) {
+                     backendRes.resume();
+                     res.status(500);
+                     res.send(INTERNAL_ERROR_MESSAGE);
+                     reject(new error("Did not get a 200 back. instead got " + backendreq.statuscode));
+                  }
+
+                  let bodyChunks = [];
+                  backendRes.on('data', function(chunk) {
+                    bodyChunks.push(chunk);
+                  }).on('end', function() {
+                    let body = Buffer.concat(bodyChunks);
+                    console.log('BODY: ' + body);
+                    let obj = JSON.parse(body);
+
+                    resolve({
+                        userId: obj.userId
+                    })
+                  })
+
+               })
+
+                backendReq.on('error', function(e) {
+                  console.log('ERROR: ' + e.message);
+                  res.status(500);
+                  res.send(INTERNAL_ERROR_MESSAGE);
+                  reject(e)
+                });
+            })
         }
 
         return app
