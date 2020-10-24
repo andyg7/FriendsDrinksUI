@@ -132,13 +132,16 @@ function createServer(userManagement, backendConfig) {
                     obj.members.forEach(function (item, index) {
                         members.push(
                            {
-                              name: item
+                              firstName: item.firstName,
+                              lastName: item.lasttName,
+                              userId: item.userId
                            }
                         )
                     });
                 }
 
                 res.render('friendsdrinks_detail_page', {
+                    userId: userId,
                     firstName: user.firstName,
                     name: obj.name,
                     members: members,

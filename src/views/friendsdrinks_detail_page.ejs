@@ -17,9 +17,12 @@
     <h2>Members</h2>
     <ul>
         <% for (let i = 0; i < members.length; i++) {
-        let name = members[i].name;
+        let displayedName = members[i].firstName + " " + members[i].lastName;
+        if (members[i].userId === userId) {
+        displayedName = displayedName + " (you)"
+        }
         %>
-        <li><%= name %></li>
+        <li><%= displayedName %></li>
         <% } %>
     </ul>
 
