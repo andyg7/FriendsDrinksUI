@@ -7,41 +7,50 @@
 <body>
 <header>
     <h1>Welcome <%= firstName %>! FriendsDrinks lets you schedule drinks with your friends!</h1>
-    <nav>
-        <a href="/logout">Logout</a>
-    </nav>
+    <form action = "/logout" method = "POST">
+        <input type = "submit" value = "Logout">
+    </form>
 </header>
 
 <section>
-    <h2>Your FriendsDrinks!</h2>
-    <ul>
-        <% for (let i = 0; i < friendsDrinks.length; i++) {
-           let name = null;
-           if (friendsDrinks[i].type === "ADMIN") {
-              name = friendsDrinks[i].name + " (admin)"
-           } else {
-              name = friendsDrinks[i].name
-           }
-           let friendsDrinksId = friendsDrinks[i].id
-        %>
-        <li><a href="/friendsdrinksdetailpages/<%= friendsDrinksId %>"> <%= name %></a></li>
-        <% } %>
-    </ul>
-</section>
-
-<section>
-    <h2>Create a new FriendsDrinks!</h2>
+    <% if (friendsDrinks.length == 0) { %>
+    <p>You don't have any FriendsDrinks yet! Create one today!</p>
     <form action = "/friendsdrinks/create" method = "POST">
         <div>
             <label>Name</label>
             <input type = "text" name = "name" required="required" > <br>
         </div>
-        <input type = "submit" value = "Create!">
+        <input type = "submit" value = "Create new FriendsDrinks!">
     </form>
+    <% } else { %>
+    <p>Your FriendsDrinks!</p>
+    <ul>
+        <% for (let i = 0; i < friendsDrinks.length; i++) {
+        let name = null;
+        if (friendsDrinks[i].type === "ADMIN") {
+        name = friendsDrinks[i].name + " (admin)"
+        } else {
+        name = friendsDrinks[i].name
+        }
+        let friendsDrinksId = friendsDrinks[i].id
+        %>
+        <li><a href="/friendsdrinksdetailpages/<%= friendsDrinksId %>"> <%= name %></a></li>
+        <% } %>
+    </ul>
+    <p>Create another FriendsDrinks!</p>
+    <form action = "/friendsdrinks/create" method = "POST">
+        <div>
+            <label>Name</label>
+            <input type = "text" name = "name" required="required" > <br>
+        </div>
+        <input type = "submit" value = "Create new FriendsDrinks!">
+    </form>
+    <% } %>
 </section>
 
-<section>
 
+<% if (invitations.length > 0) { %>
+<section>
     <table>
         <tr>
             <th>FriendsDrinks invitations!</th>
@@ -49,24 +58,13 @@
         <% for (var i = 0; i < invitations.length; i++) { %>
         <tr>
             <td><%= invitations[i].message %></td>
+            <td><%= invitations[i].friendsDrinksName %></td>
             <td><%= invitations[i].friendsDrinksUuid %></td>
         </tr>
         <% } %>
     </table>
-
-
-    <form action = "/friendsdrinks/replyToInvitation" method = "POST">
-        <div>
-            <label>ID</label>
-            <input type = "text" name = "id" required="required"> <br>
-        </div>
-        <div>
-            <label>Reply</label>
-            <input type = "text" name = "invitationReply" required="required"> <br>
-        </div>
-        <input type = "submit" value = "Reply to invitation">
-    </form>
-
 </section>
+<% } %>
+
 </body>
 </html>

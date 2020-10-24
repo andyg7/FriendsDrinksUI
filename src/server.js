@@ -167,6 +167,7 @@ function createServer(userManagement, backendConfig) {
                         invitations.push(
                            {
                               message: item.message,
+                              friendsDrinksName: item.friendsDrinksName,
                               friendsDrinksUuid: item.friendsDrinksId
                            }
                         )
@@ -688,22 +689,13 @@ function createServer(userManagement, backendConfig) {
                eventType: 'LOGGED_OUT'
             }
             reportUserEvent(input).then(function (data) {
-                res.cookie(SESSION_KEY, sessionId, {
-                    path: '/'
-                });
-                res.redirect('/');
+                resetHttpResponseCookieAndRedirect(res)
                 return;
             }).catch (function (err) {
                res.status(500)
                res.send(INTERNAL_ERROR_MESSAGE);
                return;
             })
-            res.cookie(SESSION_KEY, "", {
-                path: '/',
-                expires: new Date(1)
-            });
-            res.send("You're logged out!");
-            return;
         });
 
         app.get('/forgotpassword', function (req, res) {
