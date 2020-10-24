@@ -57,9 +57,7 @@
         </tr>
         <% for (var i = 0; i < invitations.length; i++) { %>
         <tr>
-            <td><%= invitations[i].message %></td>
-            <td><%= invitations[i].friendsDrinksName %></td>
-            <td><%= invitations[i].friendsDrinksUuid %></td>
+            <td><a href="/friendsdrinksinvitations/<%= invitations[i].friendsDrinksUuid %>"> <%= invitations[i].message %></a></td>
         </tr>
         <% } %>
     </table>

@@ -27,6 +27,66 @@ function createServer(userManagement, backendConfig) {
         let backendHostname = backendConfig.hostname
         let backendPort = backendConfig.port
 
+        app.get('/friendsdrinksinvitations/:friendsDrinksId', function (req, res) {
+            let sessionId = req.cookies[SESSION_KEY];
+            if (!sessionId) {
+                res.redirect('/login');
+                return;
+            }
+            let user = userManagement.getLoggedInUser(sessionId);
+            if (user === null) {
+                resetHttpResponseCookieAndRedirect(res)
+                return;
+            }
+            let userId = user.userId
+            if (!userId) {
+               throw new Error("userId should never be undefined or null")
+            }
+
+            let friendsDrinksId = req.params.friendsDrinksId
+            let options = {
+              host: backendHostname,
+              port: backendPort,
+              path: "/v1/pendingfriendsdrinksinvitations/users/" + userId + "/friendsdrinkses/" + friendsDrinksId
+            }
+
+            let backendReq = http.get(options, function (backendRes) {
+              console.log('STATUS: ' + backendRes.statusCode);
+              console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+              if (backendRes.statusCode !== 200) {
+                 backendRes.resume();
+                 res.status(500);
+                 res.send(INTERNAL_ERROR_MESSAGE);
+                 return;
+              }
+
+              let bodyChunks = [];
+              backendRes.on('data', function(chunk) {
+                bodyChunks.push(chunk);
+              }).on('end', function() {
+                let body = Buffer.concat(bodyChunks);
+                console.log('BODY: ' + body);
+                let obj = JSON.parse(body);
+
+                res.render('friendsdrinks_invitation', {
+                    message: obj.message,
+                    friendsDrinksId: obj.friendsDrinksId,
+                    friendsDrinksName: obj.friendsDrinksName
+                });
+
+            })
+
+           })
+
+            backendReq.on('error', function(e) {
+              console.log('ERROR: ' + e.message);
+              res.status(500);
+              res.send(INTERNAL_ERROR_MESSAGE);
+              return;
+            });
+
+        })
+
         app.get('/friendsdrinksdetailpages/:friendsDrinksId', function (req, res) {
             let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
@@ -312,8 +372,6 @@ function createServer(userManagement, backendConfig) {
                throw new Error("userId should never be undefined or null")
             }
 
-            getBackendUserInfo(req.body.userEmail)
-
             let postObj = {
               userId: userId,
               friendsDrinksId: req.params.friendsDrinksId,
@@ -345,7 +403,7 @@ function createServer(userManagement, backendConfig) {
             return;
         })
 
-        app.post('/friendsdrinks/replyToInvitation', function (req, res) {
+        app.post('/friendsdrinks/replyToInvitation/:friendsDrinksId', function (req, res) {
             let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
                 res.redirect('/login')
@@ -362,7 +420,7 @@ function createServer(userManagement, backendConfig) {
             }
             let postObj = {
               userId: userId,
-              friendsDrinksId: req.body.id,
+              friendsDrinksId: req.params.friendsDrinksId,
               requestType: 'REPLY_TO_INVITATION',
               replyToInvitationRequest: {
                  response: req.body.invitationReply

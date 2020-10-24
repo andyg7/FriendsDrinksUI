@@ -10,22 +10,14 @@
 </header>
 
 <section>
-    <h2> </h2>
-
-</section>
-
-<section>
-<form action = "/friendsdrinks/replyToInvitation" method = "POST">
-    <div>
-        <label>ID</label>
-        <input type = "text" name = "id" required="required"> <br>
-    </div>
-    <div>
-        <label>Reply</label>
-        <input type = "text" name = "invitationReply" required="required"> <br>
-    </div>
-    <input type = "submit" value = "Reply to invitation">
-</form>
+    <p> <%= message %> </p>
+    <form action = "/friendsdrinks/replyToInvitation/<%= friendsDrinksId %>" method = "POST">
+        <div>
+            <label>Reply</label>
+            <input type = "text" name = "invitationReply" required="required"> <br>
+        </div>
+        <input type = "submit" value = "Reply to invitation">
+    </form>
 
 </section>
 
