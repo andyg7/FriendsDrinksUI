@@ -725,10 +725,6 @@ function createServer(userManagement, backendConfig) {
             })
         }
 
-        app.get('/logout', function (req, res) {
-            res.render('logout');
-        });
-
         app.post('/logout', function (req, res) {
             let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
