@@ -133,7 +133,7 @@ function createServer(userManagement, backendConfig) {
                         members.push(
                            {
                               firstName: item.firstName,
-                              lastName: item.lasttName,
+                              lastName: item.lastName,
                               userId: item.userId
                            }
                         )
