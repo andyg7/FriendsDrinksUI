@@ -3,6 +3,7 @@ global.fetch = require('node-fetch');
 let http = require('http');
 let express = require('express');
 let auth = require('./auth');
+let PasswordManager = require('./password_manager');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
@@ -27,6 +28,8 @@ function createServer(userManagement, backendConfig) {
         let backendHostname = backendConfig.hostname
         let backendPort = backendConfig.port
 
+        let passwordManager = new PasswordManager(userManagement)
+
         app.get('/friendsdrinksinvitations/:friendsDrinksId', function (req, res) {
             let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
@@ -47,7 +50,7 @@ function createServer(userManagement, backendConfig) {
             let options = {
               host: backendHostname,
               port: backendPort,
-              path: "/v1/pendingfriendsdrinksinvitations/users/" + userId + "/friendsdrinkses/" + friendsDrinksId
+              path: "/v1/friendsdrinksinvitations/users/" + userId + "/friendsdrinkses/" + friendsDrinksId
             }
 
             let backendReq = http.get(options, function (backendRes) {
@@ -316,49 +319,6 @@ function createServer(userManagement, backendConfig) {
           return;
         })
 
-        app.post('/friendsdrinks/removeUser', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
-                res.redirect('/login')
-                return;
-             }
-            let user = userManagement.getLoggedInUser(sessionId);
-            if (user === null) {
-                resetHttpResponseCookieAndRedirect(res)
-                return;
-            }
-            let userId = user.userId
-            if (!userId) {
-               throw new Error("userId should never be undefined or null")
-            }
-            let postObj = {
-              requestType: 'REMOVE_USER',
-              userId: userId,
-              friendsDrinksId: req.body.id,
-              removeUserRequest: {
-                 userId: userId
-              }
-            }
-            let path = "/v1/friendsdrinksmemberships"
-            let postData = JSON.stringify(postObj)
-            let options = {
-              host: backendHostname,
-              port: backendPort,
-              path: path,
-              method: 'POST',
-              headers: {
-                  'Content-Length': Buffer.byteLength(postData),
-                  'Content-Type': 'application/json'
-              }
-            };
-
-            let backendReq = buildHttpRequest(options, res)
-            console.log("Sending request", postData)
-            backendReq.write(postData);
-            backendReq.end();
-            return;
-        })
-
         app.post('/friendsdrinks/inviteUser/:friendsDrinksId', function (req, res) {
             let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {
@@ -378,8 +338,8 @@ function createServer(userManagement, backendConfig) {
             let postObj = {
               userId: userId,
               friendsDrinksId: req.params.friendsDrinksId,
-              requestType: 'ADD_USER',
-              addUserRequest: {
+              requestType: 'INVITE_USER',
+              inviteUserRequest: {
                  userId: req.body.userId
               }
             }
