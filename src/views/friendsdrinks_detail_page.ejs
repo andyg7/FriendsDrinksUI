@@ -26,6 +26,13 @@
         <% } %>
     </ul>
 
+    <h2>Meetups</h2>
+    <ul>
+        <% for (let i = 0; i < meetups.length; i++) { %>
+        <li><%= meetups[i].date %></li>
+        <% } %>
+    </ul>
+
     <form action = "/friendsdrinks/inviteUser/<%= friendsDrinksId %>" method = "POST">
         <div>
             <label>UserId</label>
@@ -35,10 +42,18 @@
     </form>
 </section>
 
+<% if (isAdmin) { %>
 </section>
-    <form action = "/friendsdrinks/delete/<%= friendsDrinksId %>" method = "POST">
-        <input type = "submit" value = "Delete!">
-    </form>
+<form action = "/friendsdrinks/delete/<%= friendsDrinksId %>" method = "POST">
+    <input type = "submit" value = "Delete!">
+</form>
+<section>
+<% } %>
+
+</section>
+<form action = "/friendsdrinks/schedule/<%= friendsDrinksId %>" method = "POST">
+    <input type = "submit" value = "Schedule a meetup!">
+</form>
 <section>
 
 

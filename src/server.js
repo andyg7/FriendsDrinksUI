@@ -143,12 +143,28 @@ function createServer(userManagement, backendConfig) {
                     });
                 }
 
+                meetups = []
+                if (obj.meetups && obj.meetups.length > 0) {
+                    obj.meetups.forEach(function (item, index) {
+                        meetups.push(
+                           {
+                              date: item.date
+                           }
+                        )
+                    });
+                }
+
+                let isAdmin = false;
+                if (userId === obj.adminUserId) {
+                   isAdmin = true;
+                }
                 res.render('friendsdrinks_detail_page', {
                     userId: userId,
                     firstName: user.firstName,
                     name: obj.name,
                     members: members,
-                    friendsDrinksId: friendsDrinksId
+                    friendsDrinksId: friendsDrinksId,
+                    isAdmin: isAdmin
                 });
             })
 
@@ -255,6 +271,47 @@ function createServer(userManagement, backendConfig) {
               return;
             });
 
+        })
+
+        app.post('/friendsdrinks/schedule/:friendsDrinksId', function (req, res) {
+          let sessionId = req.cookies[SESSION_KEY];
+          if (!sessionId) {
+            res.redirect('/login')
+            return;
+          }
+          let user = userManagement.getLoggedInUser(sessionId);
+          if (user === null) {
+            resetHttpResponseCookieAndRedirect(res)
+            return;
+          }
+          let userId = user.userId
+          if (!userId) {
+             throw new Error("userId should never be undefined or null")
+          }
+          let friendsDrinksId = req.params.friendsDrinksId,
+          path = "/v1/friendsdrinkses/" + friendsDrinksId + "/meetups"
+          let postObj = {
+           date: new Date().toISOString()
+          }
+          let postData = JSON.stringify(postObj)
+          options = {
+             host: backendHostname,
+             port: backendPort,
+             method: 'POST',
+             path: path,
+             headers: {
+                'Content-Length': Buffer.byteLength(postData),
+                'Content-Type': 'application/json'
+             }
+          }
+
+          let backendReq = buildHttpRequest(options, res)
+
+          console.log("Sending POST request", options)
+          console.log("Sending postData", postData)
+          backendReq.write(postData);
+          backendReq.end();
+          return;
         })
 
         app.post('/friendsdrinks/delete/:friendsDrinksId', function (req, res) {
@@ -500,11 +557,13 @@ function createServer(userManagement, backendConfig) {
               console.log('STATUS: ' + backendRes.statusCode);
               console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
               if (backendRes.statusCode !== 200) {
+                 console.log("nahhhh")
                  backendRes.resume();
                  res.status(500);
                  res.send(INTERNAL_ERROR_MESSAGE);
                  return;
               } else {
+                  console.log("got 200")
                   let bodyChunks = [];
                   backendRes.on('data', (chunk) => {
                     bodyChunks.push(chunk)
@@ -659,7 +718,7 @@ function createServer(userManagement, backendConfig) {
                   console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
                   if (backendRes.statusCode !== 200) {
                      backendRes.resume();
-                     reject(new error("Did not get a 200 back. instead got " + backendreq.statuscode));
+                     reject(new Error("Did not get a 200 back. instead got " + backendreq.statuscode));
                   } else {
                       let bodyChunks = [];
                       backendRes.on('data', (chunk) => {

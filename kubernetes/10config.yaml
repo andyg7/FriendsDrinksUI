@@ -1,0 +1,9 @@
+kind: ConfigMap
+metadata:
+  name: ui-config
+apiVersion: v1
+data:
+  config.properties: |-
+    backendHostname=frontendapi-cs
+    backendPort=80
+

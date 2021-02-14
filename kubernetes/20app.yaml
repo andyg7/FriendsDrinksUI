@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: friendsdrinks-ui-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: friendsdrinks-ui
+  template:
+    metadata:
+      labels:
+        app: friendsdrinks-ui
+    spec:
+      containers:
+        - name: friendsdrinks-ui-container
+          image: andyg001/friendsdrinksfrontend:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8080
+            initialDelaySeconds: 15
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /v1/health
+              port: 8080
+            initialDelaySeconds: 15
+      volumes:
+        - name: config
+          configMap:
+            name: ui-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: friendsdrinks-ui-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 32800
+  selector:
+    app: friendsdrinks-ui
+---
