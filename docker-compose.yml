@@ -8,3 +8,4 @@ services:
       - ./dockercompose:/app/config
     ports:
       - "8080:8080"
+    command: "${FRIENDSDRINKS_USER_POOL_ID} ${FRIENDSDRINKS_CLIENT_ID}"
