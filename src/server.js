@@ -3,7 +3,6 @@ global.fetch = require('node-fetch');
 let http = require('http');
 let express = require('express');
 let auth = require('./auth');
-let PasswordManager = require('./password_manager');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
@@ -27,8 +26,6 @@ function createServer(userManagement, backendConfig) {
 
         let backendHostname = backendConfig.hostname
         let backendPort = backendConfig.port
-
-        let passwordManager = new PasswordManager(userManagement)
 
         app.get('/friendsdrinksinvitations/:friendsDrinksId', function (req, res) {
             let sessionId = req.cookies[SESSION_KEY];
