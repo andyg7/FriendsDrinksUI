@@ -27,6 +27,11 @@ function createServer(userManagement, backendConfig) {
         let backendHostname = backendConfig.hostname
         let backendPort = backendConfig.port
 
+        app.get('/v1/health', function (req, res) {
+            res.send("Success!");
+            return;
+        })
+
         app.get('/friendsdrinksinvitations/:friendsDrinksId', function (req, res) {
             let sessionId = req.cookies[SESSION_KEY];
             if (!sessionId) {

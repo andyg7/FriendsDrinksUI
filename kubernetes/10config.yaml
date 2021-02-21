@@ -6,6 +6,6 @@ data:
   config.properties: |-
     backendHostname=frontendapi-cs
     backendPort=80
-    clientIdPath=secret/clientid
-    userPoolIdPath=secret/userpoolid
+    clientIdFile=secret/clientid
+    userPoolIdFile=secret/userpoolid
 
