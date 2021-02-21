@@ -6,3 +6,4 @@ RUN npm install
 COPY ./src .
 EXPOSE 8080
 ENTRYPOINT [ "node", "app.js" ]
+CMD ["config/config.properties"]
