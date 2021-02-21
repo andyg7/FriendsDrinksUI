@@ -3,7 +3,7 @@ version: '3.7'
 
 services:
   friendsdrinks-ui:
-    image: andyg001/friendsdrinksfrontend:latest
+    image: andyg001/friendsdrinksui:latest
     networks:
       - kafka-network
     volumes:

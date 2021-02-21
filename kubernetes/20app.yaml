@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: friendsdrinks-ui-container
-          image: andyg001/friendsdrinksfrontend:latest
+          image: andyg001/friendsdrinksui:latest
           imagePullPolicy: Always
           volumeMounts:
             - name: config

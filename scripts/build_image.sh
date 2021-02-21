@@ -2,5 +2,5 @@
 
 set -e
 
-docker build -t andyg001/friendsdrinksfrontend:latest .
+docker build -t andyg001/friendsdrinksui:latest .
 
