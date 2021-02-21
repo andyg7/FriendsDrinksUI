@@ -18,6 +18,6 @@ fi
 
 echo "Successfully found environment variables. CLIENT_ID_ENV_VAR: ${CLIENT_ID_ENV_VAR}. FRIENDSDRINKS_USER_POOL_ID: ${FRIENDSDRINKS_USER_POOL_ID}"
 
-kubectl create secret generic aws-cognito-configs --from-literal=client_id=${CLIENT_ID_ENV_VAR} \
---from-literal=user_pool_id=${FRIENDSDRINKS_USER_POOL_ID}
+kubectl create secret generic aws-cognito-configs --from-literal=clientid=${CLIENT_ID_ENV_VAR} \
+--from-literal=userpoolid=${FRIENDSDRINKS_USER_POOL_ID}
 

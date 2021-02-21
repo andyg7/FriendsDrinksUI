@@ -21,6 +21,9 @@ spec:
             - name: config
               mountPath: /app/config
               readOnly: true
+            - name: secret-config
+              mountPath: /app/secret
+              readOnly: true
           livenessProbe:
             httpGet:
               path: /v1/health
@@ -37,6 +40,9 @@ spec:
         - name: config
           configMap:
             name: ui-config
+        - name: secret-config
+          secert:
+            secertName: aws-cognito-configs
 ---
 apiVersion: v1
 kind: Service

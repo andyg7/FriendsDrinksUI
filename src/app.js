@@ -1,34 +1,55 @@
 let AwsUserManagement = require('./aws/auth')
 let propertiesReader = require('properties-reader');
+const fs = require('fs');
 
 let createServer = require('./server')
 
-let args = process.argv.slice(2)
-console.log(args)
-if (args.length < 2) {
-   throw new Error("Must provide user pool ID, client ID and optionally config file path. Raw args: " + process.argv)
-}
+const defaultConfigPath = 'config/config.properties'
 
-let configFilePath;
-if (args[2]) {
-  configFilePath = args[2]
+let argv = require('minimist')(process.argv.slice(2));
+console.log(argv)
+
+let configPath;
+if (argv['config-path']) {
+  configPath = argv['config-path']
 } else {
   // Default config location
-  configFilePath = 'config/config.properties'
+  configPath = defaultConfigPath;
 }
 
-let properties = propertiesReader(configFilePath)
+let properties = propertiesReader(configPath)
 let backendConfig = {}
 backendConfig.hostname = properties.get('backendHostname')
 backendConfig.port = properties.get('backendPort')
 
+let defaultClientIdPath = properties.get('clientIdPath')
+let defaultUserPoolIdPath = properties.get('userPoolIdPath')
+
 console.log('Backend hostname: ' + backendConfig.hostname)
 console.log('Backend port: ' + backendConfig.port)
 
-let awsUserManagement = new AwsUserManagement(args[0], args[1])
+let clientIdPath;
+if (argv['client-id-path']) {
+  clientIdPath = argv['client-id-path']
+} else {
+  // Default config location
+  clientIdPath = defaultClientIdPath
+}
+const clientId = fs.readFileSync(clientIdPath, {encoding:'utf8', flag:'r'});
+console.log("Client ID:" + clientId)
 
+let userPoolIdPath;
+if (argv['user-pool-id-path']) {
+  userPoolIdPath = argv['user-pool-id-path']
+} else {
+  // Default config location
+  userPoolIdPath = defaultUserPoolIdPath
+}
+const userPoolId = fs.readFileSync(userPoolIdPath, {encoding:'utf8', flag:'r'});
+console.log("User pool ID:" + userPoolId)
+
+let awsUserManagement = new AwsUserManagement(userPoolId, clientId)
 let server = createServer(awsUserManagement, backendConfig)
-
 let serverListening = server.listen(8080, function () {
 	let host = serverListening.address().address
 	let port = serverListening.address().port
