@@ -18,6 +18,13 @@ if (argv['config-path']) {
 }
 
 let properties = propertiesReader(configPath)
+// looping through the properties reader
+properties.each((key, value) => {
+  // called for each item in the reader,
+  // first with key=main.some.thing, value=foo
+  // next with key=blah.some.thing, value=bar
+  console.log("Key: " + key + ". Value: " + value)
+});
 let backendConfig = {}
 backendConfig.hostname = properties.get('backendHostname')
 backendConfig.port = properties.get('backendPort')
