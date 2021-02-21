@@ -10,8 +10,8 @@ let argv = require('minimist')(process.argv.slice(2));
 console.log(argv)
 
 let configFile;
-if (argv['config-file']) {
-  configFile = argv['config-file']
+if (argv['_'][0]) {
+  configFile = argv['_'][0]
 } else {
   // Default config location
   configFile = defaultConfigFile;
