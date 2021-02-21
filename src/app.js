@@ -4,20 +4,20 @@ const fs = require('fs');
 
 let createServer = require('./server')
 
-const defaultConfigPath = 'config/config.properties'
+const defaultConfigFile = 'config/config.properties'
 
 let argv = require('minimist')(process.argv.slice(2));
 console.log(argv)
 
-let configPath;
-if (argv['config-path']) {
-  configPath = argv['config-path']
+let configFile;
+if (argv['config-file']) {
+  configFile = argv['config-file']
 } else {
   // Default config location
-  configPath = defaultConfigPath;
+  configFile = defaultConfigFile;
 }
 
-let properties = propertiesReader(configPath)
+let properties = propertiesReader(configFile)
 // looping through the properties reader
 properties.each((key, value) => {
   // called for each item in the reader,
@@ -29,16 +29,16 @@ let backendConfig = {}
 backendConfig.hostname = properties.get('backendHostname')
 backendConfig.port = properties.get('backendPort')
 
-let clientIdPath = properties.get('clientIdPath')
-let userPoolIdPath = properties.get('userPoolIdPath')
+let clientIdFile = properties.get('clientIdFile')
+let userPoolIdFile = properties.get('userPoolIdFile')
 
 console.log('Backend hostname: ' + backendConfig.hostname)
 console.log('Backend port: ' + backendConfig.port)
 
-const clientId = fs.readFileSync(clientIdPath, {encoding:'utf8', flag:'r'});
+const clientId = fs.readFileSync(clientIdFile, {encoding:'utf8', flag:'r'});
 console.log("Client ID:" + clientId)
 
-const userPoolId = fs.readFileSync(userPoolIdPath, {encoding:'utf8', flag:'r'});
+const userPoolId = fs.readFileSync(userPoolIdFile, {encoding:'utf8', flag:'r'});
 console.log("User pool ID:" + userPoolId)
 
 let awsUserManagement = new AwsUserManagement(userPoolId, clientId)
