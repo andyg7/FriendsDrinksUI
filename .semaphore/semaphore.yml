@@ -5,9 +5,14 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: 'Block #1'
+  - name: Build
     task:
       jobs:
-        - name: 'Job #1'
+        - name: Docker build
           commands:
             - checkout
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker build -t $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID .'
+            - 'docker push $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID'
+      secrets:
+        - name: docker-hub-secret
