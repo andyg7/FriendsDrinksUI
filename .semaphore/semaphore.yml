@@ -106,7 +106,7 @@ blocks:
           - sudo ./aws/install
           - aws --version
       jobs:
-        - name: Deploy UI app
+        - name: Deploy UI service
           commands:
             - source semaphore/kubernetesiamenvsetup 2>&1
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
