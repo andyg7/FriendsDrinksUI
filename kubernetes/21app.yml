@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -43,17 +42,3 @@ spec:
         - name: secret-config
           secret:
             secretName: aws-cognito-configs
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: friendsdrinks-ui-service
-spec:
-  type: $serviceType
-  ports:
-    - port: 80
-      targetPort: 8080
-      nodePort: 30615
-  selector:
-    app: friendsdrinks-ui
----

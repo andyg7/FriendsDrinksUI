@@ -39,7 +39,7 @@ blocks:
       env_vars:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
-  - name: Deploy UI Kubernetes
+  - name: Deploy Kubernetes configuration
     task:
       prologue:
         commands:
@@ -49,7 +49,7 @@ blocks:
           - sudo ./aws/install
           - aws --version
       jobs:
-        - name: Deploy UI
+        - name: Create resources
           commands:
             - aws --version
             - source semaphore/kubernetesiamenvsetup 2>&1
@@ -59,6 +59,35 @@ blocks:
             - clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-ClientId") | .Value')
             - userPoolId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-UserPoolId") | .Value')
             - kubectl --kubeconfig awskubeconfig create secret generic aws-cognito-configs --from-literal=clientid=$clientId --from-literal=userpoolid=$userPoolId
+            - kubectl --kubeconfig awskubeconfig apply -f kubernetes/10config.yml
+      secrets:
+        - name: ui-iam-user-secret
+        - name: docker-hub-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+  - name: Deploy Kubernetes app
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - aws --version
+      jobs:
+        - name: Deploy UI app
+          commands:
+            - aws --version
+            - source semaphore/kubernetesiamenvsetup 2>&1
+            - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
+            - kubectl --kubeconfig awskubeconfig cluster-info
+            - kubectl --kubeconfig awskubeconfig get nodes
+            - apply_tmp=$(mktemp)
+            - ./kubernetes/generate_manifest.sh kubernetes/21app.yml $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID NodePort $apply_tmp
+            - cat $apply_tmp
+            - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
+            - kubectl --kubeconfig awskubeconfig rollout status -f $apply_tmp
       secrets:
         - name: ui-iam-user-secret
         - name: docker-hub-secret
