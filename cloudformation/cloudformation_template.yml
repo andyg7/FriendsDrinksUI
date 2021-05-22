@@ -87,7 +87,7 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref UserPool
-      Domain: !Sub '${AppName}-domain'
+      Domain: !Sub '${AppName}.${Stage}'
 
 Outputs:
   UserPoolId:
