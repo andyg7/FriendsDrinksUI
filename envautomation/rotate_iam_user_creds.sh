@@ -2,7 +2,7 @@
 
 set -eu
 
-user=FriendsDrinksUIDeployerUser
+user=FriendsDrinksUIDeployerUserV2
 
 while true; do
   aws iam list-access-keys --user-name $user --max-items 1 --query 'AccessKeyMetadata[0].AccessKeyId' --output text

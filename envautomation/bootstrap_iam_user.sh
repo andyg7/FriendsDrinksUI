@@ -4,7 +4,7 @@ set -eu
 
 region=$1
 
-user=FriendsDrinksUIDeployerUser
+user=FriendsDrinksUIDeployerUserV2
 
 aws iam create-user --user-name $user
 new_access_key=$(aws iam create-access-key --user-name $user | jq -r '.AccessKey')
