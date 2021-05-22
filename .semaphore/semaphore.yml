@@ -96,6 +96,34 @@ blocks:
       env_vars:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
+  - name: Deploy Kubernetes service
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - aws --version
+      jobs:
+        - name: Deploy UI app
+          commands:
+            - source semaphore/kubernetesiamenvsetup 2>&1
+            - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
+            - kubectl --kubeconfig awskubeconfig cluster-info
+            - kubectl --kubeconfig awskubeconfig get nodes
+            - apply_tmp=$(mktemp)
+            - export serviceType=LoadBalancer
+            - cat kubernetes/20service.yml | envsubst > $apply_tmp
+            - cat $apply_tmp
+            - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
+            - kubectl --kubeconfig awskubeconfig rollout status -f $apply_tmp
+            - rm -f $apply_tmp
+      secrets:
+        - name: ui-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
   - name: Deploy Kubernetes app
     task:
       prologue:
@@ -113,7 +141,7 @@ blocks:
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
             - apply_tmp=$(mktemp)
-            - ./kubernetes/generate_manifest.sh kubernetes/21app.yml $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID LoadBalancer $apply_tmp
+            - ./kubernetes/generate_manifest.sh kubernetes/21app.yml $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID $apply_tmp
             - cat $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
             - kubectl --kubeconfig awskubeconfig rollout status -f $apply_tmp
