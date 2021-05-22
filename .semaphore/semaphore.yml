@@ -58,9 +58,11 @@ blocks:
             - kubectl --kubeconfig awskubeconfig get nodes
             - clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-ClientId") | .Value')
             - userPoolId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-UserPoolId") | .Value')
-            - cat kubernetes/10secret.yml | envsubst | kubectl --kubeconfig awskubeconfig apply -f 2>&1
+            - apply_tmp=$(mktemp)
+            - cat kubernetes/10secret.yml | envsubst > $apply_tmp
+            - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
+            - rm -f $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f kubernetes/10config.yml
-  cat $manifest | envsubst | tee $apply_tmp
       secrets:
         - name: ui-iam-user-secret
         - name: docker-hub-secret
@@ -89,6 +91,7 @@ blocks:
             - cat $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
             - kubectl --kubeconfig awskubeconfig rollout status -f $apply_tmp
+            - rm -f $apply_tmp
       secrets:
         - name: ui-iam-user-secret
         - name: docker-hub-secret
