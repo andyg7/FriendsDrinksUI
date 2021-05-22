@@ -83,6 +83,12 @@ Resources:
       UserPoolId: !Ref UserPool
       GenerateSecret: false
 
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      Domain: !Sub '${AppName}-domain'
+
 Outputs:
   UserPoolId:
     Value: !Ref UserPool
