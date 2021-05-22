@@ -16,27 +16,15 @@ blocks:
             - 'docker push $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID'
       secrets:
         - name: docker-hub-secret
-  - name: Download AWS CLI
-    task:
-      jobs:
-        - name: Download AWS CLI
-          commands:
-            - cache clear
-            - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            - unzip awscliv2.zip
-            - sudo ./aws/install
-            - aws --version
-            - cache store awsclipath $(which aws)
-      env_vars:
-        - name: AWS_DEFAULT_REGION
-          value: us-east-1
   - name: Create UI CloudFormation resources
     task:
       prologue:
         commands:
           - checkout
-          - cache list
-          - cache restore awsclipath
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - aws --version
       jobs:
         - name: Deploy CloudFormation
           commands:
@@ -55,8 +43,10 @@ blocks:
       prologue:
         commands:
           - checkout
-          - cache list
-          - cache restore awsclipath
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - aws --version
       jobs:
         - name: Deploy UI
           commands:
