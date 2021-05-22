@@ -8,4 +8,3 @@ export serviceType=$3
 export apply_tmp=$4
 
 cat $manifest | envsubst | tee $apply_tmp
-cat $apply_tmp

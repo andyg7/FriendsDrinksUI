@@ -16,3 +16,36 @@ blocks:
             - 'docker push $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID'
       secrets:
         - name: docker-hub-secret
+  - name: Download AWS CLI
+    task:
+      jobs:
+        - name: Download AWS CLI
+          commands:
+            - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            - unzip awscliv2.zip
+            - sudo ./aws/install
+            - aws --version
+            - cache store awsclipath $(which aws)
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+  - name: Deploy UI
+    task:
+      prologue:
+        commands:
+          - checkout
+          - cache list
+          - cache restore awsclipath
+      jobs:
+        - name: Deploy UI
+          commands:
+            - aws --version
+            - source semaphore/iamenvsetup 2>&1
+            - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
+            - kubectl --kubeconfig awskubeconfig cluster-info
+            - kubectl --kubeconfig awskubeconfig get nodes
+      secrets:
+        - name: iam-user-secret
+        - name: docker-hub-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
