@@ -68,6 +68,32 @@ blocks:
       env_vars:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
+  - name: Deploy load balancer controller
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - aws --version
+      jobs:
+        - name: Deploy load balancer controller
+          commands:
+            - source semaphore/kubernetesiamenvsetup 2>&1
+            - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
+            - kubectl --kubeconfig awskubeconfig cluster-info
+            - kubectl --kubeconfig awskubeconfig get nodes
+            - export rolearn=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="KubernetesStack-KubernetesInfraStack-SWFHS7O4I57G-AmazonEKSLoadBalancerControllerRole") | .Value')
+            - apply_tmp=$(mktemp)
+            - cat kubernetes/aws-load-balancer-controller-service-account.yaml | envsubst > $apply_tmp
+            - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
+            - rm -f $apply_tmp
+      secrets:
+        - name: ui-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
   - name: Deploy Kubernetes app
     task:
       prologue:
