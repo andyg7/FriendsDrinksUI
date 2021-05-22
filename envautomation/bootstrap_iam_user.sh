@@ -7,6 +7,7 @@ region=$1
 user=FriendsDrinksUIDeployerUserV2
 
 aws iam create-user --user-name $user
+aws iam attach-user-policy --user-name $user --policy-arn arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
 new_access_key=$(aws iam create-access-key --user-name $user | jq -r '.AccessKey')
 echo "New access key $new_access_key"
 
