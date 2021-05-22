@@ -10,6 +10,10 @@ Parameters:
     Type: String
     Description: App name
     Default: 'FriendsDrinks'
+  AppNameLowercase:
+    Type: String
+    Description: App name
+    Default: 'friendsdrinks'
 
 Resources:
   SNSRole:
@@ -87,7 +91,7 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref UserPool
-      Domain: !Sub '${AppName}.${Stage}'
+      Domain: !Sub '${AppNameLowercase}-${Stage}'
 
 Outputs:
   UserPoolId:
