@@ -43,6 +43,7 @@ blocks:
             - source semaphore/cognitoiamenvsetup 2>&1
             - cat cloudformation/cloudformation_template.yml
             - aws cloudformation validate-template --template-body file://cloudformation/cloudformation_template.yml
+            - aws cloudformation deploy --template-file cloudformation/cloudformation_template.yml --stack-name FriendsDrinksUIResources --capabilities CAPABILITY_IAM --parameter-overrides Stage=beta
       secrets:
         - name: ui-iam-user-secret
       env_vars:
