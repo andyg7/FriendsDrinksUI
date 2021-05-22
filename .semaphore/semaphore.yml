@@ -55,11 +55,10 @@ blocks:
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
-            - export clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-ClientId") | .Value')
+            - export clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-UserPoolClientId") | .Value')
             - export userPoolId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-UserPoolId") | .Value')
             - apply_tmp=$(mktemp)
             - cat kubernetes/10secret.yml | envsubst > $apply_tmp
-            - cat $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
             - rm -f $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f kubernetes/10config.yml
