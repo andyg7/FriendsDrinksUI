@@ -20,6 +20,7 @@ blocks:
     task:
       prologue:
         commands:
+          - which aws
           - checkout
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
