@@ -28,6 +28,7 @@ blocks:
             - cache store awsclipath $(which aws)
       env_vars:
         - name: AWS_DEFAULT_REGION
+          value: us-east-1
   - name: Deploy UI
     task:
       prologue:
