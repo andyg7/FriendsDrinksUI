@@ -89,8 +89,8 @@ blocks:
             - cat kubernetes/aws-load-balancer-controller-service-account.yaml | envsubst > $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
             - rm -f $apply_tmp
-            - kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.1.1/cert-manager.yaml
-            - kubectl apply -f kubernetes/v2_2_0_full.yaml
+            - kubectl --kubeconfig awskubeconfig apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.1.1/cert-manager.yaml
+            - kubectl --kubeconfig awskubeconfig apply -f kubernetes/v2_2_0_full.yaml
       secrets:
         - name: ui-iam-user-secret
       env_vars:
