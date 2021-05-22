@@ -64,6 +64,9 @@ blocks:
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
+            - clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-ClientId") | .Value')
+            - userPoolId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-UserPoolId") | .Value')
+            - kubectl --kubeconfig awskubeconfig create secret generic aws-cognito-configs --from-literal=clientid=$clientId --from-literal=userpoolid=$userPoolId
       secrets:
         - name: ui-iam-user-secret
         - name: docker-hub-secret
