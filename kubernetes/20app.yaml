@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: friendsdrinks-ui-container
-          image: andyg001/friendsdrinksui:latest
+          image: $img
           imagePullPolicy: Always
           volumeMounts:
             - name: config
@@ -49,7 +49,7 @@ kind: Service
 metadata:
   name: friendsdrinks-ui-service
 spec:
-  type: NodePort
+  type: $serviceType
   ports:
     - port: 80
       targetPort: 8080
