@@ -29,7 +29,26 @@ blocks:
       env_vars:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
-  - name: Deploy UI
+  - name: Create UI CloudFormation resources
+    task:
+      prologue:
+        commands:
+          - checkout
+          - cache list
+          - cache restore awsclipath
+      jobs:
+        - name: Deploy CloudFormation
+          commands:
+            - aws --version
+            - source semaphore/cognitoiamenvsetup 2>&1
+            - cat cloudformation/cloudformation_template.yml
+            - aws cloudformation validate-template --template-body file://cloudformation/cloudformation_template.yml
+      secrets:
+        - name: ui-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+  - name: Deploy UI Kubernetes
     task:
       prologue:
         commands:
@@ -40,12 +59,12 @@ blocks:
         - name: Deploy UI
           commands:
             - aws --version
-            - source semaphore/iamenvsetup 2>&1
+            - source semaphore/kubernetesiamenvsetup 2>&1
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
       secrets:
-        - name: iam-user-secret
+        - name: ui-iam-user-secret
         - name: docker-hub-secret
       env_vars:
         - name: AWS_DEFAULT_REGION
