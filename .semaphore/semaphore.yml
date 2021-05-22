@@ -117,7 +117,6 @@ blocks:
             - cat kubernetes/20service.yml | envsubst > $apply_tmp
             - cat $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
-            - kubectl --kubeconfig awskubeconfig rollout status -f $apply_tmp
             - rm -f $apply_tmp
       secrets:
         - name: ui-iam-user-secret
