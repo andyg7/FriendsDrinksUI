@@ -1,0 +1,94 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Top level stack for creating all kubernetes resources'
+
+Parameters:
+  Stage:
+    Type: String
+    Description: Stage
+  AppName:
+    Type: String
+    Description: App name
+    Default: 'FriendsDrinks'
+
+Resources:
+  SNSRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "cognito-idp.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "CognitoSNSPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "sns:publish"
+                Resource: "*"
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: 'verified_email'
+            Priority: 1
+      AutoVerifiedAttributes:
+        - 'email'
+      MfaConfiguration: "OFF"
+      EmailConfiguration:
+        EmailSendingAccount: 'COGNITO_DEFAULT'
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireNumbers: true
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireSymbols: true
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+        - Name: firstname
+          AttributeDataType: String
+          Mutable: false
+          Required: false
+        - Name: lastname
+          AttributeDataType: String
+          Mutable: false
+          Required: false
+      SmsConfiguration:
+        ExternalId: !Sub '${AppName}-external'
+        SnsCallerArn: !GetAtt SNSRole.Arn
+      UsernameAttributes:
+        - 'email'
+      UsernameConfiguration:
+        CaseSensitive: False
+      UserPoolName: !Sub '${AppName}UserPool-${Stage}'
+      VerificationMessageTemplate:
+        DefaultEmailOption: 'CONFIRM_WITH_LINK'
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub '${AppName}UserPoolClient-${Stage}'
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+
+Outputs:
+  UserPoolId:
+    Value: !Ref UserPool
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolId"
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolClientId"
