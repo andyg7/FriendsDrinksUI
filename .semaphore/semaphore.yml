@@ -84,7 +84,7 @@ blocks:
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
-            - export rolearn=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="KubernetesStack-KubernetesInfraStack-SWFHS7O4I57G-AmazonEKSLoadBalancerControllerRole") | .Value')
+            - export rolearn=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="KubernetesStack-KubernetesInfraStack-AT0YQ2IB1M2V-AmazonEKSLoadBalancerControllerRole") | .Value')
             - apply_tmp=$(mktemp)
             - cat kubernetes/aws-load-balancer-controller-service-account.yaml | envsubst > $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
