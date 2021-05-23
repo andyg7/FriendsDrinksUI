@@ -35,10 +35,10 @@ cat envautomation/dns/bootstrapawsiamusersecret.yaml | envsubst | tee $compiled_
 
 if [[ "$updateType" == "new" ]]
 then
-  sem apply -f $compiled_secret
+  sem create -f $compiled_secret
 elif [[ "$updateType" == "update" ]]
 then
-  sem create -f $compiled_secret
+  sem apply -f $compiled_secret
 else
   echo "$updateType is not a valid update type"
   exit 1
