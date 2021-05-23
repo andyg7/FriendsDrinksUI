@@ -71,7 +71,7 @@ blocks:
             - elbdomainnameenvvar=$(cat elbdomainname)
             - echo $elbdomainnameenvvar
             - aws cloudformation validate-template --template-body file://cloudformation/dns/dns.yml
-            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name DNSRecordSetStack --parameter-overrides Stage=beta ELBDomainName=$elbdomainnameenvvar
+            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name DNSRecordSetStack --parameter-overrides HostedZoneId=Z03368065P2HEQ3Z6RIO Stage=beta ELBDomainName=$elbdomainnameenvvar
       secrets:
         - name: deployer-dns-iam-user-secret
       env_vars:
