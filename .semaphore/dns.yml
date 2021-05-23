@@ -27,3 +27,24 @@ blocks:
       env_vars:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
+  - name: Deploy DNS record set
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - which aws
+          - aws --version
+      jobs:
+        - name: Deploy DNS record set
+          commands:
+            - checkout
+            - cat cloudformation/dns/dns.yml
+            - aws cloudformation validate-template --template-body file://cloudformation/dns/dns.yml
+      secrets:
+        - name: deployer-dns-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
