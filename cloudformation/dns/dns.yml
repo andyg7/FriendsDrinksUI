@@ -12,6 +12,9 @@ Parameters:
   HostedZoneId:
     Type: String
     Description: HostedZoneId
+  ELBHostedZoneId:
+    Type: String
+    Description: ELB HostedZoneId
 
 Resources:
   RecordSet:
@@ -20,6 +23,7 @@ Resources:
       AliasTarget:
         DNSName: !Sub "${ELBDomainName}"
         EvaluateTargetHealth: false
+        HostedZoneId: !Sub "${ELBHostedZoneId}"
       Comment: "Alias record for ELB"
       HostedZoneId: !Sub "${HostedZoneId}"
       Name: !Sub "${Stage}.friendsdrinksv2.com"

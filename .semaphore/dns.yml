@@ -45,6 +45,11 @@ blocks:
             - echo $elbdomainname > elbdomainname
             - cat elbdomainname
             - cache store elbdomainnamepath elbdomainname
+            - elbhostedzoneid=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[0].CanonicalHostedZoneId' --output text
+            - touch elbhostedzoneid
+            - echo $elbhostedzoneid > elbhostedzoneid
+            - cat elbhostedzoneid
+            - cache store elbhostedzoneidpath elbhostedzoneid
       secrets:
         - name: ui-iam-user-secret
       env_vars:
@@ -57,7 +62,9 @@ blocks:
           - checkout
           - cache list
           - cache restore elbdomainnamepath
+          - cache restore elbhostedzoneidpath
           - cat elbdomainname
+          - cat elbhostedzoneid
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
           - sudo ./aws/install
@@ -66,12 +73,13 @@ blocks:
       jobs:
         - name: Deploy DNS record set
           commands:
-            - cat elbdomainname
             - source semaphore/dnsiamenvsetup 2>&1
             - elbdomainnameenvvar=$(cat elbdomainname)
             - echo $elbdomainnameenvvar
+            - elbhostedzoneidenvvar=$(cat elbhostedzoneid)
+            - echo $elbhostedzoneidenvvar
             - aws cloudformation validate-template --template-body file://cloudformation/dns/dns.yml
-            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name DNSRecordSetStack --parameter-overrides HostedZoneId=Z03368065P2HEQ3Z6RIO Stage=beta ELBDomainName=$elbdomainnameenvvar
+            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name DNSRecordSetStack --parameter-overrides HostedZoneId=Z03368065P2HEQ3Z6RIO Stage=beta ELBDomainName=$elbdomainnameenvvar ELBHostedZoneId=$elbhostedzoneidenvvar
       secrets:
         - name: deployer-dns-iam-user-secret
       env_vars:
