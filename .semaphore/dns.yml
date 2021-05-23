@@ -19,7 +19,7 @@ blocks:
         - name: Deploy DNS bootstrap stack
           commands:
             - checkout
-            - cat cloudformation/dns/bootstrap_resource.yml
+            - cat cloudformation/dns/bootstrap_resources.yml
             - aws cloudformation validate-template --template-body file://cloudformation/dns/bootstrap_resources.yml
             - aws cloudformation deploy --template-file cloudformation/bootstrap_resources.yml --stack-name BootstrapResources --capabilities CAPABILITY_IAM
       secrets:
