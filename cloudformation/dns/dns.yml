@@ -19,7 +19,7 @@ Resources:
         EvaluateTargetHealth: false
       Comment: "Alias record for ELB"
       HostedZoneName: 'friendsdrinksv2.com.'
-      Name: !Sub '{Stage}.friendsdrinksv2.com'
+      Name: !Sub '${Stage}.friendsdrinksv2.com'
       Region: !Ref 'AWS::Region'
       Type: 'A|AAA'
 
