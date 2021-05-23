@@ -4,7 +4,7 @@ set -eu
 
 region=$1
 
-user=FriendsDrinksDNSDeployerUserV2
+user=FriendsDrinksDNSDeployerUser
 
 aws iam create-user --user-name $user
 aws iam attach-user-policy --user-name $user --policy-arn arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
@@ -29,6 +29,6 @@ then
 fi
 
 compiled_secret=$(mktemp)
-cat envautomation/awsiamusersecret.yaml | envsubst | tee $compiled_secret
+cat envautomation/dns/deployerawsiamusersecret.yaml | envsubst | tee $compiled_secret
 sem create -f $compiled_secret
 rm -rf $compiled_secret

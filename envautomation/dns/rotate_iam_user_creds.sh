@@ -2,7 +2,7 @@
 
 set -eu
 
-user=FriendsDrinksDNSDeployerUserV2
+user=FriendsDrinksDNSDeployerUser
 
 while true; do
   aws iam list-access-keys --user-name $user --max-items 1 --query 'AccessKeyMetadata[0].AccessKeyId' --output text
@@ -33,6 +33,6 @@ echo $AWS_ACCESS_KEY_ID
 echo $AWS_SECRET_ACCESS_KEY
 
 compiled_secret=$(mktemp)
-cat envautomation/awsiamusersecret.yaml | envsubst | tee $compiled_secret
+cat envautomation/dns/deployerawsiamusersecret.yaml | envsubst | tee $compiled_secret
 sem apply -f $compiled_secret
 rm -rf $compiled_secret
