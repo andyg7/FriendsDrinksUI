@@ -45,7 +45,7 @@ blocks:
             - echo $elbdomainname > elbdomainname
             - cat elbdomainname
             - cache store elbdomainnamepath elbdomainname
-            - elbhostedzoneid=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[0].CanonicalHostedZoneId' --output text
+            - elbhostedzoneid=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[0].CanonicalHostedZoneId' --output text)
             - touch elbhostedzoneid
             - echo $elbhostedzoneid > elbhostedzoneid
             - cat elbhostedzoneid
