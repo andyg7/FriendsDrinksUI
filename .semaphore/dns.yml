@@ -71,10 +71,10 @@ blocks:
             - ls
             - cat elbdomainname
             - source semaphore/dnsiamenvsetup 2>&1
-            - elbdomainame=$(cat cloudformation/dns/dns.yml)
-            - echo $elbdomainname
+            - elbdomainameenvvar=$(cat elbdomainname)
+            - echo $elbdomainnameenvvar
             - aws cloudformation validate-template --template-body file://cloudformation/dns/dns.yml
-            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name DNSRecordSetStack --parameter-overrides Stage=beta ELBDomainName=$elbdomainname
+            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name DNSRecordSetStack --parameter-overrides Stage=beta ELBDomainName=$elbdomainnameenvvar
       secrets:
         - name: deployer-dns-iam-user-secret
       env_vars:
