@@ -45,7 +45,8 @@ blocks:
             - elbdomainname=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[0].DNSName' --output text | grep k8s-default-friend)
             - touch elbdomainname
             - echo $elbdomainname > elbdomainname
-            - cache store elbpath elbdomainname
+            - cat elbdomainname
+            - cache store elbdomainnamepath elbdomainname
       secrets:
         - name: ui-iam-user-secret
       env_vars:
@@ -67,6 +68,7 @@ blocks:
         - name: Deploy DNS record set
           commands:
             - checkout
+            - cat elbdomainnamepath
             - source semaphore/dnsiamenvsetup 2>&1
             - cat cloudformation/dns/dns.yml
             - aws cloudformation validate-template --template-body file://cloudformation/dns/dns.yml
