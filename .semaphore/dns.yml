@@ -18,7 +18,6 @@ blocks:
       jobs:
         - name: Deploy DNS bootstrap stack
           commands:
-            - checkout
             - cat cloudformation/dns/bootstrap_resources.yml
             - aws cloudformation validate-template --template-body file://cloudformation/dns/bootstrap_resources.yml
             - aws cloudformation deploy --template-file cloudformation/dns/bootstrap_resources.yml --stack-name BootstrapResources --capabilities CAPABILITY_IAM
@@ -40,7 +39,6 @@ blocks:
       jobs:
         - name: Gets ELB domain name and caches it
           commands:
-            - checkout
             - source semaphore/kubernetesiamenvsetup 2>&1
             - elbdomainname=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[0].DNSName' --output text | grep k8s-default-friend)
             - touch elbdomainname
@@ -56,10 +54,10 @@ blocks:
     task:
       prologue:
         commands:
+          - checkout
           - cache list
           - cache restore elbdomainnamepath
           - cat elbdomainname
-          - checkout
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
           - sudo ./aws/install
@@ -68,7 +66,6 @@ blocks:
       jobs:
         - name: Deploy DNS record set
           commands:
-            - checkout
             - ls
             - cat elbdomainname
             - source semaphore/dnsiamenvsetup 2>&1

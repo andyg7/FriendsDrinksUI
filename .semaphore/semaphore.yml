@@ -9,11 +9,11 @@ blocks:
     task:
       prologue:
         commands:
+          - checkout
           - cache clear
       jobs:
         - name: Docker build
           commands:
-            - checkout
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'docker build -t $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID .'
             - 'docker push $DOCKER_USERNAME/friendsdrinksui:$SEMAPHORE_WORKFLOW_ID'
