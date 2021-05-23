@@ -37,73 +37,12 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
         - arn:aws:iam::aws:policy/IAMFullAccess
-        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
-      Policies:
-        - PolicyName: EKSFullAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: 'eks:*'
-                Resource: '*'
-        - PolicyName: LambdaFullAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: 'lambda:*'
-                Resource: '*'
 
-  UserPoolRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS:
-                - !Sub 'arn:aws:iam::${AWS::AccountId}:user/FriendsDrinksUIDeployerUserV2'
-            Action:
-              - sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
-        - arn:aws:iam::aws:policy/IAMFullAccess
-      Policies:
-        - PolicyName: CognitoIdentityFullAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: 'cognito-identity:*'
-                Resource: '*'
-        - PolicyName: CognitoIdpFullAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: 'cognito-idp:*'
-                Resource: '*'
 
 Outputs:
-  RoleArn:
-    Description: The role used to deploy Kubernetes infrastructure.
-    Value: !GetAtt KubernetesClusterAdminRole.Arn
+  DNSDeployerRoleArn:
+    Description: The role used to deploy DNS infrastructure.
+    Value: !GetAtt DNSDeployerRole.Arn
     Export:
-      Name: !Sub "${AWS::StackName}-RoleArn"
-  UserPoolRoleArn:
-    Description: The role used to deploy user pool infrastructure
-    Value: !GetAtt UserPoolRole.Arn
-    Export:
-      Name: !Sub "${AWS::StackName}-UserPoolRoleArn"
-  CloudFormationTemplatesBucketName:
-    Description: The bucket for CloudFormation templates
-    Value: !Ref CloudFormationNestedStackTemplatesBucket
-    Export:
-      Name: !Sub "${AWS::StackName}-CloudFormationTemplatesBucketName"
-  CloudFormationTemplatesBucketDomainName:
-    Description: The bucket domain name for CloudFormation templates
-    Value: !GetAtt CloudFormationNestedStackTemplatesBucket.DomainName
-    Export:
-      Name: !Sub "${AWS::StackName}-CloudFormationTemplatesBucketDomainName"
+      Name: !Sub "${AWS::StackName}-DNSDeployerRole"

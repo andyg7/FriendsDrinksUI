@@ -7,13 +7,23 @@ agent:
 blocks:
   - name: Deploy DNS
     task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - which aws
+          - aws --version
       jobs:
-        - name: Deploy DNS
+        - name: Deploy DNS bootstrap stack
           commands:
             - checkout
-            - echo 'Hello, world!'
+            - cat cloudformation/dns/bootstrap_resource.yml
+            - aws cloudformation validate-template --template-body file://cloudformation/dns/bootstrap_resources.yml
+            - aws cloudformation deploy --template-file cloudformation/bootstrap_resources.yml --stack-name BootstrapResources --capabilities CAPABILITY_IAM
       secrets:
-        - name: dns-iam-user-secret
+        - name: bootstrap-dns-iam-user-secret
       env_vars:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
