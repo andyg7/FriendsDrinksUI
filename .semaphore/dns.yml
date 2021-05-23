@@ -68,7 +68,7 @@ blocks:
         - name: Deploy DNS record set
           commands:
             - checkout
-            - cat elbdomainnamepath
+            - cat elbdomainname
             - source semaphore/dnsiamenvsetup 2>&1
             - elbdomainame=$(cat cloudformation/dns/dns.yml)
             - echo $elbdomainname
