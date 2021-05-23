@@ -21,7 +21,7 @@ blocks:
             - checkout
             - cat cloudformation/dns/bootstrap_resources.yml
             - aws cloudformation validate-template --template-body file://cloudformation/dns/bootstrap_resources.yml
-            - aws cloudformation deploy --template-file cloudformation/bootstrap_resources.yml --stack-name BootstrapResources --capabilities CAPABILITY_IAM
+            - aws cloudformation deploy --template-file cloudformation/dns/bootstrap_resources.yml --stack-name BootstrapResources --capabilities CAPABILITY_IAM
       secrets:
         - name: bootstrap-dns-iam-user-secret
       env_vars:

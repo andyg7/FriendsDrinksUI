@@ -40,7 +40,6 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AmazonRoute53FullAccess
 
-
 Outputs:
   DNSDeployerRoleArn:
     Description: The role used to deploy DNS infrastructure.
