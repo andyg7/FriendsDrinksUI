@@ -2,6 +2,8 @@
 
 set -eu
 
+updateType=$1
+
 aws iam list-access-keys --user-name BootstrapUser
 
 echo 'Delete returned access keys manually'
@@ -30,5 +32,16 @@ fi
 
 compiled_secret=$(mktemp)
 cat envautomation/dns/bootstrapawsiamusersecret.yaml | envsubst | tee $compiled_secret
-sem apply -f $compiled_secret
+
+if [[ "$updateType" == "new" ]]
+then
+  sem apply -f $compiled_secret
+elif [[ "$updateType" == "update" ]]
+then
+  sem create -f $compiled_secret
+else
+  echo "$updateType is not a valid update type"
+  exit 1
+fi
+
 rm -rf $compiled_secret
