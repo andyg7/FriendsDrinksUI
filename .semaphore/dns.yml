@@ -42,7 +42,10 @@ blocks:
           commands:
             - checkout
             - source semaphore/kubernetesiamenvsetup 2>&1
-            - aws elbv2 describe-load-balancers
+            - elbdomainname=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[0].DNSName' --output text | grep k8s-default-friend)
+            - touch elbdomainname
+            - echo $elbdomainname > elbdomainname
+            - cache store elbpath elbdomainname
       secrets:
         - name: ui-iam-user-secret
       env_vars:
@@ -52,6 +55,8 @@ blocks:
     task:
       prologue:
         commands:
+          - cache list
+          - cache restore
           - checkout
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
