@@ -1,0 +1,30 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'DNS stack'
+
+Parameters:
+  Stage:
+    Type: String
+    Description: Stage
+  ELBDomainName:
+    Type: String
+    Description: ELB domain name
+
+Resources:
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !Sub '${ELBDomainName}'
+        EvaluateTargetHealth: false
+      Comment: "Alias record for ELB"
+      HostedZoneName: 'friendsdrinksv2.com.'
+      Name: !Sub '{Stage}.friendsdrinksv2.com'
+      Type: 'A|AAA'
+
+
+Outputs:
+  RecordSet:
+    Value: !Ref RecordSet
+    Export:
+      Name: !Sub "${AWS::StackName}-RecordSet"

@@ -1,0 +1,19 @@
+version: v1.0
+name: Initial Pipeline
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Deploy DNS
+    task:
+      jobs:
+        - name: Deploy DNS
+          commands:
+            - checkout
+            - echo 'Hello, world!'
+      secrets:
+        - name: dns-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1

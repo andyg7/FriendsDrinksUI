@@ -151,3 +151,7 @@ blocks:
       env_vars:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
+
+promotions:
+  - name: DNS changes
+    pipeline_file: dns.yml
