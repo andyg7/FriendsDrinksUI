@@ -41,6 +41,7 @@ blocks:
         - name: Deploy DNS record set
           commands:
             - checkout
+            - source semaphore/dnsiamenvsetup 2>&1
             - cat cloudformation/dns/dns.yml
             - aws cloudformation validate-template --template-body file://cloudformation/dns/dns.yml
       secrets:
