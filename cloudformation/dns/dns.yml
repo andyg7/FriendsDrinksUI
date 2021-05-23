@@ -28,7 +28,7 @@ Resources:
       HostedZoneId: !Sub "${HostedZoneId}"
       Name: !Sub "${Stage}.friendsdrinksv2.com"
       Region: !Ref 'AWS::Region'
-      Type: 'A|AAA'
+      Type: 'A'
 
 
 Outputs:
