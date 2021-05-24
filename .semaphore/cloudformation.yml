@@ -1,0 +1,33 @@
+version: v1.0
+name: CloudFormation deployment
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Create UI CloudFormation resources
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - which aws
+          - aws --version
+      jobs:
+        - name: Deploy CloudFormation
+          commands:
+            - aws --version
+            - source semaphore/cognitoiamenvsetup 2>&1
+            - cat cloudformation/cloudformation_template.yml
+            - aws cloudformation validate-template --template-body file://cloudformation/cloudformation_template.yml
+            - aws cloudformation deploy --template-file cloudformation/cloudformation_template.yml --stack-name FriendsDrinksUIResources --capabilities CAPABILITY_IAM --parameter-overrides Stage=beta
+      secrets:
+        - name: ui-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+promotions:
+  - name: Load balancer controller deployment
+    pipeline_file: load_balancer_controller.yml

@@ -1,0 +1,38 @@
+version: v1.0
+name: DNS Pipeline
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Deploy load balancer controller
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - aws --version
+      jobs:
+        - name: Deploy load balancer controller
+          commands:
+            - source semaphore/kubernetesiamenvsetup 2>&1
+            - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
+            - kubectl --kubeconfig awskubeconfig cluster-info
+            - kubectl --kubeconfig awskubeconfig get nodes
+            - export rolearn=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="KubernetesStack-KubernetesInfraStack-AT0YQ2IB1M2V-AmazonEKSLoadBalancerControllerRole") | .Value')
+            - apply_tmp=$(mktemp)
+            - cat kubernetes/aws-load-balancer-controller-service-account.yaml | envsubst > $apply_tmp
+            - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
+            - rm -f $apply_tmp
+            - kubectl --kubeconfig awskubeconfig apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.1/cert-manager.yaml
+            - kubectl --kubeconfig awskubeconfig apply -f kubernetes/v2_2_0_full.yaml
+      secrets:
+        - name: ui-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+promotions:
+  - name: UI service
+    pipeline_file: ui_service.yml

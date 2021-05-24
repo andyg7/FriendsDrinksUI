@@ -22,4 +22,4 @@ blocks:
 
 promotions:
   - name: Service changes
-    pipeline_file: service.yml
+    pipeline_file: cloudformation.yml
