@@ -31,3 +31,5 @@ blocks:
 promotions:
   - name: Load balancer controller deployment
     pipeline_file: load_balancer_controller.yml
+    auto_promote:
+      when: "result = 'passed'

@@ -93,3 +93,5 @@ blocks:
 promotions:
   - name: DNS changes
     pipeline_file: dns.yml
+    auto_promote:
+      when: "result = 'passed'

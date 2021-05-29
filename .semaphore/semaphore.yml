@@ -21,5 +21,7 @@ blocks:
         - name: docker-hub-secret
 
 promotions:
-  - name: Service changes
-    pipeline_file: cloudformation.yml
+  - name: Cognito changes
+    pipeline_file: cognito.yml
+    auto_promote:
+      when: "result = 'passed'
