@@ -23,5 +23,3 @@ blocks:
 promotions:
   - name: Cognito changes
     pipeline_file: cognito.yml
-    auto_promote:
-      when: "result = 'passed'"
