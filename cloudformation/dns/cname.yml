@@ -1,0 +1,38 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'DNS stack'
+
+Parameters:
+  Stage:
+    Type: String
+    Description: Stage
+  HostedZoneId:
+    Type: String
+    Description: HostedZoneId
+  CNAMERecordName:
+    Type: String
+    Description: CNAME record name
+  CNAMERecordValue:
+    Type: String
+    Description: CNAME record value
+
+Resources:
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Comment: "CNAME record for confirming domain ownership"
+      HostedZoneId: !Sub "${HostedZoneId}"
+      Name: !Sub "${CNAMERecordName}"
+      ResourceRecords:
+        - !Sub "${CNAMERecordValue}"
+      Region: !Ref 'AWS::Region'
+      Type: 'CNAME'
+      SetIdentifier: !Sub "${Stage}.CNAMEVerification"
+
+
+
+Outputs:
+  RecordSet:
+    Value: !Ref RecordSet
+    Export:
+      Name: !Sub "${AWS::StackName}-RecordSet"

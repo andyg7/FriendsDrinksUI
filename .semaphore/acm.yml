@@ -1,0 +1,55 @@
+version: v1.0
+name: ACM (certificates) deployment
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Register ACM cert
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - which aws
+          - aws --version
+      jobs:
+        - name: Register SSL cert
+          commands:
+            - aws --version
+            - source semaphore/cognitoiamenvsetup 2>&1
+            - aws acm request-certificate --domain-name "beta.friendsdrinks.com" --validation-method DNS
+      secrets:
+        - name: ui-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+  - name: Confirm cert (via CNAME update)
+    task:
+      prologue:
+        commands:
+          - checkout
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - sudo ./aws/install
+          - which aws
+          - aws --version
+      jobs:
+        - name: Confirm ssl cert
+          commands:
+            - aws --version
+            - source semaphore/dnsiamenvsetup 2>&1
+            - aws cloudformation validate-template --template-body file://cloudformation/dns/cname.yml
+            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name CNAMERecordSetStack --parameter-overrides HostedZoneId=Z03368065P2HEQ3Z6RIO Stage=beta
+      secrets:
+        - name: deployer-dns-iam-user-secret
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+promotions:
+  - name: Load balancer controller deployment
+    pipeline_file: load_balancer_controller.yml
+    auto_promote:
+      when: "result = 'passed'"

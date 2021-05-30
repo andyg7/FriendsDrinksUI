@@ -29,7 +29,7 @@ blocks:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
 promotions:
-  - name: Load balancer controller deployment
-    pipeline_file: load_balancer_controller.yml
+  - name: ACM cert pipeline
+    pipeline_file: acm.yml
     auto_promote:
       when: "result = 'passed'"
