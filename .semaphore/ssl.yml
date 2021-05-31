@@ -47,7 +47,8 @@ blocks:
           commands:
             - aws --version
             - source semaphore/dnsiamenvsetup 2>&1
-            - ./semaphore/validate_dns_ownership.sh cname_file
+            - aws route53 list-resource-record-sets
+            - ./semaphore/validate_dns_ownership.sh beta cname_file
       secrets:
         - name: deployer-dns-iam-user-secret
       env_vars:
