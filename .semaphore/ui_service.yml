@@ -21,8 +21,8 @@ blocks:
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
-            - export clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-UserPoolClientId") | .Value')
-            - export userPoolId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="FriendsDrinksUIResources-UserPoolId") | .Value')
+            - export clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="CognitoResources-UserPoolClientId") | .Value')
+            - export userPoolId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="CognitoResources-UserPoolId") | .Value')
             - apply_tmp=$(mktemp)
             - cat kubernetes/10secret.yml | envsubst > $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
