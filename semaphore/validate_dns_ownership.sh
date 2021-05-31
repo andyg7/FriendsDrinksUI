@@ -14,6 +14,9 @@ then
 else
   name=$(cat "$cname_file" | jq -r '.Name')
   echo "Name is ${name}"
+  suffix="friendsdrinksv2.com"
+  name_without_suffix=${name/%$suffix}
+  echo "Name without suffix is ${name_without_suffix}"
   value=$(cat "$cname_file" | jq -r '.Value')
   echo "Value is ${value}"
   aws cloudformation validate-template --template-body file://cloudformation/dns/cname.yml

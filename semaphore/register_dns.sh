@@ -6,7 +6,7 @@ stage=$1
 region=$2
 file=$3
 
-domainNameToRegister="${stage}.friendsdrinks.com"
+domainNameToRegister="${stage}.friendsdrinksv2.com"
 echo "Domain name to register ${domainNameToRegister}"
 domain=$(aws --region "$region" acm list-certificates --query 'CertificateSummaryList[].DomainName' --output text | grep "${stage}.friendsdrinksv2.com" || echo 'na')
 
