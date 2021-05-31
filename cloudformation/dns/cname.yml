@@ -27,6 +27,7 @@ Resources:
         - !Sub "${CNAMERecordValue}"
       Region: !Ref 'AWS::Region'
       Type: 'CNAME'
+      TTL: '60'
       SetIdentifier: !Sub "${Stage}.CNAMEVerification"
 
 

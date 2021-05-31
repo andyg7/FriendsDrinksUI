@@ -8,7 +8,7 @@ file=$3
 
 domainNameToRegister="${stage}.friendsdrinks.com"
 echo "Domain name to register ${domainNameToRegister}"
-domain=$(aws --region "$region" acm list-certificates --query 'CertificateSummaryList[].DomainName' --output text | grep "${stage}.friendsdrinks.com" || echo 'na')
+domain=$(aws --region "$region" acm list-certificates --query 'CertificateSummaryList[].DomainName' --output text | grep "${stage}.friendsdrinksv2.com" || echo 'na')
 
 if [ "$domain" = 'na' ]
 then
