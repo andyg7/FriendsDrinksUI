@@ -20,7 +20,10 @@ blocks:
           commands:
             - aws --version
             - source semaphore/cognitoiamenvsetup 2>&1
-            - aws acm request-certificate --domain-name "beta.friendsdrinks.com" --validation-method DNS
+            - touch cname_file
+            - ./semaphore/register_dns.sh beta us-east-1 cname_file
+            - cat cname_file
+            - cache store cname_file_key cname_file
       secrets:
         - name: ui-iam-user-secret
       env_vars:
@@ -31,6 +34,9 @@ blocks:
       prologue:
         commands:
           - checkout
+          - cache list
+          - cache restore cname_file_key
+          - cat cname_file
           - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           - unzip awscliv2.zip
           - sudo ./aws/install
@@ -41,8 +47,7 @@ blocks:
           commands:
             - aws --version
             - source semaphore/dnsiamenvsetup 2>&1
-            - aws cloudformation validate-template --template-body file://cloudformation/dns/cname.yml
-            - aws cloudformation deploy --template-file cloudformation/dns/dns.yml --stack-name CNAMERecordSetStack --parameter-overrides HostedZoneId=Z03368065P2HEQ3Z6RIO Stage=beta
+            - ./semaphore/validate_dns_ownership.sh cname_file
       secrets:
         - name: deployer-dns-iam-user-secret
       env_vars:

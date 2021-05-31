@@ -29,7 +29,7 @@ blocks:
         - name: AWS_DEFAULT_REGION
           value: us-east-1
 promotions:
-  - name: ACM cert pipeline
-    pipeline_file: acm.yml
+  - name: SSL cert pipeline
+    pipeline_file: ssl.yml
     auto_promote:
       when: "result = 'passed'"
