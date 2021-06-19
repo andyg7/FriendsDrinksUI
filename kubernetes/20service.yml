@@ -12,9 +12,6 @@ metadata:
 spec:
   type: $serviceType
   ports:
-    - name: unencrypted
-      port: 80
-      targetPort: 8080
     - name: encrypted
       port: 443
       targetPort: 8080
