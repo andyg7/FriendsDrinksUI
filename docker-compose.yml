@@ -8,7 +8,6 @@ services:
       - kafka-network
     volumes:
       - ./dockercompose/config:/app/config
-      - ./dockercompose/secret:/app/secret
     ports:
       - "8080:8080"
 

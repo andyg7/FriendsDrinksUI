@@ -4,6 +4,7 @@ metadata:
 apiVersion: v1
 data:
   config.properties: |-
+    identity_store=cognito
     backendHostname=frontendapi-cs
     backendPort=80
     clientIdFile=secret/clientid

@@ -6,11 +6,10 @@ let auth = require('./auth');
 let bodyParser = require('body-parser')
 let cookieParser = require('cookie-parser')
 
-const SESSION_KEY = "friendsdrinks-session-id";
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
-function createServer(userManagement, backendConfig) {
+function createServer(userManagement, cookieExtractor, backendConfig) {
         let app = express();
 
         app.set('views', __dirname + '/views');
@@ -33,8 +32,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.get('/friendsdrinksinvitations/:friendsDrinksId', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login');
                 return;
             }
@@ -93,8 +92,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.get('/friendsdrinksdetailpages/:friendsDrinksId', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login');
                 return;
             }
@@ -182,8 +181,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.get('/', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login');
                 return;
             }
@@ -276,8 +275,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/schedule/:friendsDrinksId', function (req, res) {
-          let sessionId = req.cookies[SESSION_KEY];
-          if (!sessionId) {
+          let sessionId = cookieExtractor.getSessionId(req)
+          if (sessionId === null) {
             res.redirect('/login')
             return;
           }
@@ -317,8 +316,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/delete/:friendsDrinksId', function (req, res) {
-          let sessionId = req.cookies[SESSION_KEY];
-          if (!sessionId) {
+          let sessionId = cookieExtractor.getSessionId(req)
+          if (sessionId === null) {
             res.redirect('/login')
             return;
           }
@@ -379,8 +378,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/inviteUser/:friendsDrinksId', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login')
                 return;
              }
@@ -426,8 +425,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/replyToInvitation/:friendsDrinksId', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login')
                 return;
              }
@@ -473,8 +472,8 @@ function createServer(userManagement, backendConfig) {
 
 
         app.post('/friendsdrinks/create', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login')
                 return;
              }
@@ -513,8 +512,8 @@ function createServer(userManagement, backendConfig) {
         })
 
         app.post('/friendsdrinks/update', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login')
                 return;
              }
@@ -750,8 +749,8 @@ function createServer(userManagement, backendConfig) {
         }
 
         app.post('/logout', function (req, res) {
-            let sessionId = req.cookies[SESSION_KEY];
-            if (!sessionId) {
+            let sessionId = cookieExtractor.getSessionId(req)
+            if (sessionId === null) {
                 res.redirect('/login');
                 return;
             }

@@ -1,6 +1,11 @@
 let AwsUserManagement = require('./aws/auth')
+let HttpCookieExtractor = require('./http/cookie')
+let DevUserManagement = require('./dev/auth')
+let DevCookieExtractor = require('./dev/cookie')
 let propertiesReader = require('properties-reader');
 const fs = require('fs');
+
+const SESSION_KEY = "friendsdrinks-session-id";
 
 let createServer = require('./server')
 
@@ -26,20 +31,26 @@ let backendConfig = {}
 backendConfig.hostname = properties.get('backendHostname')
 backendConfig.port = properties.get('backendPort')
 
-let clientIdFile = properties.get('clientIdFile')
-let userPoolIdFile = properties.get('userPoolIdFile')
-
 console.log('Backend hostname: ' + backendConfig.hostname)
 console.log('Backend port: ' + backendConfig.port)
 
-const clientId = fs.readFileSync(clientIdFile, {encoding:'utf8', flag:'r'});
-console.log("Client ID:" + clientId)
+let awsUserManagement = null;
+let cookieExtractor = null;
+if (properties.get('identity_store') == 'dev') {
+    awsUserManagement = new DevUserManagement()
+    cookieExtractor = new DevCookieExtractor()
+} else {
+    let clientIdFile = properties.get('clientIdFile')
+    let userPoolIdFile = properties.get('userPoolIdFile')
+    const clientId = fs.readFileSync(clientIdFile, {encoding:'utf8', flag:'r'});
+    console.log("Client ID:" + clientId)
+    const userPoolId = fs.readFileSync(userPoolIdFile, {encoding:'utf8', flag:'r'});
+    console.log("User pool ID:" + userPoolId)
+    awsUserManagement = new AwsUserManagement(userPoolId, clientId)
+    cookieExtractor = new HttpCookieExtractor(SESSION_KEY)
+}
 
-const userPoolId = fs.readFileSync(userPoolIdFile, {encoding:'utf8', flag:'r'});
-console.log("User pool ID:" + userPoolId)
-
-let awsUserManagement = new AwsUserManagement(userPoolId, clientId)
-let server = createServer(awsUserManagement, backendConfig)
+let server = createServer(awsUserManagement, cookieExtractor, backendConfig)
 let serverListening = server.listen(8080, function () {
 	let host = serverListening.address().address
 	let port = serverListening.address().port
