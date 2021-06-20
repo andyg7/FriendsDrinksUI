@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
+set -eu
 
 docker-compose -f docker-compose.yml up
