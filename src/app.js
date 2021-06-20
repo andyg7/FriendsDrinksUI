@@ -34,10 +34,10 @@ backendConfig.port = properties.get('backendPort')
 console.log('Backend hostname: ' + backendConfig.hostname)
 console.log('Backend port: ' + backendConfig.port)
 
-let awsUserManagement = null;
+let userManagement = null;
 let cookieExtractor = null;
 if (properties.get('identity_store') == 'dev') {
-    awsUserManagement = new DevUserManagement()
+    userManagement = new DevUserManagement()
     cookieExtractor = new DevCookieExtractor()
 } else {
     let clientIdFile = properties.get('clientIdFile')
@@ -46,11 +46,11 @@ if (properties.get('identity_store') == 'dev') {
     console.log("Client ID:" + clientId)
     const userPoolId = fs.readFileSync(userPoolIdFile, {encoding:'utf8', flag:'r'});
     console.log("User pool ID:" + userPoolId)
-    awsUserManagement = new AwsUserManagement(userPoolId, clientId)
+    userManagement = new AwsUserManagement(userPoolId, clientId)
     cookieExtractor = new HttpCookieExtractor(SESSION_KEY)
 }
 
-let server = createServer(awsUserManagement, cookieExtractor, backendConfig)
+let server = createServer(userManagement, cookieExtractor, backendConfig)
 let serverListening = server.listen(8080, function () {
 	let host = serverListening.address().address
 	let port = serverListening.address().port
