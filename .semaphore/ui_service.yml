@@ -53,7 +53,7 @@ blocks:
             - apply_tmp=$(mktemp)
             - export certArn=$(aws acm  list-certificates | jq -r '.CertificateSummaryList[0].CertificateArn')
             - export serviceType=LoadBalancer
-            - cat kubernetes/20service.yml | envsubst > $apply_tmp
+            - cat kubernetes/aws/20service.yml | envsubst > $apply_tmp
             - cat $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
             - rm -f $apply_tmp

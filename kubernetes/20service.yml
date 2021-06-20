@@ -2,18 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: friendsdrinks-ui-service
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: external
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: 'encrypted'
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: $certArn
-
 spec:
-  type: $serviceType
+  type: NodePort
   ports:
-    - name: encrypted
-      port: 443
+    - port: 80
       targetPort: 8080
+      nodePort: 30615
   selector:
     app: friendsdrinks-ui
