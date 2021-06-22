@@ -24,10 +24,10 @@ blocks:
             - export clientId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="CognitoResources-UserPoolClientId") | .Value')
             - export userPoolId=$(aws cloudformation list-exports | jq -r '.Exports[] | select(.Name=="CognitoResources-UserPoolId") | .Value')
             - apply_tmp=$(mktemp)
-            - cat kubernetes/10secret.yml | envsubst > $apply_tmp
+            - cat kubernetes/aws/10secret.yml | envsubst > $apply_tmp
             - kubectl --kubeconfig awskubeconfig apply -f $apply_tmp
             - rm -f $apply_tmp
-            - kubectl --kubeconfig awskubeconfig apply -f kubernetes/10config.yml
+            - kubectl --kubeconfig awskubeconfig apply -f kubernetes/aws/10config.yml
       secrets:
         - name: ui-iam-user-secret
         - name: docker-hub-secret
