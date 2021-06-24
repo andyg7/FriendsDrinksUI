@@ -39,6 +39,7 @@ let cookieExtractor = null;
 if (properties.get('identity_store') == 'dev') {
     userManagement = new DevUserManagement()
     cookieExtractor = new DevCookieExtractor()
+    console.log('Dev stage')
 } else {
     let clientIdFile = properties.get('clientIdFile')
     let userPoolIdFile = properties.get('userPoolIdFile')

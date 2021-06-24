@@ -3,7 +3,17 @@ let auth = require('./../auth')
 class UserManagement {
 
 	getLoggedInUser(sessionId) {
-   	    return new auth.User("012345689", "test@test.com", "foo", "bar");
+   	    let user = new auth.User("012345689", "test@test.com", "foo", "bar");
+        let loggedInUser = new auth.LoggedInUser(user, "0123456789");
+        resolve(loggedInUser);
+	}
+
+	login(email, password) {
+	    console.log("logging in")
+	    return new Promise(function (resolve, reject) {
+           let loggedInUser = new auth.LoggedInUser(new auth.User("012345689", "test@test.com", "foo", "bar"), "0123456789");
+	       resolve(loggedInUser);
+	    });
 	}
 
 }

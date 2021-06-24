@@ -675,6 +675,7 @@ function createServer(userManagement, cookieExtractor, backendConfig) {
                     res.redirect('/');
                     return;
                 }).catch (function (err) {
+                   console.log(err)
                    res.status(500)
                    res.send(INTERNAL_ERROR_MESSAGE);
                    return;
