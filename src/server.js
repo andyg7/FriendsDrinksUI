@@ -720,7 +720,7 @@ function createServer(userManagement, cookieExtractor, backendConfig) {
                   console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
                   if (backendRes.statusCode !== 200) {
                      backendRes.resume();
-                     reject(new Error("Did not get a 200 back. instead got " + backendreq.statuscode));
+                     reject(new Error("Did not get a 200 back. instead got " + backendRes.statusCode));
                   } else {
                       let bodyChunks = [];
                       backendRes.on('data', (chunk) => {
