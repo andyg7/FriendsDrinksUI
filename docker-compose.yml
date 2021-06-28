@@ -14,4 +14,4 @@ services:
 networks:
   kafka-network:
     external: true
-    name: friendsdrinks_default
+    name: kafka_default
