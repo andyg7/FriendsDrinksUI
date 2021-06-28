@@ -4,8 +4,7 @@ class UserManagement {
 
 	getLoggedInUser(sessionId) {
    	    let user = new auth.User("012345689", "test@test.com", "foo", "bar");
-        let loggedInUser = new auth.LoggedInUser(user, "0123456789");
-        resolve(loggedInUser);
+        return user;
 	}
 
 	login(email, password) {

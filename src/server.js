@@ -9,7 +9,7 @@ let cookieParser = require('cookie-parser')
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
-function createServer(userManagement, cookieExtractor, backendConfig) {
+function createServer(userManagement, cookieExtractor, backendConfig, sessionKey) {
         let app = express();
 
         app.set('views', __dirname + '/views');
@@ -669,7 +669,7 @@ function createServer(userManagement, cookieExtractor, backendConfig) {
                    }
                 }
                 reportUserEvent(input).then(function (data) {
-                    res.cookie(SESSION_KEY, sessionId, {
+                    res.cookie(sessionKey, sessionId, {
                         path: '/'
                     });
                     res.redirect('/');
@@ -840,7 +840,7 @@ function createServer(userManagement, cookieExtractor, backendConfig) {
 
         function resetHttpResponseCookieAndRedirect(res) {
             console.log("Resetting http cookies")
-            res.cookie(SESSION_KEY, "", {
+            res.cookie(sessionKey, "", {
                 path: '/',
                 expires: new Date(1)
             });

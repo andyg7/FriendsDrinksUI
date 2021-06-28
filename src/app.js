@@ -51,7 +51,7 @@ if (properties.get('identity_store') == 'dev') {
     cookieExtractor = new HttpCookieExtractor(SESSION_KEY)
 }
 
-let server = createServer(userManagement, cookieExtractor, backendConfig)
+let server = createServer(userManagement, cookieExtractor, backendConfig, SESSION_KEY)
 let serverListening = server.listen(8080, function () {
 	let host = serverListening.address().address
 	let port = serverListening.address().port
