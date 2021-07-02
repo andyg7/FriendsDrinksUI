@@ -19,9 +19,9 @@ blocks:
         - name: Register SSL cert
           commands:
             - aws --version
-            - source semaphore/cognitoiamenvsetup 2>&1
+            - source .semaphore/cognitoiamenvsetup 2>&1
             - touch cname_file
-            - ./semaphore/register_dns.sh beta us-east-1 cname_file
+            - ./.semaphore/register_dns.sh beta us-east-1 cname_file
             - cat cname_file
             - cache store cname_file_key cname_file
       secrets:
@@ -46,9 +46,9 @@ blocks:
         - name: Confirm ssl cert
           commands:
             - aws --version
-            - source semaphore/dnsiamenvsetup 2>&1
+            - source .semaphore/dnsiamenvsetup 2>&1
             - aws route53 list-hosted-zones
-            - ./semaphore/validate_dns_ownership.sh beta cname_file
+            - ./.semaphore/validate_dns_ownership.sh beta cname_file
       secrets:
         - name: deployer-dns-iam-user-secret
       env_vars:

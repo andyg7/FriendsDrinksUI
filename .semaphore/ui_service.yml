@@ -17,7 +17,7 @@ blocks:
       jobs:
         - name: Create configuration resources
           commands:
-            - source semaphore/kubernetesiamenvsetup 2>&1
+            - source .semaphore/kubernetesiamenvsetup 2>&1
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
@@ -46,7 +46,7 @@ blocks:
       jobs:
         - name: Deploy UI service
           commands:
-            - source semaphore/kubernetesiamenvsetup 2>&1
+            - source .semaphore/kubernetesiamenvsetup 2>&1
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes
@@ -74,7 +74,7 @@ blocks:
       jobs:
         - name: Deploy UI app
           commands:
-            - source semaphore/kubernetesiamenvsetup 2>&1
+            - source .semaphore/kubernetesiamenvsetup 2>&1
             - aws eks update-kubeconfig --name EKSCluster --kubeconfig awskubeconfig
             - kubectl --kubeconfig awskubeconfig cluster-info
             - kubectl --kubeconfig awskubeconfig get nodes

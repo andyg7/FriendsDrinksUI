@@ -39,7 +39,7 @@ blocks:
       jobs:
         - name: Gets ELB domain name and caches it
           commands:
-            - source semaphore/kubernetesiamenvsetup 2>&1
+            - source .semaphore/kubernetesiamenvsetup 2>&1
             - elbdomainname=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[0].DNSName' --output text | grep k8s-default-friend)
             - touch elbdomainname
             - echo $elbdomainname > elbdomainname
@@ -73,7 +73,7 @@ blocks:
       jobs:
         - name: Deploy DNS record set
           commands:
-            - source semaphore/dnsiamenvsetup 2>&1
+            - source .semaphore/dnsiamenvsetup 2>&1
             - elbdomainnameenvvar=$(cat elbdomainname)
             - echo $elbdomainnameenvvar
             - elbhostedzoneidenvvar=$(cat elbhostedzoneid)
