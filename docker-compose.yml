@@ -7,7 +7,7 @@ services:
     networks:
       - kafka-network
     volumes:
-      - ./dockercompose/config:/app/config
+      - ${PWD}/config.properties:/app/config/config.properties
     ports:
       - "8080:8080"
 
