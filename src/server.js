@@ -558,7 +558,6 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
               console.log('STATUS: ' + backendRes.statusCode);
               console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
               if (backendRes.statusCode !== 200) {
-                 console.log("nahhhh")
                  backendRes.resume();
                  res.status(500);
                  res.send(INTERNAL_ERROR_MESSAGE);
