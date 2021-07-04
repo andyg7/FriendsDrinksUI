@@ -145,8 +145,8 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                 }
 
                 meetups = []
-                if (obj.meetups && obj.meetups.length > 0) {
-                    obj.meetups.forEach(function (item, index) {
+                if (obj.friendsDrinksDetailPageMeetupList && obj.friendsDrinksDetailPageMeetupList.length > 0) {
+                    obj.friendsDrinksDetailPageMeetupList.forEach(function (item, index) {
                         meetups.push(
                            {
                               date: item.date
