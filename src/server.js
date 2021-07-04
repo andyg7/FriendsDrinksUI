@@ -220,8 +220,8 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                 let obj = JSON.parse(body);
 
                 friendsDrinks = []
-                if (obj.adminFriendsDrinksList && obj.adminFriendsDrinksList.length > 0) {
-                    obj.adminFriendsDrinksList.forEach(function (item, index) {
+                if (obj.adminFriendsDrinksStateList && obj.adminFriendsDrinksStateList.length > 0) {
+                    obj.adminFriendsDrinksStateList.forEach(function (item, index) {
                         friendsDrinks.push(
                            {
                               id: item.friendsDrinksId,
@@ -232,8 +232,8 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                     });
                 }
 
-                if (obj.memberFriendsDrinksList && obj.memberFriendsDrinksList.length > 0) {
-                    obj.memberFriendsDrinksList.forEach(function (item, index) {
+                if (obj.memberFriendsDrinksStateList && obj.memberFriendsDrinksStateList.length > 0) {
+                    obj.memberFriendsDrinksStateList.forEach(function (item, index) {
                         friendsDrinks.push(
                            {
                               id: item.friendsDrinksId,
