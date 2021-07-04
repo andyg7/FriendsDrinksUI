@@ -132,8 +132,8 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                 console.log('BODY: ' + body);
                 let obj = JSON.parse(body);
                 members = []
-                if (obj.members && obj.members.length > 0) {
-                    obj.members.forEach(function (item, index) {
+                if (obj.memberList && obj.memberList.length > 0) {
+                    obj.memberList.forEach(function (item, index) {
                         members.push(
                            {
                               firstName: item.firstName,
