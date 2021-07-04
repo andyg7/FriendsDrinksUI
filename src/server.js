@@ -245,8 +245,8 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                 }
 
                 invitations = []
-                if (obj.invitations && obj.invitations.length > 0) {
-                    obj.invitations.forEach(function (item, index) {
+                if (obj.invitationList && obj.invitationList.length > 0) {
+                    obj.invitationList.forEach(function (item, index) {
                         invitations.push(
                            {
                               message: item.message,
