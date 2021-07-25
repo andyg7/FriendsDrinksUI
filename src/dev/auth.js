@@ -1,20 +1,20 @@
-let auth = require('./../auth')
+import { User, LoggedInUser } from './../auth';
 
 class UserManagement {
 
 	getLoggedInUser(sessionId) {
-   	    let user = new auth.User("012345689", "test@test.com", "foo", "bar");
+   	    let user = new User("012345689", "test@test.com", "foo", "bar");
         return user;
 	}
 
 	login(email, password) {
 	    console.log("logging in")
 	    return new Promise(function (resolve, reject) {
-           let loggedInUser = new auth.LoggedInUser(new auth.User("012345689", "test@test.com", "foo", "bar"), "0123456789");
+           let loggedInUser = new LoggedInUser(new User("012345689", "test@test.com", "foo", "bar"), "0123456789");
 	       resolve(loggedInUser);
 	    });
 	}
 
 }
 
-module.exports = UserManagement
+export default UserManagement

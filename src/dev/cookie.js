@@ -6,4 +6,4 @@ class CookieExtractor {
     }
 }
 
-module.exports = CookieExtractor
+export default CookieExtractor
