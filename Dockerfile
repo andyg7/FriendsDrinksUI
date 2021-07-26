@@ -3,6 +3,7 @@ FROM node:13.12.0-alpine as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY ./react-client/package.json ./
+COPY ./react-client/package-lock.json ./
 RUN npm ci --silent
 RUN npm install react-scripts@3.4.1
 COPY ./react-client/ ./
