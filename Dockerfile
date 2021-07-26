@@ -14,7 +14,7 @@ COPY --from=build /app/build /app/public/
 RUN mkdir -p /app/config
 WORKDIR /app
 COPY ./server/package.json ./
-RUN npm install react-scripts@3.4.1 -g
+RUN npm install
 COPY ./server/src .
 EXPOSE 8080
 ENTRYPOINT [ "node", "app.js" ]
