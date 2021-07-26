@@ -4,14 +4,7 @@ version: '3.7'
 services:
   friendsdrinks-ui:
     image: andyg001/friendsdrinksui:latest
-    networks:
-      - kafka-network
     volumes:
       - ${PWD}/server/config.properties:/app/config/config.properties
     ports:
       - "8080:8080"
-
-networks:
-  kafka-network:
-    external: true
-    name: kafka_default
