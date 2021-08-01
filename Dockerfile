@@ -5,7 +5,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY ./react-client/package.json ./
 COPY ./react-client/package-lock.json ./
 RUN npm ci --silent
-RUN npm install react-scripts@3.4.1
+RUN npm install react-scripts@3.4.1 -g
 COPY ./react-client/ ./
 RUN npm run build
 
