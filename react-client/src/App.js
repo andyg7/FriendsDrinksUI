@@ -22,4 +22,9 @@ function App() {
   );
 }
 
+// function Homepage
+// function FriendsDrinksDetailPage
+// function Login/Signup 
+// About
+
 export default App;
