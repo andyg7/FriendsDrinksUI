@@ -15,7 +15,7 @@ export default class Homepage extends React.Component {
 
     render() {
         const dto = this.state.homepageDto;
-        const friendsDrinksListItem = dto.friendsDrinksList.map((x) => <li>{x.name}</li>);
+        const friendsDrinksListItem = dto.friendsDrinksList.map((x) => <li key={x.name}>{x.name}</li>);
         return (
             <div>
                 <h1>Welcome back {this.state.homepageDto.name}!</h1>
