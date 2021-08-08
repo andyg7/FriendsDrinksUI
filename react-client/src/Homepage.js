@@ -8,7 +8,8 @@ export default class Homepage extends React.Component {
                 name: "Andrew",
                 friendsDrinksList: [{
                     name: "Whiskey drinks"
-                }]
+                }],
+                invitations: []
             }
         };
     }
@@ -21,6 +22,7 @@ export default class Homepage extends React.Component {
                 <h1>Welcome back {this.state.homepageDto.name}!</h1>
                 <h2>Your FriendsDrinkses!</h2>
                 <ul>{friendsDrinksListItem}</ul>
+                <h2>Your invitations!</h2>
             </div>
         );
     }

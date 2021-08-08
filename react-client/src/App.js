@@ -1,29 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
-import Homepage from './Homepage'
-import FriendsDrinksDetailPage from './FriendsDrinksDetailPage'
 import React from 'react';
+import LoginControl from './Auth';
+import LoggedInApp from './LoggedInApp';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 'HOMEPAGE'
+      sessionId: ''
     };
   }
 
   render() {
-    if (this.state.page === 'HOMEPAGE') {
-      return <Homepage />;
+    if (!this.state.sessionId) {
+      return <LoginControl />;
     } else {
-      return <FriendsDrinksDetailPage />
+      return <LoggedInApp sessionId={this.state.sessionId} />
     }
   }
 }
-
-// function Homepage
-// function FriendsDrinksDetailPage
-// function Login/Signup 
-// About
 
 export default App;
