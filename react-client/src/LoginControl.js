@@ -27,7 +27,7 @@ export default class LoginControl extends React.Component {
         if (this.state.page === 'LOGIN') {
             return <Login value='Sign up' onSwitch={() => this.handleSwitch()} />
         } else {
-            return <Signup value='Already haven account? Log in' onSwitch={() => this.handleSwitch()} />
+            return <Signup value='Already have an account? Log in' onSwitch={() => this.handleSwitch()} />
         }
     };
 
@@ -54,7 +54,7 @@ class Login extends React.Component {
     render() {
         return (
             <div>
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={() => this.handleSubmit}>
                     <label>
                         Name:
                         <input type="text" value={this.state.value} onChange={this.handleChange} />
@@ -71,6 +71,22 @@ class Login extends React.Component {
 }
 
 class Signup extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { value: '' };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+    }
+
+    handleSubmit(event) {
+        alert('A name was submitted: ' + this.state.value);
+        event.preventDefault();
+    }
 
     render() {
         return (
