@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import LoginControl from './Auth';
+import LoginControl from './LoginControl';
 import LoggedInApp from './LoggedInApp';
 
 class App extends React.Component {
