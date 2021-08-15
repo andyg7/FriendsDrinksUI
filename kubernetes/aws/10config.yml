@@ -7,6 +7,7 @@ data:
     identity_store=cognito
     backendHostname=frontendapi-cs
     backendPort=80
+    backend=kafka
     clientIdFile=secret/clientid
     userPoolIdFile=secret/userpoolid
 

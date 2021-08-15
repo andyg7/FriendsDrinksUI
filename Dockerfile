@@ -19,6 +19,7 @@ WORKDIR /app
 COPY ./server/package.json ./
 RUN npm install
 COPY ./server/src .
+COPY ./server/config.properties .
 EXPOSE 8080
 ENTRYPOINT [ "node", "app.js" ]
 CMD ["config/config.properties"]

@@ -42,7 +42,6 @@ let backend = null;
 if (properties.get('identity_store') == 'dev') {
   userManagement = new DevUserManagement();
   cookieExtractor = new DevCookieExtractor();
-  backend = new DevBackend();
   console.log('Dev stage');
 } else {
   let clientIdFile = properties.get('clientIdFile')
@@ -53,6 +52,11 @@ if (properties.get('identity_store') == 'dev') {
   console.log("User pool ID:" + userPoolId)
   userManagement = new AwsUserManagement(userPoolId, clientId)
   cookieExtractor = new HttpCookieExtractor(SESSION_KEY)
+}
+
+if (properties.get('backend') === 'dev') {
+  backend = new DevBackend();
+} else {
   backend = new HttpBackend(backendConfig);
 }
 
