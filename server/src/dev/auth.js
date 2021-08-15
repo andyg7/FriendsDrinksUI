@@ -15,6 +15,10 @@ class UserManagement {
 		});
 	}
 
+	logout(loggedInUser) {
+		// nop
+	}
+
 }
 
 module.exports = UserManagement
