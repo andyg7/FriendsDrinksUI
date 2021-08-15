@@ -49,7 +49,7 @@ export default class LoginControl extends React.Component {
             case 'LOG_IN':
                 return <LogIn forgotPasswordMessage='Forgot your password?' onSwitchToForgotPassword={this.handleSwitchToForgotPassword} signUpMessage='Not registered? Sign up!' onLoggedIn={this.props.onLoggedIn} onSwitchToSignUp={this.handleSwitchToSignUp} />
             case 'SIGN_UP':
-                return <Signup logInMessage='Already have an account? Log in!' onSwitchToLogIn={this.handleSwitchToLogIn} onSignedUp={this.handleSwitchToLogIn} />
+                return <SignUp logInMessage='Already have an account? Log in!' onSwitchToLogIn={this.handleSwitchToLogIn} onSignedUp={this.handleSwitchToLogIn} />
             case 'FORGOT_PASSWORD':
                 return <ForgotPassword onSwitchToResetPassword={this.handleSwitchToResetPassword} />
             case 'RESET_PASSWORD':
@@ -153,7 +153,7 @@ class LogIn extends React.Component {
 
 }
 
-class Signup extends React.Component {
+class SignUp extends React.Component {
 
     constructor(props) {
         super(props);
