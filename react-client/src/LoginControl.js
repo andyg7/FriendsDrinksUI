@@ -75,17 +75,26 @@ class Login extends React.Component {
                 (res) => {
                     if (res.status === 200) {
                         this.props.onLoggedIn(res.body.sId);
+                    } else if (res.status === 403) {
+                        alert(res.body.errMsg);
+                    } else if (res.status === 400) {
+                        alert(res.body.errMsg);
                     } else {
-                        throw new Error("Failed to log in");
+                        alert(res.body.errMsg);
                     }
-                },
+                }
+                //,
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
-                (error) => {
-                    console.log(error);
-                }
+                // (error) => {
+                // console.log(error);
+                // }
             )
+            .catch((error) => {
+                console.error('Error:', error);
+                alert("Unexpected error occured - please try again!!");
+            });
     }
 
     render() {

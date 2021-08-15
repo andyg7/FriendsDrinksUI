@@ -1,7 +1,9 @@
 let AwsUserManagement = require('./aws/auth')
 let HttpCookieExtractor = require('./http/cookie')
+let HttpBackend = require('./http/backend')
 let DevUserManagement = require('./dev/auth')
 let DevCookieExtractor = require('./dev/cookie')
+let DevBackend = require('./dev/backend')
 let propertiesReader = require('properties-reader');
 const fs = require('fs');
 
@@ -16,7 +18,7 @@ let configFile;
 if (argv['_'][0]) {
   configFile = argv['_'][0]
 } else {
-      throw new Error("Must provide location of configuration file")
+  throw new Error("Must provide location of configuration file")
 }
 
 let properties = propertiesReader(configFile)
@@ -36,24 +38,27 @@ console.log('Backend port: ' + backendConfig.port)
 
 let userManagement = null;
 let cookieExtractor = null;
+let backend = null;
 if (properties.get('identity_store') == 'dev') {
-    userManagement = new DevUserManagement()
-    cookieExtractor = new DevCookieExtractor()
-    console.log('Dev stage')
+  userManagement = new DevUserManagement();
+  cookieExtractor = new DevCookieExtractor();
+  backend = new DevBackend();
+  console.log('Dev stage');
 } else {
-    let clientIdFile = properties.get('clientIdFile')
-    let userPoolIdFile = properties.get('userPoolIdFile')
-    const clientId = fs.readFileSync(clientIdFile, {encoding:'utf8', flag:'r'});
-    console.log("Client ID:" + clientId)
-    const userPoolId = fs.readFileSync(userPoolIdFile, {encoding:'utf8', flag:'r'});
-    console.log("User pool ID:" + userPoolId)
-    userManagement = new AwsUserManagement(userPoolId, clientId)
-    cookieExtractor = new HttpCookieExtractor(SESSION_KEY)
+  let clientIdFile = properties.get('clientIdFile')
+  let userPoolIdFile = properties.get('userPoolIdFile')
+  const clientId = fs.readFileSync(clientIdFile, { encoding: 'utf8', flag: 'r' });
+  console.log("Client ID:" + clientId)
+  const userPoolId = fs.readFileSync(userPoolIdFile, { encoding: 'utf8', flag: 'r' });
+  console.log("User pool ID:" + userPoolId)
+  userManagement = new AwsUserManagement(userPoolId, clientId)
+  cookieExtractor = new HttpCookieExtractor(SESSION_KEY)
+  backend = new HttpBackend(backendConfig);
 }
 
-let server = createServer(userManagement, cookieExtractor, backendConfig, SESSION_KEY)
+let server = createServer(userManagement, cookieExtractor, backendConfig, backend, SESSION_KEY)
 let serverListening = server.listen(8080, function () {
-	let host = serverListening.address().address
-	let port = serverListening.address().port
-	console.log("App is listening at http://%s:%s", host, port)
+  let host = serverListening.address().address
+  let port = serverListening.address().port
+  console.log("App is listening at http://%s:%s", host, port)
 })

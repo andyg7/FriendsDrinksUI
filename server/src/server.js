@@ -9,7 +9,7 @@ let cookieParser = require('cookie-parser')
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
-function createServer(userManagement, cookieExtractor, backendConfig, sessionKey) {
+function createServer(userManagement, cookieExtractor, backendConfig, backend, sessionKey) {
         let app = express();
 
         // app.set('views', __dirname + '/views');
@@ -647,13 +647,13 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
             let email = req.body.email;
             if (!email) {
                 res.statusCode = 400;
-                res.send('You need to provide an email');
+                res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
                 return;
             }
             let password = req.body.password;
             if (!password) {
                 res.statusCode = 400;
-                res.send('You need to provide a password');
+                res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
                 return;
             }
             userManagement.login(email, password).then(function (data) {
@@ -668,7 +668,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                       email: data.user.email,
                    }
                 }
-                reportUserEvent(input).then(function (data) {
+                backend.reportUserEvent(input).then(function (data) {
                     res.cookie(sessionKey, sessionId, {});
                     res.status(200);
                     res.send(JSON.stringify({ sId: sessionId }));
@@ -676,18 +676,18 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                 }).catch (function (err) {
                     console.log(err);
                     res.status(200);
-                    res.json({ sId: sessionId });
+                    res.send(JSON.stringify({ sId: sessionId }));
                     return;
                 })
             }).catch(function (err) {
                 console.log(err);
                 if (err.code === 'NotAuthorizedException') {
                     res.status(403);
-                    res.send("Wrong password");
+                    res.send(JSON.stringify({errMsg: 'Wrong password'}));
                     return;
                 } else {
                     res.status(500);
-                    res.send(INTERNAL_ERROR_MESSAGE);
+                    res.send(JSON.stringify({errMsg: INTERNAL_ERROR_MESSAGE}));
                     return;
                 }
             });
@@ -717,17 +717,17 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                       email: data.user.email,
                    }
                 }
-                reportUserEvent(input).then(function (data) {
+                backend.reportUserEvent(input).then(function (data) {
                     res.cookie(sessionKey, sessionId, {
                         path: '/'
                     });
                     res.redirect('/');
                     return;
-                }).catch (function (err) {
-                   console.log(err)
-                   res.status(500)
-                   res.send(INTERNAL_ERROR_MESSAGE);
-                   return;
+                }).catch(function (err) {
+                    console.log(err)
+                    res.status(500)
+                    res.send(INTERNAL_ERROR_MESSAGE);
+                    return;
                 })
             }).catch(function (err) {
                 console.log(err);
@@ -742,61 +742,6 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
                 }
             });
         })
-
-        function reportUserEvent(input) {
-            let postObj = {
-              eventType: input.eventType
-            }
-            if (input.eventType === "LOGGED_IN") {
-                postObj.loggedInEvent = input.loggedInEvent
-            }
-            let path = "/v1/users/" + input.userId
-            let postData = JSON.stringify(postObj)
-            let options = {
-              host: backendHostname,
-              port: backendPort,
-              path: path,
-              method: 'POST',
-              headers: {
-                  'Content-Length': Buffer.byteLength(postData),
-                  'Content-Type': 'application/json'
-              }
-            };
-
-            return new Promise(function (resolve, reject) {
-                let backendReq = http.request(options, function(backendRes) {
-                  console.log('STATUS: ' + backendRes.statusCode);
-                  console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-                  if (backendRes.statusCode !== 200) {
-                     backendRes.resume();
-                     reject(new Error("Did not get a 200 back. instead got " + backendRes.statusCode));
-                  } else {
-                      let bodyChunks = [];
-                      backendRes.on('data', (chunk) => {
-                        bodyChunks.push(chunk)
-                      });
-                      backendRes.on('end', () => {
-                        let body = Buffer.concat(bodyChunks);
-                        console.log('BODY: ' + body);
-                        let obj = JSON.parse(body);
-                        console.log('Result ', obj.result);
-                        console.log('No more data in response - redirecting to /');
-                        resolve("Success")
-                      });
-                  }
-                });
-
-                backendReq.on('error', function(e) {
-                  console.log('ERROR: ' + e.message);
-                  reject(e)
-                  return;
-                });
-
-                console.log("Sending request", postData)
-                backendReq.write(postData);
-                backendReq.end();
-            })
-        }
 
         app.post('/logout', function (req, res) {
             let sessionId = cookieExtractor.getSessionId(req)
@@ -864,7 +809,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
             let email = req.body.email;
             if (!email) {
                 res.statusCode = 400;
-                res.send('You need to provide an email');
+                res.send('You need to provide a password');
                 return;
             }
 
