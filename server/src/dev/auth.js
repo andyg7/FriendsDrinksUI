@@ -19,6 +19,12 @@ class UserManagement {
 		// nop
 	}
 
+	signUp(input) {
+		return new Promise(function (resolve, reject) {
+			resolve("Success");
+		});
+	}
+
 }
 
 module.exports = UserManagement

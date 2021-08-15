@@ -686,56 +686,47 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         return backendReq;
     }
 
-    app.get('/signup', function (req, res) {
-        res.sendFile(__dirname + "/views/" + "signup.html");
-        return;
-    })
-
-
-    app.post('/signup', function (req, res) {
+    app.post('/v1/api/signup', function (req, res) {
         let email = req.body.email;
         if (!email) {
             res.statusCode = 400;
-            res.send('You need to provide an email');
+            res.send(JSON.stringify({errMsg: 'You need to provide an email' }));
             return;
         }
         let password = req.body.password;
         if (!password) {
             res.statusCode = 400;
-            res.send('You need to provide a password');
+            res.send(JSON.stringify({errMsg: 'You need to provide a password' }));
             return;
         }
-        let firstname = req.body.firstname;
-        if (!firstname) {
+        let firstName = req.body.firstName;
+        if (!firstName) {
             res.statusCode = 400;
-            res.send('You need to provide a first name');
+            res.send(JSON.stringify({errMsg: 'You need to provide a first name' }));
             return;
         }
-        let lastname = req.body.lastname;
-        if (!lastname) {
+        let lastName = req.body.lastName;
+        if (!lastName) {
             res.statusCode = 400;
-            res.send('You need to provide a first name');
+            res.send(JSON.stringify({errMsg: 'You need to provide a last name' }));
             return;
         }
         input = {
             email: email,
             password: password,
-            firstname: firstname,
-            lastname: lastname
+            firstname: firstName,
+            lastname: lastName
         }
         userManagement.signUp(input).then(function (email) {
-            res.render('signup_complete');
+            res.status(200);
+            res.send('{}');
+            return;
         }).catch(function (err) {
             console.log(err);
             res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-    })
-
-    app.get('/login', function (req, res) {
-        res.sendFile(__dirname + "/views/" + "login.html");
-        return;
     })
 
     app.post('/v1/api/login', function (req, res) {
@@ -820,16 +811,11 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         })
     });
 
-    app.get('/forgotpassword', function (req, res) {
-        res.sendFile(__dirname + "/views/" + "forgot_password.html");
-        return;
-    })
-
-    app.post('/forgotpassword', function (req, res) {
+    app.post('/v1/api/forgotpassword', function (req, res) {
         let email = req.body.email;
         if (!email) {
             res.statusCode = 400;
-            res.send('You need to provide an email');
+            res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
             return;
         }
         userManagement.forgotPassword(email, res).then(function (data) {
@@ -843,12 +829,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         });
     })
 
-    app.get('/resetpassword', function (req, res) {
-        res.sendFile(__dirname + "/views/" + "reset_password.html");
-        return;
-    })
-
-    app.post('/resetpassword', function (req, res) {
+    app.post('/v1/api/resetpassword', function (req, res) {
         let verificationCode = req.body.verificationCode;
         if (!verificationCode) {
             res.statusCode = 400;
