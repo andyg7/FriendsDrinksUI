@@ -10,6 +10,7 @@ class App extends React.Component {
       sessionId: ''
     };
     this.handleLoggedIn = this.handleLoggedIn.bind(this);
+    this.handleSessionExpired = this.handleSessionExpired.bind(this);
   }
 
   handleLoggedIn(sId) {
@@ -20,11 +21,17 @@ class App extends React.Component {
     });
   }
 
+  handleSessionExpired() {
+    this.setState({
+      sessionId: ''
+    })
+  }
+
   render() {
     if (!this.state.sessionId) {
       return <LoginControl onLoggedIn={this.handleLoggedIn} />;
     } else {
-      return <LoggedInApp sessionId={this.state.sessionId} />
+      return <LoggedInApp onSessionExpired={this.handleSessionExpired} sessionId={this.state.sessionId} />
     }
   }
 }

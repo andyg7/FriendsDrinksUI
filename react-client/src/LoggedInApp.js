@@ -13,9 +13,9 @@ class LoggedInApp extends React.Component {
 
     render() {
         if (this.state.page === 'HOMEPAGE') {
-            return <Homepage userId={this.props.userId} />;
+            return <Homepage onSessionExpired={this.props.onSessionExpired} userId={this.props.userId} />;
         } else {
-            return <FriendsDrinksDetailPage friendsDrinksId={this.props.friendsDrinksId} />
+            return <FriendsDrinksDetailPage onSessionExpired={this.props.onSessionExpired} friendsDrinksId={this.props.friendsDrinksId} />
         }
     }
 }
