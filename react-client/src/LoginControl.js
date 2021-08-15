@@ -25,7 +25,7 @@ export default class LoginControl extends React.Component {
 
     render() {
         if (this.state.page === 'LOGIN') {
-            return <Login value='Sign up' onSwitch={() => this.handleSwitch()} />
+            return <Login value='Sign up' onLoggedIn={this.props.onLoggedIn} onSwitch={() => this.handleSwitch()} />
         } else {
             return <Signup value='Already have an account? Log in' onSwitch={() => this.handleSwitch()} />
         }
@@ -37,27 +37,70 @@ class Login extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { value: '' };
+        this.state = {
+            email: '',
+            password: ''
+        };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(event) {
-        this.setState({ value: event.target.value });
+        const name = event.target.name;
+        if (name === 'email') {
+            this.setState({
+                email: event.target.value
+            })
+        } else {
+            this.setState({
+                password: event.target.value
+            })
+        }
     }
 
     handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.value);
+        console.log('hello friends')
+        console.log(event)
         event.preventDefault();
+        const data = {
+            email: this.state.email,
+            password: this.state.password
+        }
+        const dataJson = JSON.stringify(data);
+        fetch("/v1/api/login", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: dataJson
+        })
+            .then(r => r.json().then(data => ({ status: r.status, body: data })))
+            .then(
+                (res) => {
+                    if (res.status === 200) {
+                        this.props.onLoggedIn(res.body.sId);
+                    } else {
+                        throw new Error("Failed to log in");
+                    }
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log(error);
+                }
+            )
     }
 
     render() {
         return (
             <div>
-                <form onSubmit={() => this.handleSubmit}>
+                <form onSubmit={this.handleSubmit}>
                     <label>
-                        Name:
-                        <input type="text" value={this.state.value} onChange={this.handleChange} />
+                        Email:
+                        <input name="email" type="text" value={this.state.email} onChange={this.handleChange} />
+                    </label>
+                    <label>
+                        Password:
+                        <input name="password" type="text" value={this.state.password} onChange={this.handleChange} />
                     </label>
                     <input type="submit" value="Submit" />
                 </form>
@@ -85,13 +128,28 @@ class Signup extends React.Component {
 
     handleSubmit(event) {
         alert('A name was submitted: ' + this.state.value);
+        console.log(event);
         event.preventDefault();
     }
 
     render() {
         return (
             <div>
-                This is the sign up page!
+                <form onSubmit={() => this.handleSubmit}>
+                    <label>
+                        Email:
+                        <input type="text" value={this.state.value} onChange={this.handleChange} />
+                    </label>
+                    <label>
+                        First name:
+                        <input type="text" value={this.state.value} onChange={this.handleChange} />
+                    </label>
+                    <label>
+                        Last name:
+                        <input type="text" value={this.state.value} onChange={this.handleChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
                 <button onClick={this.props.onSwitch}>
                     {this.props.value}
                 </button>

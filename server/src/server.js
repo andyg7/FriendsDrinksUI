@@ -12,14 +12,14 @@ const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 function createServer(userManagement, cookieExtractor, backendConfig, sessionKey) {
         let app = express();
 
-        app.set('views', __dirname + '/views');
-        app.set('view engine', 'ejs');
-
-        app.use(bodyParser.urlencoded({extended: true}));
-        app.use(cookieParser())
+        // app.set('views', __dirname + '/views');
+        // app.set('view engine', 'ejs');
+        app.use(bodyParser.urlencoded({ extended: false }))
+        app.use(bodyParser.json());
+        app.use(cookieParser());
         app.use(express.static(__dirname + '/public'));
         app.use(function(req, res, next) {
-            console.log("request:", req.method, req.url, req.body, req.cookies);
+            console.log("Incoming request:", req.method, req.url, req.body, req.cookies);
             next();
         });
 
@@ -642,6 +642,56 @@ function createServer(userManagement, cookieExtractor, backendConfig, sessionKey
            res.sendFile( __dirname + "/views/" + "login.html" );
            return;
         })
+
+        app.post('/v1/api/login', function (req, res) {
+            let email = req.body.email;
+            if (!email) {
+                res.statusCode = 400;
+                res.send('You need to provide an email');
+                return;
+            }
+            let password = req.body.password;
+            if (!password) {
+                res.statusCode = 400;
+                res.send('You need to provide a password');
+                return;
+            }
+            userManagement.login(email, password).then(function (data) {
+                console.log("Successfully logged in " + email);
+                let sessionId = data.sessionId;
+                let input = {
+                   userId: data.user.userId,
+                   eventType: 'LOGGED_IN',
+                   loggedInEvent: {
+                      firstName: data.user.firstName,
+                      lastName: data.user.lastName,
+                      email: data.user.email,
+                   }
+                }
+                reportUserEvent(input).then(function (data) {
+                    res.cookie(sessionKey, sessionId, {});
+                    res.status(200);
+                    res.send(JSON.stringify({ sId: sessionId }));
+                    return;
+                }).catch (function (err) {
+                    console.log(err);
+                    res.status(200);
+                    res.json({ sId: sessionId });
+                    return;
+                })
+            }).catch(function (err) {
+                console.log(err);
+                if (err.code === 'NotAuthorizedException') {
+                    res.status(403);
+                    res.send("Wrong password");
+                    return;
+                } else {
+                    res.status(500);
+                    res.send(INTERNAL_ERROR_MESSAGE);
+                    return;
+                }
+            });
+        });
 
         app.post('/login', function (req, res) {
             let email = req.body.email;
