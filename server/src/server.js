@@ -815,16 +815,17 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         let email = req.body.email;
         if (!email) {
             res.statusCode = 400;
-            res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
+            res.send(JSON.stringify({errMsg: 'You need to provide an email' }));
             return;
         }
         userManagement.forgotPassword(email, res).then(function (data) {
-            res.redirect('/resetpassword');
+            res.status(200);
+            res.send('{}');
             return;
         }).catch(function (err) {
             console.log(err);
             res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
+            res.send(JSON.stringify({errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
     })
@@ -853,12 +854,13 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
 
         userManagement.resetPassword(verificationCode, email, newPassword, res).then(function (data) {
             console.log('redirecting')
-            res.redirect('/login');
+            res.status(200);
+            res.send('{}');
             return;
         }).catch(function (err) {
             console.log(err);
             res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
     })

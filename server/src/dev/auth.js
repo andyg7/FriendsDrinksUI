@@ -25,6 +25,18 @@ class UserManagement {
 		});
 	}
 
+	forgotPassword(email, res) {
+		return new Promise(function (resolve, reject) {
+			resolve("Success");
+		});
+	}
+
+	resetPassword(verificationCode, email, newPassword, res) {
+		return new Promise(function (resolve, reject) {
+			resolve("Success");
+		});
+	}
+
 }
 
 module.exports = UserManagement

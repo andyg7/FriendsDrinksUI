@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 import LoginControl from './LoginControl';
 import LoggedInApp from './LoggedInApp';
+import LogOut from './LogOut';
 
 class App extends React.Component {
   constructor(props) {
@@ -11,6 +12,7 @@ class App extends React.Component {
     };
     this.handleLoggedIn = this.handleLoggedIn.bind(this);
     this.handleSessionExpired = this.handleSessionExpired.bind(this);
+    this.handleBackToRoot = this.handleBackToRoot.bind(this);
   }
 
   handleLoggedIn(sId) {
@@ -21,6 +23,12 @@ class App extends React.Component {
     });
   }
 
+  handleBackToRoot() {
+    this.setState({
+      sessionId: ''
+    });
+  }
+
   handleSessionExpired() {
     this.setState({
       sessionId: ''
@@ -28,10 +36,11 @@ class App extends React.Component {
   }
 
   render() {
+    const logOut = <LogOut onBackToRoot={this.handleBackToRoot}/>;
     if (!this.state.sessionId) {
       return <LoginControl onLoggedIn={this.handleLoggedIn} />;
     } else {
-      return <LoggedInApp onSessionExpired={this.handleSessionExpired} sessionId={this.state.sessionId} />
+      return <LoggedInApp logOut={logOut} onSessionExpired={this.handleSessionExpired} sessionId={this.state.sessionId} />
     }
   }
 }
