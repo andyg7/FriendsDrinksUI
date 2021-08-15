@@ -27,7 +27,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
     let backendPort = backendConfig.port
 
     app.get('/v1/health', function (req, res) {
-        res.send("Success!");
+        res.send(JSON.stringify({ status: "HEALTHY" }));
         return;
     })
 
@@ -690,25 +690,25 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         let email = req.body.email;
         if (!email) {
             res.statusCode = 400;
-            res.send(JSON.stringify({errMsg: 'You need to provide an email' }));
+            res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
             return;
         }
         let password = req.body.password;
         if (!password) {
             res.statusCode = 400;
-            res.send(JSON.stringify({errMsg: 'You need to provide a password' }));
+            res.send(JSON.stringify({ errMsg: 'You need to provide a password' }));
             return;
         }
         let firstName = req.body.firstName;
         if (!firstName) {
             res.statusCode = 400;
-            res.send(JSON.stringify({errMsg: 'You need to provide a first name' }));
+            res.send(JSON.stringify({ errMsg: 'You need to provide a first name' }));
             return;
         }
         let lastName = req.body.lastName;
         if (!lastName) {
             res.statusCode = 400;
-            res.send(JSON.stringify({errMsg: 'You need to provide a last name' }));
+            res.send(JSON.stringify({ errMsg: 'You need to provide a last name' }));
             return;
         }
         input = {
@@ -815,7 +815,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         let email = req.body.email;
         if (!email) {
             res.statusCode = 400;
-            res.send(JSON.stringify({errMsg: 'You need to provide an email' }));
+            res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
             return;
         }
         userManagement.forgotPassword(email, res).then(function (data) {
@@ -825,7 +825,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         }).catch(function (err) {
             console.log(err);
             res.status(500);
-            res.send(JSON.stringify({errMsg: INTERNAL_ERROR_MESSAGE }));
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
     })
@@ -834,21 +834,21 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         let verificationCode = req.body.verificationCode;
         if (!verificationCode) {
             res.statusCode = 400;
-            res.send('You need to provide a verification code');
+            res.send(JSON.stringify({ errMsg: 'You need to provide verification code' }));
             return;
         }
 
         let email = req.body.email;
         if (!email) {
             res.statusCode = 400;
-            res.send('You need to provide a password');
+            res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
             return;
         }
 
         let newPassword = req.body.newPassword;
         if (!newPassword) {
             res.statusCode = 400;
-            res.send('You need to provide a new password');
+            res.send(JSON.stringify({ errMsg: 'You need to provide a new password' }));
             return;
         }
 
