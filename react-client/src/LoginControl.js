@@ -25,9 +25,9 @@ export default class LoginControl extends React.Component {
 
     render() {
         if (this.state.page === 'LOGIN') {
-            return <Login value='Sign up' onLoggedIn={this.props.onLoggedIn} onSwitch={() => this.handleSwitch()} />
+            return <Login value='Not registered? Sign up!' onLoggedIn={this.props.onLoggedIn} onSwitch={() => this.handleSwitch()} />
         } else {
-            return <Signup value='Already have an account? Log in' onSwitch={() => this.handleSwitch()} />
+            return <Signup value='Already have an account? Log in!' onSwitch={() => this.handleSwitch()} />
         }
     };
 
@@ -59,8 +59,6 @@ class Login extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log('hello friends')
-        console.log(event)
         event.preventDefault();
         const data = {
             email: this.state.email,
