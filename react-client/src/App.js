@@ -40,7 +40,7 @@ class App extends React.Component {
     if (!this.state.sessionId) {
       return <LoginControl onLoggedIn={this.handleLoggedIn} />;
     } else {
-      return <LoggedInApp logOut={logOut} onSessionExpired={this.handleSessionExpired} sessionId={this.state.sessionId} />
+      return <LoggedInApp sessionId={this.props.sessionId} logOut={logOut} onSessionExpired={this.handleSessionExpired} sessionId={this.state.sessionId} />
     }
   }
 }
