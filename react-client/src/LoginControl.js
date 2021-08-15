@@ -7,7 +7,6 @@ export default class LoginControl extends React.Component {
             page: 'SIGN_UP'
         }
         this.handleSwitchToLogIn = this.handleSwitchToLogIn.bind(this);
-        this.handleSwitchToLogOut = this.handleSwitchToLogOut.bind(this);
         this.handleSwitchToSignUp = this.handleSwitchToSignUp.bind(this);
         this.handleSwitchToResetPassword = this.handleSwitchToResetPassword.bind(this);
         this.handleSwitchToForgotPassword = this.handleSwitchToForgotPassword.bind(this);
@@ -41,14 +40,6 @@ export default class LoginControl extends React.Component {
         this.setState(function (state, props) {
             return {
                 page: 'SIGN_UP'
-            }
-        });
-    }
-
-    handleSwitchToLogOut() {
-        this.setState(function (state, props) {
-            return {
-                page: 'LOG_OUT'
             }
         });
     }
