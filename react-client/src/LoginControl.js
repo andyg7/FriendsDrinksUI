@@ -106,10 +106,13 @@ class LogIn extends React.Component {
                     if (res.status === 200) {
                         this.props.onLoggedIn(res.body.sId);
                     } else if (res.status === 403) {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     } else if (res.status === 400) {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     } else {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     }
                 }
@@ -296,10 +299,13 @@ class ForgotPassword extends React.Component {
                         alert('Please check your email to reset your password')
                         this.props.onSwitchToResetPassword(res.body.sId);
                     } else if (res.status === 403) {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     } else if (res.status === 400) {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     } else {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     }
                 }
@@ -384,10 +390,13 @@ class ResetPassword extends React.Component {
                     if (res.status === 200) {
                         this.props.onSwitchToLogIn();
                     } else if (res.status === 403) {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     } else if (res.status === 400) {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     } else {
+                        console.log(res.body.errMsg);
                         alert(res.body.errMsg);
                     }
                 }
