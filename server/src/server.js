@@ -180,8 +180,8 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
 
     })
 
-    app.get('/v1/api/userhomepages', function (req, res) {
-        let sessionId = cookieExtractor.getSessionId(req)
+    app.get('/v1/api/userhomepages/:sessionId', function (req, res) {
+        let sessionId = req.params.sessionId;
         if (sessionId === null) {
             res.status(403);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
