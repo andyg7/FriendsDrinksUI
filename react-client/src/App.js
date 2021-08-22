@@ -16,10 +16,8 @@ class App extends React.Component {
   }
 
   handleLoggedIn(user) {
-    this.setState(function (state, props) {
-      return {
-        loggedInUser: user
-      }
+    this.setState({
+      loggedInUser: user
     });
   }
 
