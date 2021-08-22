@@ -44,10 +44,7 @@ class Backend {
                     backendRes.on('end', () => {
                         let body = Buffer.concat(bodyChunks);
                         console.log('BODY: ' + body);
-                        let obj = JSON.parse(body);
-                        console.log('Result ', obj.result);
-                        console.log('No more data in response - redirecting to /');
-                        resolve("Success")
+                        resolve(body);
                     });
                 }
             });
@@ -89,54 +86,6 @@ class Backend {
                     let body = Buffer.concat(bodyChunks);
                     console.log('BODY: ' + body);
                     resolve(body);
-
-                    /*
-                    let obj = JSON.parse(body);
-
-                    friendsDrinks = []
-                    if (obj.adminFriendsDrinksStateList && obj.adminFriendsDrinksStateList.length > 0) {
-                        obj.adminFriendsDrinksStateList.forEach(function (item, index) {
-                            friendsDrinks.push(
-                                {
-                                    id: item.friendsDrinksId,
-                                    name: item.name,
-                                    type: "ADMIN"
-                                }
-                            )
-                        });
-                    }
-
-                    if (obj.memberFriendsDrinksStateList && obj.memberFriendsDrinksStateList.length > 0) {
-                        obj.memberFriendsDrinksStateList.forEach(function (item, index) {
-                            friendsDrinks.push(
-                                {
-                                    id: item.friendsDrinksId,
-                                    name: item.name,
-                                    type: "MEMBER"
-                                }
-                            )
-                        });
-                    }
-
-                    invitations = []
-                    if (obj.invitationList && obj.invitationList.length > 0) {
-                        obj.invitationList.forEach(function (item, index) {
-                            invitations.push(
-                                {
-                                    message: item.message,
-                                    friendsDrinksName: item.friendsDrinksName,
-                                    friendsDrinksUuid: item.friendsDrinksId
-                                }
-                            )
-                        });
-                    }
-
-                    res.render('user_homepage', {
-                        firstName: user.firstName,
-                        friendsDrinks: friendsDrinks,
-                        invitations: invitations
-                    });
-                    */
                 })
             });
 
@@ -173,11 +122,7 @@ class Backend {
                 backendRes.on('end', () => {
                     let body = Buffer.concat(bodyChunks);
                     console.log('BODY: ' + body);
-                    let obj = JSON.parse(body);
-                    console.log('Result ', obj.result);
-
-                    console.log('No more data in response - redirecting to /');
-                    resolve('Success');
+                    resolve(body);
                 });
 
             })
@@ -303,43 +248,7 @@ class Backend {
                 }).on('end', function () {
                     let body = Buffer.concat(bodyChunks);
                     console.log('BODY: ' + body);
-                    let obj = JSON.parse(body);
-                    members = []
-                    if (obj.memberList && obj.memberList.length > 0) {
-                        obj.memberList.forEach(function (item, index) {
-                            members.push(
-                                {
-                                    firstName: item.firstName,
-                                    lastName: item.lastName,
-                                    userId: item.userId
-                                }
-                            )
-                        });
-                    }
-
-                    meetups = []
-                    if (obj.friendsDrinksDetailPageMeetupList && obj.friendsDrinksDetailPageMeetupList.length > 0) {
-                        obj.friendsDrinksDetailPageMeetupList.forEach(function (item, index) {
-                            meetups.push(
-                                {
-                                    date: item.date
-                                }
-                            )
-                        });
-                    }
-
-                    let isAdmin = false;
-                    if (userId === obj.adminUserId) {
-                        isAdmin = true;
-                    }
-                    resolve(JSON.stringify({
-                        userId: userId,
-                        firstName: user.firstName,
-                        name: obj.name,
-                        members: members,
-                        friendsDrinksId: friendsDrinksId,
-                        isAdmin: isAdmin
-                    }));
+                    resolve(body);
                 })
 
             })
@@ -376,13 +285,7 @@ class Backend {
                 }).on('end', function () {
                     let body = Buffer.concat(bodyChunks);
                     console.log('BODY: ' + body);
-                    let obj = JSON.parse(body);
-
-                    resolve(JSON.stringify({
-                        message: obj.message,
-                        friendsDrinksId: obj.friendsDrinksId,
-                        friendsDrinksName: obj.friendsDrinksName
-                    }));
+                    resolve(body);
                 })
 
             })
@@ -438,11 +341,7 @@ class Backend {
                     backendRes.on('end', () => {
                         let body = Buffer.concat(bodyChunks);
                         console.log('BODY: ' + body);
-                        let obj = JSON.parse(body);
-                        console.log('Result ', obj.result);
-
-                        console.log('No more data in response - redirecting to /');
-                        resolve('Success');
+                        resolve(body);
                     });
                 }
             });
