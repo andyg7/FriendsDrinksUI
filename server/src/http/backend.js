@@ -431,7 +431,6 @@ class Backend {
                     backendRes.resume();
                     reject(new Error("Failed to send request"));
                 } else {
-                    console.log("got 200")
                     let bodyChunks = [];
                     backendRes.on('data', (chunk) => {
                         bodyChunks.push(chunk)
