@@ -36,6 +36,37 @@ class Backend {
             resolve('Success');
         })
     }
+
+    replyToInvitation(friendsDrinksId, invitationReply) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
+
+    schedule(friendsDrinksId) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
+
+    getFriendsDrinksDetailPage(friendsDrinksId) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
+
+    getFriendsDrinksInvitation(userId, friendsDrinksId) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
+
+    inviteUser(friendsDrinksId, userId) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
+
 }
 
 module.exports = Backend

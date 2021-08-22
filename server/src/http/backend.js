@@ -282,7 +282,6 @@ class Backend {
     }
 
     getFriendsDrinksDetailPage(friendsDrinksId) {
-
         let options = {
             host: backendHostname,
             port: backendPort,
