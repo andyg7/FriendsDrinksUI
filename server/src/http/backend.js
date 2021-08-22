@@ -74,9 +74,7 @@ class Backend {
                 console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
                 if (backendRes.statusCode !== 200) {
                     backendRes.resume();
-                    res.status(500);
-                    res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
-                    return;
+                    reject(new Error("Failed to call backend"));
                 }
 
                 let bodyChunks = [];
@@ -91,9 +89,7 @@ class Backend {
 
             backendReq.on('error', function (e) {
                 console.log('ERROR: ' + e.message);
-                res.status(500);
-                res.send(INTERNAL_ERROR_MESSAGE);
-                return;
+                reject(new Error("Failed to call backend"));
             });
         });
     }
@@ -255,9 +251,7 @@ class Backend {
 
             backendReq.on('error', function (e) {
                 console.log('ERROR: ' + e.message);
-                res.status(500);
-                res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
-                return;
+                reject(new Error("Failed to call backend"));
             });
         });
 
