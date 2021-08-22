@@ -286,7 +286,6 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
 
     })
 
-
     app.post('/v1/api/friendsdrinks/create', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
@@ -320,9 +319,6 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
 
     })
 
-
-
-    // API. Accepts JSON and returns JSON.
     app.post('/v1/api/signup', function (req, res) {
         let email = req.body.email;
         if (!email) {
@@ -513,5 +509,3 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
 }
 
 module.exports = createServer
-
-
