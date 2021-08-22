@@ -132,12 +132,13 @@ class Backend {
             backendReq.end();
         });
     }
+
     updateFriendsDrinks(friendsDrinksId) {
         let postObj = {
             adminUserId: userId,
             name: req.body.name
         }
-        let path = "/v1/friendsdrinkses/" + req.body.id
+        let path = "/v1/friendsdrinkses/" + friendsDrinksId;
 
         let postData = JSON.stringify(postObj)
 

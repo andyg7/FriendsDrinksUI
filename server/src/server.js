@@ -211,7 +211,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         }
-        backend.updateFriendsDrinks(friendsDrinksId).then(function (data) {
+        backend.updateFriendsDrinks(req.body.id).then(function (data) {
             res.status(200);
             res.send('{}');
             return;
