@@ -1,8 +1,8 @@
 let AwsUserManagement = require('./aws/auth')
-let HttpCookieExtractor = require('./http/cookie')
+let HttpSessionIdExtractor = require('./http/session')
 let HttpBackend = require('./http/backend')
 let DevUserManagement = require('./dev/auth')
-let DevCookieExtractor = require('./dev/cookie')
+let DevSessionIdExtractor = require('./dev/session')
 let DevBackend = require('./dev/backend')
 let propertiesReader = require('properties-reader');
 const fs = require('fs');
@@ -37,11 +37,11 @@ console.log('Backend hostname: ' + backendConfig.hostname)
 console.log('Backend port: ' + backendConfig.port)
 
 let userManagement = null;
-let cookieExtractor = null;
+let sessionIdExtractor = null;
 let backend = null;
 if (properties.get('identity_store') == 'dev') {
   userManagement = new DevUserManagement();
-  cookieExtractor = new DevCookieExtractor();
+  sessionIdExtractor = new DevSessionIdExtractor();
   console.log('Dev stage');
 } else {
   let clientIdFile = properties.get('clientIdFile')
@@ -51,7 +51,7 @@ if (properties.get('identity_store') == 'dev') {
   const userPoolId = fs.readFileSync(userPoolIdFile, { encoding: 'utf8', flag: 'r' });
   console.log("User pool ID:" + userPoolId)
   userManagement = new AwsUserManagement(userPoolId, clientId)
-  cookieExtractor = new HttpCookieExtractor(SESSION_KEY)
+  sessionIdExtractor = new HttpSessionIdExtractor(SESSION_KEY)
 }
 
 if (properties.get('backend') === 'dev') {
@@ -60,7 +60,7 @@ if (properties.get('backend') === 'dev') {
   backend = new HttpBackend(backendConfig);
 }
 
-let server = createServer(userManagement, cookieExtractor, backendConfig, backend, SESSION_KEY)
+let server = createServer(userManagement, sessionIdExtractor, backendConfig, backend, SESSION_KEY)
 let serverListening = server.listen(8080, function () {
   let host = serverListening.address().address
   let port = serverListening.address().port

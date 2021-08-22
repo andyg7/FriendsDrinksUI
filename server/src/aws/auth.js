@@ -16,7 +16,7 @@ class UserManagement {
 			UserPoolId: poolId,
 			ClientId: clientId
 		};
-        this.userPool = new amazonCognitoIdentity.CognitoUserPool(poolData);
+		this.userPool = new amazonCognitoIdentity.CognitoUserPool(poolData);
 		this.sessionManager = new SessionManager();
 	}
 
@@ -99,7 +99,7 @@ class UserManagement {
 		}
 		console.log("Returned email: " + tokens.getIdToken().decodePayload()['email']);
 		let payload = tokens.getIdToken().decodePayload();
-   	    return new auth.User(payload['sub'], payload['email'], payload['custom:firstname'], payload['custom:lastname']);
+		return new auth.User(payload['sub'], payload['email'], payload['custom:firstname'], payload['custom:lastname']);
 	}
 
 	forgotPassword(email, res) {
@@ -109,15 +109,15 @@ class UserManagement {
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		return new Promise(function (resolve, reject) {
-    		cognitoUser.forgotPassword({
-			    onSuccess: function (result) {
-			        console.log(result);
-                    resolve(result);
-			    },
-			    onFailure: function (err) {
-                    reject(err);
-			    }
-		    });
+			cognitoUser.forgotPassword({
+				onSuccess: function (result) {
+					console.log(result);
+					resolve(result);
+				},
+				onFailure: function (err) {
+					reject(err);
+				}
+			});
 		});
 	}
 
@@ -128,14 +128,14 @@ class UserManagement {
 		};
 		let cognitoUser = new amazonCognitoIdentity.CognitoUser(userData);
 		return new Promise(function (resolve, reject) {
-            cognitoUser.confirmPassword(verificationCode, newPassword, {
-                onSuccess: function () {
-                    resolve('Success');
-                },
-                onFailure: function (err) {
-                    reject(err);
-                }
-            });
+			cognitoUser.confirmPassword(verificationCode, newPassword, {
+				onSuccess: function () {
+					resolve('Success');
+				},
+				onFailure: function (err) {
+					reject(err);
+				}
+			});
 		});
 	}
 }

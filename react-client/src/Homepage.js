@@ -7,7 +7,7 @@ export default class Homepage extends React.Component {
             homepageDto: null
         };
     }
-    
+
     componentDidMount() {
         console.log("fetching");
         fetch("/v1/api/userhomepages/" + this.props.loggedInUser.sessionId)
@@ -56,7 +56,7 @@ export default class Homepage extends React.Component {
                 </div>
             );
         }
-        const friendsDrinksListItem = dto.friendsDrinksList.map((x) => <li key={x.name}>{x.name}</li>);
+        const friendsDrinksListItem = dto.friendsDrinksList.map((x) => <li key={x}>{x}</li>);
         return (
             <div>
                 {this.props.loggedInUser.sessionId}

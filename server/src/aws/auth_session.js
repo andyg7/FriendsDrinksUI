@@ -52,13 +52,13 @@ class Session {
     }
 
     isExpired() {
-       let now = new Date().toISOString();
-       console.log("comparing ", this.expiration, now);
-       if (this.expiration < now) {
-        return true;
-       } else {
-        return false;
-       }
+        let now = new Date().toISOString();
+        console.log("comparing ", this.expiration, now);
+        if (this.expiration < now) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
