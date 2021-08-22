@@ -1,6 +1,5 @@
 global.fetch = require('node-fetch');
 
-let http = require('http');
 let express = require('express');
 let auth = require('./auth');
 let bodyParser = require('body-parser')
@@ -512,54 +511,6 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         });
     })
 
-    function resetHttpResponseCookieAndRedirect(res) {
-        console.log("Resetting http cookies")
-        res.cookie(sessionKey, "", {
-            path: '/',
-            expires: new Date(1)
-        });
-        res.redirect('/login')
-    }
-
-    /*
-    function buildHttpRequest(options, res) {
-        let backendReq = http.request(options, function (backendRes) {
-            console.log('STATUS: ' + backendRes.statusCode);
-            console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-            if (backendRes.statusCode !== 200) {
-                backendRes.resume();
-                res.status(500);
-                res.send(INTERNAL_ERROR_MESSAGE);
-                return;
-            } else {
-                console.log("got 200")
-                let bodyChunks = [];
-                backendRes.on('data', (chunk) => {
-                    bodyChunks.push(chunk)
-                });
-                backendRes.on('end', () => {
-                    let body = Buffer.concat(bodyChunks);
-                    console.log('BODY: ' + body);
-                    let obj = JSON.parse(body);
-                    console.log('Result ', obj.result);
-
-                    console.log('No more data in response - redirecting to /');
-                    res.redirect('/')
-                    return;
-                });
-            }
-        });
-
-        backendReq.on('error', function (e) {
-            console.log('ERROR: ' + e.message);
-            res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
-            return;
-        });
-
-        return backendReq;
-    }
-    */
 
     return app
 }
