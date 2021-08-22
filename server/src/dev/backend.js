@@ -18,6 +18,24 @@ class Backend {
             resolve(JSON.stringify(homepageDto));
         });
     }
+
+    deleteFriendsDrinks(id) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
+
+    updateFriendsDrinks(id) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
+
+    createFriendsDrinks(id) {
+        return new Promise(function (resolve, reject) {
+            resolve('Success');
+        })
+    }
 }
 
 module.exports = Backend

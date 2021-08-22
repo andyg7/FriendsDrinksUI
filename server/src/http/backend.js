@@ -148,6 +148,112 @@ class Backend {
             });
         });
     }
+
+    deleteFriendsDrinks(friendsDrinksId) {
+        let path = "/v1/friendsdrinkses/" + friendsDrinksId
+        options = {
+            host: backendHostname,
+            port: backendPort,
+            method: 'DELETE',
+            path: path
+        }
+
+        return new Promise(function (resolve, reject) {
+            let backendReq = http.request(options, function (backendRes) {
+                console.log('STATUS:' + backendRes.statusCode);
+                console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                if (backendRes.statusCode !== 200) {
+                    backendRes.resume();
+                    reject(new Error("Failed to call backend"));
+                }
+                let bodyChunks = [];
+                backendRes.on('data', (chunk) => {
+                    bodyChunks.push(chunk)
+                });
+                backendRes.on('end', () => {
+                    let body = Buffer.concat(bodyChunks);
+                    console.log('BODY: ' + body);
+                    let obj = JSON.parse(body);
+                    console.log('Result ', obj.result);
+
+                    console.log('No more data in response - redirecting to /');
+                    resolve('Success');
+                });
+
+            })
+
+            backendReq.on('error', function (e) {
+                console.log('ERROR: ' + e.message);
+                reject(new Error("Failed to call backend"));
+            });
+
+            console.log("Sending DELETE request", options)
+            backendReq.end();
+        });
+    }
+    updateFriendsDrinks(friendsDrinksId) {
+        let postObj = {
+            adminUserId: userId,
+            name: req.body.name
+        }
+        let path = "/v1/friendsdrinkses/" + req.body.id
+
+        let postData = JSON.stringify(postObj)
+
+        let options = {
+            host: backendHostname,
+            port: backendPort,
+            path: path,
+            method: 'POST',
+            headers: {
+                'Content-Length': Buffer.byteLength(postData),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        return buildHttpRequest(options);
+    }
+
+    createFriendsDrinks() {
+
+    }
+
+    buildHttpRequest(options) {
+        return new Promise(function (resolve, reject) {
+            let backendReq = http.request(options, function (backendRes) {
+                console.log('STATUS: ' + backendRes.statusCode);
+                console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                if (backendRes.statusCode !== 200) {
+                    backendRes.resume();
+                    reject(new Error("Failed to send request"));
+                } else {
+                    console.log("got 200")
+                    let bodyChunks = [];
+                    backendRes.on('data', (chunk) => {
+                        bodyChunks.push(chunk)
+                    });
+                    backendRes.on('end', () => {
+                        let body = Buffer.concat(bodyChunks);
+                        console.log('BODY: ' + body);
+                        let obj = JSON.parse(body);
+                        console.log('Result ', obj.result);
+
+                        console.log('No more data in response - redirecting to /');
+                        resolve('Success');
+                    });
+                }
+            });
+
+            backendReq.on('error', function (e) {
+                console.log('ERROR: ' + e.message);
+                reject(new Error("Failed to send request"));
+            });
+
+            console.log("Sending request", postData)
+            backendReq.write(postData);
+            backendReq.end();
+        });
+    }
 }
 
 module.exports = Backend

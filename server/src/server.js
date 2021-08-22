@@ -46,7 +46,10 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
+            console.log("userId should never be undefined or null");
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
         }
 
         let friendsDrinksId = req.params.friendsDrinksId
@@ -62,7 +65,7 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
             if (backendRes.statusCode !== 200) {
                 backendRes.resume();
                 res.status(500);
-                res.send(INTERNAL_ERROR_MESSAGE);
+                res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
                 return;
             }
 
@@ -87,7 +90,7 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         backendReq.on('error', function (e) {
             console.log('ERROR: ' + e.message);
             res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
 
@@ -108,7 +111,10 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
+            console.log("userId should never be undefined or null");
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
         }
 
         let friendsDrinksId = req.params.friendsDrinksId
@@ -124,7 +130,7 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
             if (backendRes.statusCode !== 200) {
                 backendRes.resume();
                 res.status(500);
-                res.send(INTERNAL_ERROR_MESSAGE);
+                res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
                 return;
             }
 
@@ -178,7 +184,7 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         backendReq.on('error', function (e) {
             console.log('ERROR: ' + e.message);
             res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
 
@@ -199,7 +205,10 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
+            console.log("userId should never be undefined or null");
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
         }
         backend.getHomepage(userId).then(function (data) {
             res.status(200);
@@ -228,7 +237,10 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
+            console.log("userId should never be undefined or null");
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
         }
         let friendsDrinksId = req.params.friendsDrinksId,
             path = "/v1/friendsdrinkses/" + friendsDrinksId + "/meetups"
@@ -271,56 +283,55 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
-        }
-        let friendsDrinksId = req.params.friendsDrinksId,
-            path = "/v1/friendsdrinkses/" + friendsDrinksId
-        options = {
-            host: backendHostname,
-            port: backendPort,
-            method: 'DELETE',
-            path: path
-        }
-
-        let backendReq = http.request(options, function (backendRes) {
-            console.log('STATUS:' + backendRes.statusCode);
-            console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-            if (backendRes.statusCode !== 200) {
-                backendRes.resume();
-                res.status(500);
-                res.send(INTERNAL_ERROR_MESSAGE);
-                return;
-            }
-            let bodyChunks = [];
-            backendRes.on('data', (chunk) => {
-                bodyChunks.push(chunk)
-            });
-            backendRes.on('end', () => {
-                let body = Buffer.concat(bodyChunks);
-                console.log('BODY: ' + body);
-                let obj = JSON.parse(body);
-                console.log('Result ', obj.result);
-
-                console.log('No more data in response - redirecting to /');
-                res.redirect('/')
-                return;
-            });
-
-        })
-
-        backendReq.on('error', function (e) {
-            console.log('ERROR: ' + e.message);
+            console.log("userId should never be undefined or null");
             res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
+        }
+        let friendsDrinksId = req.params.friendsDrinksId
+        backend.deleteFriendsDrinks(friendsDrinksId).then(function (data) {
+            res.status(200);
+            res.send('{}');
+            return;
+        }).catch(function (error) {
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-
-        console.log("Sending DELETE request", options)
-        backendReq.end();
-        return;
     })
 
-    app.post('/friendsdrinks/inviteUser/:friendsDrinksId', function (req, res) {
+    app.post('/v1/api/friendsdrinks/update', function (req, res) {
+        let sessionId = sessionIdExtractor.getSessionId(req)
+        if (sessionId === null) {
+            res.status(403);
+            res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
+            return;
+        }
+        let user = userManagement.getLoggedInUser(sessionId);
+        if (user === null) {
+            res.status(403);
+            res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
+            return;
+        }
+        let userId = user.userId
+        if (!userId) {
+            console.log("userId should never be undefined or null");
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
+        }
+        backend.updateFriendsDrinks(friendsDrinksId).then(function (data) {
+            res.status(200);
+            res.send('{}');
+            return;
+        }).catch(function (error) {
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
+        });
+    })
+
+    app.post('/v1/api/friendsdrinks/inviteUser/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
@@ -335,7 +346,10 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
+            console.log("userId should never be undefined or null");
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
         }
 
         let postObj = {
@@ -384,7 +398,10 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
+            console.log("userId should never be undefined or null");
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
         }
         let postObj = {
             userId: userId,
@@ -434,113 +451,24 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         console.log("logged in user", user)
         let userId = user.userId
         if (!userId) {
-            throw new Error("userId should never be undefined or null")
-        }
-        let path = "/v1/friendsdrinkses/"
-        let postObj = {
-            adminUserId: userId,
-            name: req.body.name
-        }
-        let postData = JSON.stringify(postObj)
-        let options = {
-            host: backendHostname,
-            port: backendPort,
-            path: path,
-            method: 'POST',
-            headers: {
-                'Content-Length': Buffer.byteLength(postData),
-                'Content-Type': 'application/json'
-            }
-        };
-        let backendReq = buildHttpRequest(options, res)
-
-        console.log("Sending request", postData)
-        backendReq.write(postData);
-        backendReq.end();
-        return;
-    })
-
-    app.post('/v1/api/friendsdrinks/update', function (req, res) {
-        let sessionId = sessionIdExtractor.getSessionId(req)
-        if (sessionId === null) {
-            res.status(403);
-            res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
-            return;
-        }
-        let user = userManagement.getLoggedInUser(sessionId);
-        if (user === null) {
-            res.status(403);
-            res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
-            return;
-        }
-        let userId = user.userId
-        if (!userId) {
-            throw new Error("userId should never be undefined or null")
-        }
-        let postObj = {
-            adminUserId: userId,
-            name: req.body.name
-        }
-        let path = "/v1/friendsdrinkses/" + req.body.id
-
-        let postData = JSON.stringify(postObj)
-
-        let options = {
-            host: backendHostname,
-            port: backendPort,
-            path: path,
-            method: 'POST',
-            headers: {
-                'Content-Length': Buffer.byteLength(postData),
-                'Content-Type': 'application/json'
-            }
-        };
-
-        let backendReq = buildHttpRequest(options, res)
-
-        console.log("Sending request", postData)
-        backendReq.write(postData);
-        backendReq.end();
-        return;
-    })
-
-    function buildHttpRequest(options, res) {
-        let backendReq = http.request(options, function (backendRes) {
-            console.log('STATUS: ' + backendRes.statusCode);
-            console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-            if (backendRes.statusCode !== 200) {
-                backendRes.resume();
-                res.status(500);
-                res.send(INTERNAL_ERROR_MESSAGE);
-                return;
-            } else {
-                console.log("got 200")
-                let bodyChunks = [];
-                backendRes.on('data', (chunk) => {
-                    bodyChunks.push(chunk)
-                });
-                backendRes.on('end', () => {
-                    let body = Buffer.concat(bodyChunks);
-                    console.log('BODY: ' + body);
-                    let obj = JSON.parse(body);
-                    console.log('Result ', obj.result);
-
-                    console.log('No more data in response - redirecting to /');
-                    res.redirect('/')
-                    return;
-                });
-            }
-        });
-
-        backendReq.on('error', function (e) {
-            console.log('ERROR: ' + e.message);
+            console.log("userId should never be undefined or null");
             res.status(500);
-            res.send(INTERNAL_ERROR_MESSAGE);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
+        }
+        backend.createFriendsDrinks(userId, req.body.name).then(function (data) {
+            res.status(200);
+            res.send('{}');
+            return;
+        }).catch(function (error) {
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
 
-        return backendReq;
-    }
+    })
+
+
 
     // API. Accepts JSON and returns JSON.
     app.post('/v1/api/signup', function (req, res) {
@@ -736,6 +664,46 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         });
         res.redirect('/login')
     }
+
+    /*
+    function buildHttpRequest(options, res) {
+        let backendReq = http.request(options, function (backendRes) {
+            console.log('STATUS: ' + backendRes.statusCode);
+            console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+            if (backendRes.statusCode !== 200) {
+                backendRes.resume();
+                res.status(500);
+                res.send(INTERNAL_ERROR_MESSAGE);
+                return;
+            } else {
+                console.log("got 200")
+                let bodyChunks = [];
+                backendRes.on('data', (chunk) => {
+                    bodyChunks.push(chunk)
+                });
+                backendRes.on('end', () => {
+                    let body = Buffer.concat(bodyChunks);
+                    console.log('BODY: ' + body);
+                    let obj = JSON.parse(body);
+                    console.log('Result ', obj.result);
+
+                    console.log('No more data in response - redirecting to /');
+                    res.redirect('/')
+                    return;
+                });
+            }
+        });
+
+        backendReq.on('error', function (e) {
+            console.log('ERROR: ' + e.message);
+            res.status(500);
+            res.send(INTERNAL_ERROR_MESSAGE);
+            return;
+        });
+
+        return backendReq;
+    }
+    */
 
     return app
 }
