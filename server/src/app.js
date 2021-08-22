@@ -60,7 +60,7 @@ if (properties.get('backend') === 'dev') {
   backend = new HttpBackend(backendConfig);
 }
 
-let server = createServer(userManagement, sessionIdExtractor, backendConfig, backend, SESSION_KEY)
+let server = createServer(userManagement, sessionIdExtractor, backend, SESSION_KEY)
 let serverListening = server.listen(8080, function () {
   let host = serverListening.address().address
   let port = serverListening.address().port

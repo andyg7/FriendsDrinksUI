@@ -8,7 +8,7 @@ let cookieParser = require('cookie-parser')
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
-function createServer(userManagement, sessionIdExtractor, backendConfig, backend, sessionKey) {
+function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
     let app = express();
 
     // app.set('views', __dirname + '/views');
@@ -21,9 +21,6 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         console.log("Incoming request:", req.method, req.url, req.body, req.cookies);
         next();
     });
-
-    let backendHostname = backendConfig.hostname
-    let backendPort = backendConfig.port
 
     app.get('/v1/health', function (req, res) {
         res.send(JSON.stringify({ status: "HEALTHY" }));
