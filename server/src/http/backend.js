@@ -214,8 +214,213 @@ class Backend {
         return buildHttpRequest(options);
     }
 
-    createFriendsDrinks() {
+    createFriendsDrinks(userId, name) {
+        let path = "/v1/friendsdrinkses/"
+        let postObj = {
+            adminUserId: userId,
+            name: name
+        }
+        let postData = JSON.stringify(postObj)
+        let options = {
+            host: backendHostname,
+            port: backendPort,
+            path: path,
+            method: 'POST',
+            headers: {
+                'Content-Length': Buffer.byteLength(postData),
+                'Content-Type': 'application/json'
+            }
+        };
+        return buildHttpRequest(options):
+    }
 
+    replyToInvitation(friendsDrinksId, invitationReply) {
+        let postObj = {
+            userId: userId,
+            friendsDrinksId: friendsDrinksId,
+            requestType: 'REPLY_TO_INVITATION',
+            replyToInvitationRequest: {
+                response: invitationReply
+            }
+        }
+        let path = "/v1/friendsdrinksmemberships"
+
+        let postData = JSON.stringify(postObj)
+
+        let options = {
+            host: backendHostname,
+            port: backendPort,
+            path: path,
+            method: 'POST',
+            headers: {
+                'Content-Length': Buffer.byteLength(postData),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        return buildHttpRequest(options);
+    }
+
+    schedule(friendsDrinksId) {
+        let path = "/v1/friendsdrinkses/" + friendsDrinksId + "/meetups";
+        let postObj = {
+            date: new Date().toISOString()
+        }
+        let postData = JSON.stringify(postObj)
+        options = {
+            host: backendHostname,
+            port: backendPort,
+            method: 'POST',
+            path: path,
+            headers: {
+                'Content-Length': Buffer.byteLength(postData),
+                'Content-Type': 'application/json'
+            }
+        }
+
+         return buildHttpRequest(options, res)
+    }
+
+    getFriendsDrinksDetailPage(friendsDrinksId) {
+
+        let options = {
+            host: backendHostname,
+            port: backendPort,
+            path: "/v1/friendsdrinksdetailpages/" + friendsDrinksId
+        }
+
+        return new Promise(function (resolve, reject) {
+            let backendReq = http.get(options, function (backendRes) {
+                console.log('STATUS: ' + backendRes.statusCode);
+                console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                if (backendRes.statusCode !== 200) {
+                    backendRes.resume();
+                    reject(new Error("Failed to call backend"));
+                }
+
+                let bodyChunks = [];
+                backendRes.on('data', function (chunk) {
+                    bodyChunks.push(chunk);
+                }).on('end', function () {
+                    let body = Buffer.concat(bodyChunks);
+                    console.log('BODY: ' + body);
+                    let obj = JSON.parse(body);
+                    members = []
+                    if (obj.memberList && obj.memberList.length > 0) {
+                        obj.memberList.forEach(function (item, index) {
+                            members.push(
+                                {
+                                    firstName: item.firstName,
+                                    lastName: item.lastName,
+                                    userId: item.userId
+                                }
+                            )
+                        });
+                    }
+
+                    meetups = []
+                    if (obj.friendsDrinksDetailPageMeetupList && obj.friendsDrinksDetailPageMeetupList.length > 0) {
+                        obj.friendsDrinksDetailPageMeetupList.forEach(function (item, index) {
+                            meetups.push(
+                                {
+                                    date: item.date
+                                }
+                            )
+                        });
+                    }
+
+                    let isAdmin = false;
+                    if (userId === obj.adminUserId) {
+                        isAdmin = true;
+                    }
+                    resolve(JSON.stringify({
+                        userId: userId,
+                        firstName: user.firstName,
+                        name: obj.name,
+                        members: members,
+                        friendsDrinksId: friendsDrinksId,
+                        isAdmin: isAdmin
+                    }));
+                })
+
+            })
+
+            backendReq.on('error', function (e) {
+                console.log('ERROR: ' + e.message);
+                res.status(500);
+                res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+                return;
+            });
+        });
+
+    }
+
+    getFriendsDrinksInvitation(userId, friendsDrinksId) {
+        let options = {
+            host: backendHostname,
+            port: backendPort,
+            path: "/v1/friendsdrinksinvitations/users/" + userId + "/friendsdrinkses/" + friendsDrinksId
+        }
+
+        return new Promise(function (resolve, reject) {
+            let backendReq = http.get(options, function (backendRes) {
+                console.log('STATUS: ' + backendRes.statusCode);
+                console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
+                if (backendRes.statusCode !== 200) {
+                    backendRes.resume();
+                    reject(new Error("Failed to call backend"));
+                }
+
+                let bodyChunks = [];
+                backendRes.on('data', function (chunk) {
+                    bodyChunks.push(chunk);
+                }).on('end', function () {
+                    let body = Buffer.concat(bodyChunks);
+                    console.log('BODY: ' + body);
+                    let obj = JSON.parse(body);
+
+                    resolve(JSON.stringify({
+                        message: obj.message,
+                        friendsDrinksId: obj.friendsDrinksId,
+                        friendsDrinksName: obj.friendsDrinksName
+                    }));
+                })
+
+            })
+
+            backendReq.on('error', function (e) {
+                console.log('ERROR: ' + e.message);
+                reject(new Error("Failed to call backend"));
+            });
+        });
+
+    }
+
+    inviteUser(friendsDrinksId, userId) {
+        let postObj = {
+            userId: userId,
+            friendsDrinksId: friendsDrinksId,
+            requestType: 'INVITE_USER',
+            inviteUserRequest: {
+                userId: userId
+            }
+        }
+        let path = "/v1/friendsdrinksmemberships"
+
+        let postData = JSON.stringify(postObj)
+
+        let options = {
+            host: backendHostname,
+            port: backendPort,
+            path: path,
+            method: 'POST',
+            headers: {
+                'Content-Length': Buffer.byteLength(postData),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        return buildHttpRequest(options);
     }
 
     buildHttpRequest(options) {

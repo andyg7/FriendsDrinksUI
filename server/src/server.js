@@ -31,7 +31,7 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         return;
     })
 
-    app.get('/v1/apifriendsdrinksinvitations/:friendsDrinksId', function (req, res) {
+    app.get('/v1/api/friendsdrinksinvitations/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
@@ -53,42 +53,11 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
 
         let friendsDrinksId = req.params.friendsDrinksId
-        let options = {
-            host: backendHostname,
-            port: backendPort,
-            path: "/v1/friendsdrinksinvitations/users/" + userId + "/friendsdrinkses/" + friendsDrinksId
-        }
-
-        let backendReq = http.get(options, function (backendRes) {
-            console.log('STATUS: ' + backendRes.statusCode);
-            console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-            if (backendRes.statusCode !== 200) {
-                backendRes.resume();
-                res.status(500);
-                res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
-                return;
-            }
-
-            let bodyChunks = [];
-            backendRes.on('data', function (chunk) {
-                bodyChunks.push(chunk);
-            }).on('end', function () {
-                let body = Buffer.concat(bodyChunks);
-                console.log('BODY: ' + body);
-                let obj = JSON.parse(body);
-
-                res.render('friendsdrinks_invitation', {
-                    message: obj.message,
-                    friendsDrinksId: obj.friendsDrinksId,
-                    friendsDrinksName: obj.friendsDrinksName
-                });
-
-            })
-
-        })
-
-        backendReq.on('error', function (e) {
-            console.log('ERROR: ' + e.message);
+        backend.getFriendsDrinksInvitation(userId, friendsDrinksId).then(function (data) {
+            res.status(200);
+            res.send(data);
+        }).catch(function (err) {
+            console.log(err);
             res.status(500);
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
@@ -118,76 +87,15 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
         }
 
         let friendsDrinksId = req.params.friendsDrinksId
-        let options = {
-            host: backendHostname,
-            port: backendPort,
-            path: "/v1/friendsdrinksdetailpages/" + friendsDrinksId
-        }
-
-        let backendReq = http.get(options, function (backendRes) {
-            console.log('STATUS: ' + backendRes.statusCode);
-            console.log('HEADERS: ' + JSON.stringify(backendRes.headers));
-            if (backendRes.statusCode !== 200) {
-                backendRes.resume();
-                res.status(500);
-                res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
-                return;
-            }
-
-            let bodyChunks = [];
-            backendRes.on('data', function (chunk) {
-                bodyChunks.push(chunk);
-            }).on('end', function () {
-                let body = Buffer.concat(bodyChunks);
-                console.log('BODY: ' + body);
-                let obj = JSON.parse(body);
-                members = []
-                if (obj.memberList && obj.memberList.length > 0) {
-                    obj.memberList.forEach(function (item, index) {
-                        members.push(
-                            {
-                                firstName: item.firstName,
-                                lastName: item.lastName,
-                                userId: item.userId
-                            }
-                        )
-                    });
-                }
-
-                meetups = []
-                if (obj.friendsDrinksDetailPageMeetupList && obj.friendsDrinksDetailPageMeetupList.length > 0) {
-                    obj.friendsDrinksDetailPageMeetupList.forEach(function (item, index) {
-                        meetups.push(
-                            {
-                                date: item.date
-                            }
-                        )
-                    });
-                }
-
-                let isAdmin = false;
-                if (userId === obj.adminUserId) {
-                    isAdmin = true;
-                }
-                res.render('friendsdrinks_detail_page', {
-                    userId: userId,
-                    firstName: user.firstName,
-                    name: obj.name,
-                    members: members,
-                    friendsDrinksId: friendsDrinksId,
-                    isAdmin: isAdmin
-                });
-            })
-
-        })
-
-        backendReq.on('error', function (e) {
-            console.log('ERROR: ' + e.message);
+        backend.getFriendsDrinksDetailPage(friendsDrinksId).then(function (data) {
+            res.status(200);
+            res.send(data);
+        }).catch(function (err) {
+            console.log(err);
             res.status(500);
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-
     })
 
     app.get('/v1/api/userhomepages/:sessionId', function (req, res) {
@@ -242,30 +150,17 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         }
-        let friendsDrinksId = req.params.friendsDrinksId,
-            path = "/v1/friendsdrinkses/" + friendsDrinksId + "/meetups"
-        let postObj = {
-            date: new Date().toISOString()
-        }
-        let postData = JSON.stringify(postObj)
-        options = {
-            host: backendHostname,
-            port: backendPort,
-            method: 'POST',
-            path: path,
-            headers: {
-                'Content-Length': Buffer.byteLength(postData),
-                'Content-Type': 'application/json'
-            }
-        }
+        let friendsDrinksId = req.params.friendsDrinksId;
+        backend.schedule(friendsDrinksId).then(function (data) {
+            res.status(200);
+            res.send('{}');
+            return;
+        }).catch(function (error) {
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
+        });
 
-        let backendReq = buildHttpRequest(options, res)
-
-        console.log("Sending POST request", options)
-        console.log("Sending postData", postData)
-        backendReq.write(postData);
-        backendReq.end();
-        return;
     })
 
     app.post('/v1/api/friendsdrinks/delete/:friendsDrinksId', function (req, res) {
@@ -351,36 +246,16 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         }
+        backend.inviteUser(req.params.friendsDrinksId, req.body.userId).then(function (data) {
+            res.status(200);
+            res.send('{}');
+            return;
+        }).catch(function (error) {
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
+        });
 
-        let postObj = {
-            userId: userId,
-            friendsDrinksId: req.params.friendsDrinksId,
-            requestType: 'INVITE_USER',
-            inviteUserRequest: {
-                userId: req.body.userId
-            }
-        }
-        let path = "/v1/friendsdrinksmemberships"
-
-        let postData = JSON.stringify(postObj)
-
-        let options = {
-            host: backendHostname,
-            port: backendPort,
-            path: path,
-            method: 'POST',
-            headers: {
-                'Content-Length': Buffer.byteLength(postData),
-                'Content-Type': 'application/json'
-            }
-        };
-
-        let backendReq = buildHttpRequest(options, res)
-
-        console.log("Sending request", postData)
-        backendReq.write(postData);
-        backendReq.end();
-        return;
     })
 
     app.post('/friendsdrinks/replyToInvitation/:friendsDrinksId', function (req, res) {
@@ -403,35 +278,16 @@ function createServer(userManagement, sessionIdExtractor, backendConfig, backend
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         }
-        let postObj = {
-            userId: userId,
-            friendsDrinksId: req.params.friendsDrinksId,
-            requestType: 'REPLY_TO_INVITATION',
-            replyToInvitationRequest: {
-                response: req.body.invitationReply
-            }
-        }
-        let path = "/v1/friendsdrinksmemberships"
+        backend.replyToInvitation(req.params.friendsDrinksId, req.body.invitationReply).then(function (data) {
+            res.status(200);
+            res.send('{}');
+            return;
+        }).catch(function (error) {
+            res.status(500);
+            res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
+            return;
+        });
 
-        let postData = JSON.stringify(postObj)
-
-        let options = {
-            host: backendHostname,
-            port: backendPort,
-            path: path,
-            method: 'POST',
-            headers: {
-                'Content-Length': Buffer.byteLength(postData),
-                'Content-Type': 'application/json'
-            }
-        };
-
-        let backendReq = buildHttpRequest(options, res)
-
-        console.log("Sending request", postData, " to ", path)
-        backendReq.write(postData);
-        backendReq.end();
-        return;
     })
 
 
