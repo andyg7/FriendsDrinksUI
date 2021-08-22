@@ -63,6 +63,10 @@ class Backend {
             backendReq.end();
         })
     }
+
+    getHomepage(userId) {
+
+    }
 }
 
 module.exports = Backend

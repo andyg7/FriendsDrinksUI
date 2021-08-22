@@ -8,7 +8,13 @@ class CookieExtractor {
     getSessionId(req) {
         let sessionId = req.cookies[this.sessionKey];
         if (!sessionId) {
-            return null;
+            if (!req.body) {
+                return req.body.sessionId;
+            } else {
+                return null;
+            }
+        } else {
+            return sessionId;
         }
     }
 }
