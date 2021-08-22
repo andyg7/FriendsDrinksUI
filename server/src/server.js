@@ -209,7 +209,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
             if (backendRes.statusCode !== 200) {
                 backendRes.resume();
                 res.status(500);
-                res.send(INTERNAL_ERROR_MESSAGE);
+                res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
                 return;
             }
 
@@ -219,6 +219,10 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
             }).on('end', function () {
                 let body = Buffer.concat(bodyChunks);
                 console.log('BODY: ' + body);
+                res.status(200);
+                res.send(body);
+                return;
+
                 let obj = JSON.parse(body);
 
                 friendsDrinks = []
@@ -686,6 +690,7 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         return backendReq;
     }
 
+    // API. Accepts JSON and returns JSON.
     app.post('/v1/api/signup', function (req, res) {
         let email = req.body.email;
         if (!email) {
@@ -739,12 +744,13 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
         let password = req.body.password;
         if (!password) {
             res.statusCode = 400;
-            res.send(JSON.stringify({ errMsg: 'You need to provide an email' }));
+            res.send(JSON.stringify({ errMsg: 'You need to provide a password' }));
             return;
         }
         userManagement.login(email, password).then(function (data) {
-            console.log("Successfully logged in " + email);
             let sessionId = data.sessionId;
+            const firstName = data.user.firstName;
+            const lastName = data.user.lastName;
             let input = {
                 userId: data.user.userId,
                 eventType: 'LOGGED_IN',
@@ -757,7 +763,12 @@ function createServer(userManagement, cookieExtractor, backendConfig, backend, s
             backend.reportUserEvent(input).then(function (data) {
                 res.cookie(sessionKey, sessionId, {});
                 res.status(200);
-                res.send(JSON.stringify({ sId: sessionId }));
+                res.send(JSON.stringify({
+                    sId: sessionId,
+                    firstName: firstName,
+                    lastName: lastName
+                })
+                );
                 return;
             }).catch(function (err) {
                 console.log(err);

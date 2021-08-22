@@ -104,7 +104,11 @@ class LogIn extends React.Component {
             .then(
                 (res) => {
                     if (res.status === 200) {
-                        this.props.onLoggedIn(res.body.sId);
+                        this.props.onLoggedIn({
+                            sessionId: res.body.sId,
+                            firstName: res.body.firstName,
+                            lastName: res.body.lastName
+                        });
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);

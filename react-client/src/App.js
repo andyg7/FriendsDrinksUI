@@ -8,39 +8,39 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sessionId: ''
+      loggedInUser: null
     };
     this.handleLoggedIn = this.handleLoggedIn.bind(this);
     this.handleSessionExpired = this.handleSessionExpired.bind(this);
     this.handleBackToRoot = this.handleBackToRoot.bind(this);
   }
 
-  handleLoggedIn(sId) {
+  handleLoggedIn(user) {
     this.setState(function (state, props) {
       return {
-        sessionId: sId
+        loggedInUser: user
       }
     });
   }
 
   handleBackToRoot() {
     this.setState({
-      sessionId: ''
+      loggedInUser: null
     });
   }
 
   handleSessionExpired() {
     this.setState({
-      sessionId: ''
+      loggedInUser: null
     })
   }
 
   render() {
-    const logOut = <LogOut onBackToRoot={this.handleBackToRoot}/>;
-    if (!this.state.sessionId) {
+    const logOut = <LogOut onBackToRoot={this.handleBackToRoot} />;
+    if (!this.state.loggedInUser) {
       return <LoginControl onLoggedIn={this.handleLoggedIn} />;
     } else {
-      return <LoggedInApp sessionId={this.state.sessionId} logOut={logOut} onSessionExpired={this.handleSessionExpired} />
+      return <LoggedInApp loggedInUser={this.state.loggedInUser} logOut={logOut} onSessionExpired={this.handleSessionExpired} />
     }
   }
 }

@@ -14,9 +14,9 @@ class LoggedInApp extends React.Component {
     render() {
         let data;
         if (this.state.page === 'HOMEPAGE') {
-            data = <Homepage sessionId={this.props.sessionId} onSessionExpired={this.props.onSessionExpired} userId={this.props.userId} />;
+            data = <Homepage loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} userId={this.props.userId} />;
         } else {
-            data = <FriendsDrinksDetailPage sessionId={this.props.sessionId} onSessionExpired={this.props.onSessionExpired} friendsDrinksId={this.props.friendsDrinksId} />
+            data = <FriendsDrinksDetailPage loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} friendsDrinksId={this.props.friendsDrinksId} />
         }
         let div = <div>
             {this.props.logOut}
