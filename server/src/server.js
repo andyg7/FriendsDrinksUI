@@ -504,7 +504,6 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
         });
     })
 
-
     return app
 }
 

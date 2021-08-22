@@ -211,7 +211,7 @@ class Backend {
             }
         };
 
-        return buildHttpRequest(options);
+        return httpPromise(options);
     }
 
     createFriendsDrinks(userId, name) {
@@ -231,7 +231,7 @@ class Backend {
                 'Content-Type': 'application/json'
             }
         };
-        return buildHttpRequest(options):
+        return httpPromise(options):
     }
 
     replyToInvitation(friendsDrinksId, invitationReply) {
@@ -258,7 +258,7 @@ class Backend {
             }
         };
 
-        return buildHttpRequest(options);
+        return httpPromise(options);
     }
 
     schedule(friendsDrinksId) {
@@ -278,7 +278,7 @@ class Backend {
             }
         }
 
-         return buildHttpRequest(options, res)
+         return httpPromise(options, res)
     }
 
     getFriendsDrinksDetailPage(friendsDrinksId) {
@@ -419,10 +419,10 @@ class Backend {
             }
         };
 
-        return buildHttpRequest(options);
+        return httpPromise(options);
     }
 
-    buildHttpRequest(options) {
+    httpPromise(options) {
         return new Promise(function (resolve, reject) {
             let backendReq = http.request(options, function (backendRes) {
                 console.log('STATUS: ' + backendRes.statusCode);
