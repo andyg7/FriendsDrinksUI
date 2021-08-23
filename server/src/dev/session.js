@@ -1,5 +1,5 @@
 
-class CookieExtractor {
+class SessionIdExtractor {
 
     getSessionId(req) {
         return "123";
