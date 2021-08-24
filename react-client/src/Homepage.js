@@ -56,14 +56,19 @@ export default class Homepage extends React.Component {
                 </div>
             );
         }
-        const friendsDrinksListItem = dto.friendsDrinksList.map((x) => <li key={x}>{x}</li>);
+        const adminFriendsDrinksStateList = dto.adminFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>{x.name}</li>);
+        const memberFriendsDrinksStateList = dto.memberFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>{x.name}</li>);
+        const invitations = dto.invitationList.map((x) => <li key={x.friendsDrinksId}>{x.message}</li>);
         return (
             <div>
                 {this.props.loggedInUser.sessionId}
                 <h1>Welcome back {this.props.loggedInUser.firstName}!</h1>
                 <h2>Your FriendsDrinkses!</h2>
-                <ul>{friendsDrinksListItem}</ul>
+                <ul>{adminFriendsDrinksStateList}</ul>
+                <h2>FriendsDrinkses you're a member of!</h2>
+                <ul>{memberFriendsDrinksStateList}</ul>
                 <h2>Your invitations!</h2>
+                <ul>{invitations}</ul>
             </div>
         );
     }

@@ -11,11 +11,27 @@ class Backend {
 
     getHomepage(userId) {
         console.log("Getting homepage for " + userId);
+        let homepage = {
+            adminFriendsDrinksStateList: [{
+                adminUserId: "1",
+                friendsDrinksId: "1",
+                name: "Whiskey drinks",
+                status: "ACTIVE"
+            }],
+            memberFriendsDrinksStateList: [{
+                adminUserId: "1",
+                friendsDrinksId: "1",
+                name: "Vodka drinks",
+                status: "ACTIVE"
+            }],
+            invitationList: [{
+                message: "Want to join Scotch drinks?",
+                friendsDrinksId: "1",
+                friendsDrinksName: "Scotch drinks"
+            }]
+        };
         return new Promise(function (resolve, reject) {
-            let homepageDto = {
-                friendsDrinksList: ["Whiskey", "Vodka"]
-            };
-            resolve(JSON.stringify(homepageDto));
+            resolve(JSON.stringify(homepage));
         });
     }
 

@@ -173,7 +173,7 @@ class Backend {
                 'Content-Type': 'application/json'
             }
         };
-        return httpPromise(options, postData):
+        return httpPromise(options, postData);
     }
 
     replyToInvitation(friendsDrinksId, invitationReply) {

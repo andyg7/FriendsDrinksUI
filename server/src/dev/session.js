@@ -6,4 +6,4 @@ class SessionIdExtractor {
     }
 }
 
-module.exports = CookieExtractor
+module.exports = SessionIdExtractor

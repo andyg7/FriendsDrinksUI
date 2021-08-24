@@ -117,6 +117,7 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         backend.getHomepage(userId).then(function (data) {
             res.status(200);
             res.send(data);
+            return;
         }).catch(function (err) {
             console.log(err);
             res.status(500);
