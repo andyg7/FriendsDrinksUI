@@ -48,6 +48,8 @@ export default class Homepage extends React.Component {
 
     render() {
         const dto = this.state.homepageDto;
+        console.log(dto);
+        console.log(this.props.loggedInUser.sessionId);
         if (!dto) {
             return (
                 <div>
@@ -61,13 +63,12 @@ export default class Homepage extends React.Component {
         const invitations = dto.invitationList.map((x) => <li key={x.friendsDrinksId}>{x.message}</li>);
         return (
             <div>
-                {this.props.loggedInUser.sessionId}
-                <h1>Welcome back {this.props.loggedInUser.firstName}!</h1>
-                <h2>Your FriendsDrinkses!</h2>
+                <header>Welcome back {this.props.loggedInUser.firstName}! </header>
+                <div>Your FriendsDrinkses!</div>
                 <ul>{adminFriendsDrinksStateList}</ul>
-                <h2>FriendsDrinkses you're a member of!</h2>
+                <div>FriendsDrinkses you're a member of!</div>
                 <ul>{memberFriendsDrinksStateList}</ul>
-                <h2>Your invitations!</h2>
+                <div>Your invitations!</div>
                 <ul>{invitations}</ul>
             </div>
         );
