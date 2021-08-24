@@ -39,7 +39,7 @@ console.log('Backend port: ' + backendConfig.port)
 let userManagement = null;
 let sessionIdExtractor = null;
 let backend = null;
-if (properties.get('identity_store') == 'dev') {
+if (properties.get('identity_store') === 'dev') {
   userManagement = new DevUserManagement();
   sessionIdExtractor = new DevSessionIdExtractor();
   console.log('Dev stage');
@@ -60,7 +60,7 @@ if (properties.get('backend') === 'dev') {
   backend = new HttpBackend(backendConfig);
 }
 
-let server = createServer(userManagement, sessionIdExtractor, backend, SESSION_KEY)
+let server = createServer(userManagement, sessionIdExtractor, backend)
 let serverListening = server.listen(8080, function () {
   let host = serverListening.address().address
   let port = serverListening.address().port

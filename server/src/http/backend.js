@@ -133,10 +133,10 @@ class Backend {
         });
     }
 
-    updateFriendsDrinks(friendsDrinksId) {
+    updateFriendsDrinks(friendsDrinksId, name) {
         let postObj = {
             adminUserId: userId,
-            name: req.body.name
+            name: name
         }
         let path = "/v1/friendsdrinkses/" + friendsDrinksId;
 

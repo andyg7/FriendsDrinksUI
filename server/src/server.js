@@ -8,7 +8,7 @@ let cookieParser = require('cookie-parser')
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
-function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
+function createServer(userManagement, sessionIdExtractor, backend) {
     let app = express();
 
     // app.set('views', __dirname + '/views');
@@ -211,7 +211,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         }
-        backend.updateFriendsDrinks(req.body.id).then(function (data) {
+        backend.updateFriendsDrinks(req.body.id, req.body.name).then(function (data) {
             res.status(200);
             res.send('{}');
             return;
@@ -389,7 +389,6 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
                 }
             }
             backend.reportUserEvent(input).then(function (data) {
-                res.cookie(sessionKey, sessionId, {});
                 res.status(200);
                 res.send(JSON.stringify({
                     sId: sessionId,
@@ -438,7 +437,6 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             eventType: 'LOGGED_OUT'
         }
         backend.reportUserEvent(input).then(function (data) {
-            res.cookie(sessionKey, sessionId, {});
             res.status(200);
             res.send(JSON.stringify({ sId: sessionId }));
             return;
