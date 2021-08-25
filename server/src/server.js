@@ -61,7 +61,7 @@ function createServer(userManagement, sessionIdExtractor, backend) {
 
     })
 
-    app.get('/v1/apifriendsdrinksdetailpages/:friendsDrinksId', function (req, res) {
+    app.get('/v1/api/friendsdrinksdetailpages/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);

@@ -9,14 +9,29 @@ class LoggedInApp extends React.Component {
         this.state = {
             page: 'HOMEPAGE'
         };
+        this.handleGoToDetailPage = this.handleGoToDetailPage.bind(this);
+    }
+
+    handleGoToDetailPage() {
+        this.setState({
+            page: 'DETAIL_PAGE'
+        })
+    }
+
+    handleGoToHomepage() {
+        this.setState({
+            page: 'HOMEPAGE'
+        })
     }
 
     render() {
         let data;
         if (this.state.page === 'HOMEPAGE') {
-            data = <Homepage loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} userId={this.props.userId} />;
+            data = <Homepage onGoToDetailPage={this.handleGoToDetailPage} loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} userId={this.props.userId} />;
+        } else if (this.state.page === 'DETAIL_PAGE') {
+            data = <FriendsDrinksDetailPage onGoToHomepage={this.handleGoToHomepage} loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} friendsDrinksId={this.props.friendsDrinksId} />
         } else {
-            data = <FriendsDrinksDetailPage loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} friendsDrinksId={this.props.friendsDrinksId} />
+            throw new Error('Unknown page ' + this.state.page)
         }
         let div = <div>
             {this.props.logOut}

@@ -47,7 +47,8 @@ class Backend {
         })
     }
 
-    createFriendsDrinks(id) {
+    createFriendsDrinks(userId, name) {
+        console.log("Creating friends drinks for user " + userId + " with name " + name);
         return new Promise(function (resolve, reject) {
             resolve('Success');
         })
@@ -66,8 +67,21 @@ class Backend {
     }
 
     getFriendsDrinksDetailPage(friendsDrinksId) {
+        let dp = {
+            adminUserId: 'someAdminUserId',
+            friendsDrinksId: friendsDrinksId,
+            name: 'Detail page name :)',
+            memberList: [
+                {
+                    userId: 'userId',
+                    firstName: 'John',
+                    lastName: 'Grant',
+                    email: 'blah@blah'
+                }
+            ]
+        }
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve(JSON.stringify(dp));
         })
     }
 

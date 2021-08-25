@@ -3,7 +3,7 @@ let auth = require('./../auth')
 class UserManagement {
 
 	getLoggedInUser(sessionId) {
-		let user = new auth.User("012345689", "test@test.com", "foo", "bar");
+		let user = new auth.User("userId123", "test@test.com", "foo", "bar");
 		return user;
 	}
 
@@ -20,19 +20,19 @@ class UserManagement {
 
 	signUp(input) {
 		return new Promise(function (resolve, reject) {
-			resolve("Success");
+			resolve('{}');
 		});
 	}
 
 	forgotPassword(email, res) {
 		return new Promise(function (resolve, reject) {
-			resolve("Success");
+			resolve('{}');
 		});
 	}
 
 	resetPassword(verificationCode, email, newPassword, res) {
 		return new Promise(function (resolve, reject) {
-			resolve("Success");
+			resolve('{}');
 		});
 	}
 
