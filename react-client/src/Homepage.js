@@ -9,6 +9,7 @@ export default class Homepage extends React.Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     componentDidMount() {
@@ -101,6 +102,13 @@ export default class Homepage extends React.Component {
         }
     }
 
+    handleClick(friendsDrinksId, event) {
+        console.log(event);
+        console.log(friendsDrinksId);
+        event.preventDefault();
+        this.props.onGoToDetailPage(friendsDrinksId);
+    }
+
     render() {
         const dto = this.state.homepageDto;
         console.log(dto);
@@ -113,8 +121,18 @@ export default class Homepage extends React.Component {
                 </div>
             );
         }
-        const adminFriendsDrinksStateList = dto.adminFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>{x.name}</li>);
-        const memberFriendsDrinksStateList = dto.memberFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>{x.name}</li>);
+        const adminFriendsDrinksStateList =
+            dto.adminFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>
+                <button onClick={(e) => this.handleClick(x.friendsDrinksId, e)}>
+                    {x.name}
+                </button>
+            </li>);
+        const memberFriendsDrinksStateList =
+            dto.memberFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>
+                <button onClick={(e) => this.handleClick(x.friendsDrinksId, e)}>
+                    {x.name}
+                </button>
+            </li>);
         const invitations = dto.invitationList.map((x) => <li key={x.friendsDrinksId}>{x.message}</li>);
         return (
             <div>

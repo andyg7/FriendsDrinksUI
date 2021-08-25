@@ -7,20 +7,24 @@ class LoggedInApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            page: 'HOMEPAGE'
+            page: 'HOMEPAGE',
+            friendsDrinksId: null
         };
         this.handleGoToDetailPage = this.handleGoToDetailPage.bind(this);
+        this.handleGoToHomepage = this.handleGoToHomepage.bind(this);
     }
 
-    handleGoToDetailPage() {
+    handleGoToDetailPage(fId) {
         this.setState({
-            page: 'DETAIL_PAGE'
+            page: 'DETAIL_PAGE',
+            friendsDrinksId: fId
         })
     }
 
     handleGoToHomepage() {
         this.setState({
-            page: 'HOMEPAGE'
+            page: 'HOMEPAGE',
+            friendsDrinksId: null
         })
     }
 
@@ -29,7 +33,7 @@ class LoggedInApp extends React.Component {
         if (this.state.page === 'HOMEPAGE') {
             data = <Homepage onGoToDetailPage={this.handleGoToDetailPage} loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} userId={this.props.userId} />;
         } else if (this.state.page === 'DETAIL_PAGE') {
-            data = <FriendsDrinksDetailPage onGoToHomepage={this.handleGoToHomepage} loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} friendsDrinksId={this.props.friendsDrinksId} />
+            data = <FriendsDrinksDetailPage onGoToHomepage={this.handleGoToHomepage} loggedInUser={this.props.loggedInUser} onSessionExpired={this.props.onSessionExpired} friendsDrinksId={this.state.friendsDrinksId} />
         } else {
             throw new Error('Unknown page ' + this.state.page)
         }
