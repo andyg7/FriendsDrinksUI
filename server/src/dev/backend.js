@@ -78,6 +78,19 @@ class Backend {
                     lastName: 'Grant',
                     email: 'blah@blah'
                 }
+            ],
+            meetupList: [
+                {
+                    date: "2021/08/25",
+                    userStateList: [
+                        {
+                            userId: 'userId2',
+                            firstName: 'Sam',
+                            lastName: 'Bar',
+                            email: 'sam@blah'
+                        }
+                    ]
+                }
             ]
         }
         return new Promise(function (resolve, reject) {

@@ -56,6 +56,8 @@ export default class FriendsDrinksDetailPage extends React.Component {
         // API call to get data and display here.
         const memberList =
             dto.memberList.map((x) => <li key={x.userId}> {x.firstName} {x.lastName} </li>);
+        const meetupList =
+            dto.meetupList.map((x) => <li key={x.date}> {x.date} </li>);
         return (
             <div>
                 <button onClick={this.props.onGoToHomepage}>Back to homepage</button>
@@ -66,6 +68,8 @@ export default class FriendsDrinksDetailPage extends React.Component {
                 <div>
                     Members
                     <ul>{memberList}</ul>
+                    Meetups
+                    <ul>{meetupList}</ul>
                 </div>
             </div>
         );
