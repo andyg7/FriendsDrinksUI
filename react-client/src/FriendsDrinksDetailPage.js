@@ -12,9 +12,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
     componentDidMount() {
         console.log("fetching");
         fetch("/v1/api/friendsdrinksdetailpages/" + this.props.friendsDrinksId, {
-            headers: {
-                cookie: 'friendsdrinks-session-id=' + this.props.loggedInUser.sessionId
-            }
+            credentials: "same-origin"
         })
             .then(r => r.json().then(data => ({ status: r.status, body: data })))
             .then(

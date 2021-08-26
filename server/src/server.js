@@ -8,7 +8,7 @@ let cookieParser = require('cookie-parser')
 
 const INTERNAL_ERROR_MESSAGE = "Whoops! Something went wrong :(";
 
-function createServer(userManagement, sessionIdExtractor, backend) {
+function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
     let app = express();
 
     // app.set('views', __dirname + '/views');
@@ -31,12 +31,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -65,6 +67,7 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -98,12 +101,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = req.params.sessionId;
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -131,12 +136,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -164,12 +171,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -196,12 +205,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -227,12 +238,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return
         }
@@ -259,12 +272,15 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
+        console.log(sessionId);
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return
         }
@@ -291,12 +307,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -390,6 +408,7 @@ function createServer(userManagement, sessionIdExtractor, backend) {
                 }
             }
             backend.reportUserEvent(input).then(function (data) {
+                res.cookie(sessionKey, sessionId, {});
                 res.status(200);
                 res.send(JSON.stringify({
                     sId: sessionId,
@@ -408,6 +427,7 @@ function createServer(userManagement, sessionIdExtractor, backend) {
             console.log(err);
             if (err.code === 'NotAuthorizedException') {
                 res.status(403);
+                res = resetHttpResponseCookie(res);
                 res.send(JSON.stringify({ errMsg: 'Wrong password' }));
                 return;
             } else {
@@ -422,12 +442,14 @@ function createServer(userManagement, sessionIdExtractor, backend) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
         let user = userManagement.getLoggedInUser(sessionId);
         if (user === null) {
             res.status(403);
+            res = resetHttpResponseCookie(res);
             res.send(JSON.stringify({ errMsg: 'Not logged in.' }));
             return;
         }
@@ -502,6 +524,15 @@ function createServer(userManagement, sessionIdExtractor, backend) {
             return;
         });
     })
+
+    function resetHttpResponseCookie(res) {
+        console.log("Resetting http cookies")
+        res.cookie(sessionKey, "", {
+            path: '/',
+            expires: new Date(1)
+        });
+        return res;
+    }
 
     return app
 }
