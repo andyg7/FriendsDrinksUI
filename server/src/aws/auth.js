@@ -49,7 +49,7 @@ class UserManagement {
 		});
 	}
 
-	login(email, password) {
+	logIn(email, password) {
 		let authenticationData = {
 			Username: email,
 			Password: password,

@@ -391,7 +391,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: 'You need to provide a password' }));
             return;
         }
-        userManagement.login(email, password).then(function (data) {
+        userManagement.logIn(email, password).then(function (data) {
             let sessionId = data.sessionId;
             const firstName = data.user.firstName;
             const lastName = data.user.lastName;

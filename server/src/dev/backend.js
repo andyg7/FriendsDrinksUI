@@ -37,20 +37,20 @@ class Backend {
 
     deleteFriendsDrinks(id) {
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve('{}');
         })
     }
 
     updateFriendsDrinks(id) {
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve('{}');
         })
     }
 
     createFriendsDrinks(userId, name) {
         console.log("Creating friends drinks for user " + userId + " with name " + name);
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve('{}');
         })
     }
 
@@ -62,7 +62,7 @@ class Backend {
 
     schedule(friendsDrinksId) {
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve('{}');
         })
     }
 

@@ -7,7 +7,7 @@ class UserManagement {
 		return user;
 	}
 
-	login(email, password) {
+	logIn(email, password) {
 		return new Promise(function (resolve, reject) {
 			let loggedInUser = new auth.LoggedInUser(new auth.User("userId123", "test@test.com", "foo", "bar"), "sessionId123");
 			resolve(loggedInUser);
