@@ -15,7 +15,7 @@ export default class Homepage extends React.Component {
 
     componentDidMount() {
         console.log("fetching");
-        fetch("/v1/api/userhomepages/" + this.props.loggedInUser.sessionId)
+        fetch("/v1/api/userhomepages/")
             .then(r => r.json().then(data => ({ status: r.status, body: data })))
             .then(
                 (res) => {

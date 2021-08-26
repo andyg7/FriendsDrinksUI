@@ -97,8 +97,8 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
         });
     })
 
-    app.get('/v1/api/userhomepages/:sessionId', function (req, res) {
-        let sessionId = req.params.sessionId;
+    app.get('/v1/api/userhomepages', function (req, res) {
+        let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);
             res = resetHttpResponseCookie(res);
