@@ -13,7 +13,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
 
     // app.set('views', __dirname + '/views');
     // app.set('view engine', 'ejs');
-    app.use(bodyParser.urlencoded({ extended: false }))
+    app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
     app.use(cookieParser());
     app.use(express.static(__dirname + '/public'));
@@ -25,7 +25,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
     app.get('/v1/health', function (req, res) {
         res.send(JSON.stringify({ status: "HEALTHY" }));
         return;
-    })
+    });
 
     app.get('/v1/api/friendsdrinksinvitations/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -61,7 +61,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             return;
         });
 
-    })
+    });
 
     app.get('/v1/api/friendsdrinksdetailpages/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -95,7 +95,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-    })
+    });
 
     app.get('/v1/api/userhomepages', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -165,7 +165,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             return;
         });
 
-    })
+    });
 
     app.post('/v1/api/friendsdrinks/delete/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -199,7 +199,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-    })
+    });
 
     app.post('/v1/api/friendsdrinks/update', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -232,7 +232,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-    })
+    });
 
     app.post('/v1/api/friendsdrinks/inviteUser/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -265,8 +265,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-
-    })
+    });
 
     app.post('/v1/api/friendsdrinks/replyToInvitation/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -300,8 +299,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-
-    })
+    });
 
     app.post('/v1/api/friendsdrinks/create', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
@@ -335,8 +333,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-
-    })
+    });
 
     app.post('/v1/api/signup', function (req, res) {
         let email = req.body.email;
@@ -379,7 +376,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-    })
+    });
 
     app.post('/v1/api/login', function (req, res) {
         let email = req.body.email;
@@ -488,7 +485,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-    })
+    });
 
     app.post('/v1/api/resetpassword', function (req, res) {
         let verificationCode = req.body.verificationCode;
@@ -523,7 +520,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         });
-    })
+    });
 
     function resetHttpResponseCookie(res) {
         console.log("Resetting http cookies")
@@ -534,7 +531,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
         return res;
     }
 
-    return app
+    return app;
 }
 
 module.exports = createServer
