@@ -16,6 +16,8 @@ export default class LogOut extends React.Component {
             .then(
                 (res) => {
                     if (res.status === 200) {
+                        console.log("Clearing local storage.");
+                        localStorage.clear();
                         this.props.onBackToRoot();
                     } else if (res.status === 403) {
                         alert(res.body.errMsg);

@@ -8,7 +8,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedInUser: null
+      loggedInUser: JSON.parse(localStorage.getItem('friendsdrinks-user')) || null
     };
     this.handleLoggedIn = this.handleLoggedIn.bind(this);
     this.handleSessionExpired = this.handleSessionExpired.bind(this);
@@ -18,6 +18,9 @@ class App extends React.Component {
   handleLoggedIn(user) {
     this.setState({
       loggedInUser: user
+    }, () => {
+      console.log("Storing logged in user info in local storage");
+      localStorage.setItem('friendsdrinks-user', JSON.stringify(user));
     });
   }
 
