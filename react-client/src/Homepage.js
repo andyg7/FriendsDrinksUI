@@ -9,7 +9,8 @@ export default class Homepage extends React.Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleClick = this.handleClick.bind(this);
+        this.handleGoToDetailPage = this.handleGoToDetailPage.bind(this);
+        this.handleGoToInvitation = this.handleGoToInvitation.bind(this);
     }
 
     componentDidMount() {
@@ -102,11 +103,18 @@ export default class Homepage extends React.Component {
         }
     }
 
-    handleClick(friendsDrinksId, event) {
+    handleGoToDetailPage(friendsDrinksId, event) {
         console.log(event);
         console.log(friendsDrinksId);
         event.preventDefault();
         this.props.onGoToDetailPage(friendsDrinksId);
+    }
+
+    handleGoToInvitation(friendsDrinksId, event) {
+        console.log(event);
+        console.log(friendsDrinksId);
+        event.preventDefault();
+        this.props.onGoToInvitation(friendsDrinksId);
     }
 
     render() {
@@ -123,17 +131,21 @@ export default class Homepage extends React.Component {
         }
         const adminFriendsDrinksStateList =
             dto.adminFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>
-                <button onClick={(e) => this.handleClick(x.friendsDrinksId, e)}>
+                <button onClick={(e) => this.handleGoToDetailPage(x.friendsDrinksId, e)}>
                     {x.name}
                 </button>
             </li>);
         const memberFriendsDrinksStateList =
             dto.memberFriendsDrinksStateList.map((x) => <li key={x.friendsDrinksId}>
-                <button onClick={(e) => this.handleClick(x.friendsDrinksId, e)}>
+                <button onClick={(e) => this.handleGoToDetailPage(x.friendsDrinksId, e)}>
                     {x.name}
                 </button>
             </li>);
-        const invitations = dto.invitationList.map((x) => <li key={x.friendsDrinksId}>{x.message}</li>);
+        const invitations = dto.invitationList.map((x) => <li key={x.friendsDrinksId}>
+            <button onClick={(e) => this.handleGoToInvitation(x.friendsDrinksId, e)}>
+                {x.message}
+            </button>
+        </li>);
         return (
             <div>
                 <header>Hi {this.props.loggedInUser.firstName}! </header>

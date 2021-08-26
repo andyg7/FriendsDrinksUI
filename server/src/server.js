@@ -255,7 +255,7 @@ function createServer(userManagement, sessionIdExtractor, backend) {
 
     })
 
-    app.post('/friendsdrinks/replyToInvitation/:friendsDrinksId', function (req, res) {
+    app.post('/v1/api/friendsdrinks/replyToInvitation/:friendsDrinksId', function (req, res) {
         let sessionId = sessionIdExtractor.getSessionId(req)
         if (sessionId === null) {
             res.status(403);

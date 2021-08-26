@@ -56,7 +56,7 @@ class Backend {
 
     replyToInvitation(friendsDrinksId, invitationReply) {
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve('{}');
         })
     }
 
