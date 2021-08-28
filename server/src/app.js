@@ -52,7 +52,7 @@ if (properties.get('identity_store') === 'dev') {
 }
 
 if (properties.get('backend') === 'dev') {
-  backend = new DevBackend();
+  backend = new DevBackend(userManagement.getUserId());
 } else {
   backend = new HttpBackend(backendConfig);
 }
