@@ -27,6 +27,7 @@ export default class Homepage extends React.Component {
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);
+                        this.props.onSessionExpired();
                     } else if (res.status === 400) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);

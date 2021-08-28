@@ -4,7 +4,7 @@ export default class LoginControl extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            page: 'SIGN_UP'
+            page: 'LOG_IN'
         }
         this.handleSwitchToLogIn = this.handleSwitchToLogIn.bind(this);
         this.handleSwitchToSignUp = this.handleSwitchToSignUp.bind(this);
