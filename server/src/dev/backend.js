@@ -5,7 +5,7 @@ class Backend {
     reportUserEvent(input) {
         // nop
         return new Promise(function (resolve, reject) {
-            resolve("Success");
+            resolve("{}");
         });
     }
 
@@ -100,13 +100,13 @@ class Backend {
 
     getFriendsDrinksInvitation(userId, friendsDrinksId) {
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve('{}');
         })
     }
 
     inviteUser(friendsDrinksId, userId) {
         return new Promise(function (resolve, reject) {
-            resolve('Success');
+            resolve('{}');
         })
     }
 

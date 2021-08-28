@@ -66,6 +66,7 @@ export default class Invitation extends React.Component {
     render() {
         return (
             <div>
+                <button onClick={this.props.onGoToHomepage}>Back to homepage</button>
                 <form onSubmit={this.handleSubmit}>
                     <label>
                         Reply
