@@ -125,8 +125,7 @@ export default class Homepage extends React.Component {
         if (!dto) {
             return (
                 <div>
-                    {this.props.loggedInUser.sessionId}
-                    <h1>Welcome back {this.props.loggedInUser.firstName}!</h1>
+                    <h1>Loading...</h1>
                 </div>
             );
         }
