@@ -176,7 +176,7 @@ class Backend {
         return httpPromise(options, postData);
     }
 
-    replyToInvitation(friendsDrinksId, invitationReply) {
+    replyToInvitation(friendsDrinksId, userId, invitationReply) {
         let postObj = {
             userId: userId,
             friendsDrinksId: friendsDrinksId,

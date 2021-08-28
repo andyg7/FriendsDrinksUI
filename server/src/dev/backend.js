@@ -5,7 +5,7 @@ class Backend {
     constructor(userId) {
         this.friendsDrinksMap = new Map();
         this.friendsDrinksMap.set("1", {
-            adminUserId: userId,
+            adminUserId: uuidv4(),
             friendsDrinksId: "1",
             name: "Whiskey drinks",
             status: "ACTIVE",
@@ -33,12 +33,11 @@ class Backend {
         });
 
         this.invitationMap = new Map();
-        this.invitationMap.set("1", {
-            message: "Want to join Scotch drinks?",
+        this.invitationMap.set("1:" + userId, {
+            message: "Want to join Whiskey drinks?",
             friendsDrinksId: "1",
-            friendsDrinksName: "Scotch drinks",
             userId: userId
-        })
+        });
     }
 
     reportUserEvent(input) {
@@ -52,7 +51,6 @@ class Backend {
         console.log("Getting homepage for " + userId);
         let adminFriendsDrinksStateList = []
         for (const [key, value] of this.friendsDrinksMap) {
-            console.log(key + ' = ' + value);
             if (userId === value.adminUserId) {
                 adminFriendsDrinksStateList.push(value);
             }
@@ -60,7 +58,6 @@ class Backend {
 
         let memberFriendsDrinksStateList = []
         for (const [key, value] of this.friendsDrinksMap) {
-            console.log(key + ' = ' + value);
             let memberUserIds = value.memberList.map(x => x.userId);
             if (memberUserIds.includes(userId)) {
                 memberFriendsDrinksStateList.push(value);
@@ -69,7 +66,6 @@ class Backend {
 
         let invitationList = []
         for (const [key, value] of this.invitationMap) {
-            console.log(key + ' = ' + value);
             if (userId === value.userId) {
                 invitationList.push(value);
             }
@@ -115,7 +111,15 @@ class Backend {
         })
     }
 
-    replyToInvitation(friendsDrinksId, invitationReply) {
+    replyToInvitation(friendsDrinksId, userId, invitationReply) {
+        let friendsDrink = this.friendsDrinksMap.get(friendsDrinksId);
+        let memberList = friendsDrink.memberList;
+        memberList.push({
+            userId: userId
+        });
+        friendsDrink.memberList = memberList;
+        this.friendsDrinksMap.set(friendsDrink.friendsDrinksId, friendsDrink);
+        this.invitationMap.delete(friendsDrinksId + ":" + userId);
         return new Promise(function (resolve, reject) {
             resolve('{}');
         })

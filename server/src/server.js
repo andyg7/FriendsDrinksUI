@@ -290,7 +290,7 @@ function createServer(userManagement, sessionIdExtractor, backend, sessionKey) {
             res.send(JSON.stringify({ errMsg: INTERNAL_ERROR_MESSAGE }));
             return;
         }
-        backend.replyToInvitation(req.params.friendsDrinksId, req.body.invitationReply).then(function (data) {
+        backend.replyToInvitation(req.params.friendsDrinksId, userId, req.body.invitationReply).then(function (data) {
             res.status(200);
             res.send('{}');
             return;
