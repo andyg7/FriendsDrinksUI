@@ -28,6 +28,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
                 (res) => {
                     if (res.status === 200) {
                         alert("Deleted!");
+                        this.props.onGoToHomepage();
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);
