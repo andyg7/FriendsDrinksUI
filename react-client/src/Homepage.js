@@ -54,7 +54,7 @@ export default class Homepage extends React.Component {
         event.preventDefault();
         const data = {
             name: this.state.createName
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/friendsdrinks/create", {
             method: 'POST',

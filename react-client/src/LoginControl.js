@@ -93,7 +93,7 @@ class LogIn extends React.Component {
         const data = {
             email: this.state.email,
             password: this.state.password
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/login", {
             method: 'POST',
@@ -203,7 +203,7 @@ class SignUp extends React.Component {
             password: this.state.password,
             firstName: this.state.firstName,
             lastName: this.state.lastName
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/signup", {
             method: 'POST',
@@ -289,7 +289,7 @@ class ForgotPassword extends React.Component {
         event.preventDefault();
         const data = {
             email: this.state.email
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/forgotpassword", {
             method: 'POST',
@@ -381,7 +381,7 @@ class ResetPassword extends React.Component {
             email: this.state.email,
             verificationCode: this.state.verificationCode,
             newPassword: this.state.newPassword
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/resetpassword", {
             method: 'POST',

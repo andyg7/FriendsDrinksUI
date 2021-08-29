@@ -15,7 +15,7 @@ export default class Invitation extends React.Component {
         event.preventDefault();
         const data = {
             reply: this.state.reply
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/friendsdrinks/replyToInvitation/" + this.props.friendsDrinksId, {
             method: 'POST',

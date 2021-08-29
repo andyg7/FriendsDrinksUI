@@ -58,7 +58,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
         event.preventDefault();
         const data = {
             date: this.state.scheduleDate
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/friendsdrinks/schedule/" + this.props.friendsDrinksId, {
             method: 'POST',
@@ -113,7 +113,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
         event.preventDefault();
         const data = {
             userId: this.state.userIdToInvite
-        }
+        };
         const dataJson = JSON.stringify(data);
         fetch("/v1/api/friendsdrinks/inviteUser/" + this.props.friendsDrinksId, {
             method: 'POST',
