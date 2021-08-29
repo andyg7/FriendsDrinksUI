@@ -206,7 +206,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
         let dto = this.state.detailPageDto;
         console.log(dto);
         if (!dto) {
-            return <div>Loading...</div>
+            return <div>Loading...</div>;
         }
         // API call to get data and display here.
         const memberList =

@@ -47,13 +47,13 @@ export default class LoginControl extends React.Component {
     render() {
         switch (this.state.page) {
             case 'LOG_IN':
-                return <LogIn forgotPasswordMessage='Forgot your password?' onSwitchToForgotPassword={this.handleSwitchToForgotPassword} signUpMessage='Not registered? Sign up!' onLoggedIn={this.props.onLoggedIn} onSwitchToSignUp={this.handleSwitchToSignUp} />
+                return <LogIn forgotPasswordMessage='Forgot your password?' onSwitchToForgotPassword={this.handleSwitchToForgotPassword} signUpMessage='Not registered? Sign up!' onLoggedIn={this.props.onLoggedIn} onSwitchToSignUp={this.handleSwitchToSignUp} />;
             case 'SIGN_UP':
-                return <SignUp logInMessage='Already have an account? Log in!' onSwitchToLogIn={this.handleSwitchToLogIn} onSignedUp={this.handleSwitchToLogIn} />
+                return <SignUp logInMessage='Already have an account? Log in!' onSwitchToLogIn={this.handleSwitchToLogIn} onSignedUp={this.handleSwitchToLogIn} />;
             case 'FORGOT_PASSWORD':
-                return <ForgotPassword onSwitchToResetPassword={this.handleSwitchToResetPassword} />
+                return <ForgotPassword onSwitchToResetPassword={this.handleSwitchToResetPassword} />;
             case 'RESET_PASSWORD':
-                return <ResetPassword onSwitchToLogIn={this.handleSwitchToLogIn} />
+                return <ResetPassword onSwitchToLogIn={this.handleSwitchToLogIn} />;
             default:
                 throw new Error("Unknown page " + this.state.page);
         }
