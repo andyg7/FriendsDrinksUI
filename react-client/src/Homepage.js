@@ -23,7 +23,7 @@ export default class Homepage extends React.Component {
                         console.log(res.body);
                         this.setState({
                             homepageDto: res.body
-                        })
+                        });
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);
@@ -67,7 +67,7 @@ export default class Homepage extends React.Component {
                     if (res.status === 200) {
                         this.setState({
                             createName: ''
-                        })
+                        });
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);
@@ -98,7 +98,7 @@ export default class Homepage extends React.Component {
         if (name === 'name') {
             this.setState({
                 createName: event.target.value
-            })
+            });
         } else {
             throw new Error('Unknown name');
         }

@@ -20,21 +20,21 @@ class LoggedInApp extends React.Component {
         this.setState({
             page: 'DETAIL_PAGE',
             friendsDrinksId: fId
-        })
+        });
     }
 
     handleGoToHomepage() {
         this.setState({
             page: 'HOMEPAGE',
             friendsDrinksId: null
-        })
+        });
     }
 
     handleGoToInvitation(fId) {
         this.setState({
             page: 'INVITATION',
             friendsDrinksId: fId
-        })
+        });
     }
 
     render() {

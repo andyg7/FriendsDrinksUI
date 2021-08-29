@@ -28,7 +28,7 @@ export default class Invitation extends React.Component {
                     if (res.status === 200) {
                         this.setState({
                             reply: ''
-                        })
+                        });
                         // Go back to homepage.
                         this.props.onGoToHomepage();
                     } else if (res.status === 403) {
@@ -60,7 +60,7 @@ export default class Invitation extends React.Component {
         event.preventDefault();
         this.setState({
             reply: event.target.value
-        })
+        });
     }
 
     render() {

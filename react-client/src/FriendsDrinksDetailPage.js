@@ -71,7 +71,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
                     if (res.status === 200) {
                         this.setState({
                             scheduleDate: ''
-                        })
+                        });
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);
@@ -103,7 +103,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
         if (name === 'scheduleDate') {
             this.setState({
                 scheduleDate: event.target.value
-            })
+            });
         } else {
             throw new Error('Unknown name');
         }
@@ -126,7 +126,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
                     if (res.status === 200) {
                         this.setState({
                             userIdToInvite: ''
-                        })
+                        });
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);
@@ -157,7 +157,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
         if (name === 'userIdToInvite') {
             this.setState({
                 userIdToInvite: event.target.value
-            })
+            });
         } else {
             throw new Error('Unknown name');
         }
@@ -175,7 +175,7 @@ export default class FriendsDrinksDetailPage extends React.Component {
                         console.log(res.body);
                         this.setState({
                             detailPageDto: res.body
-                        })
+                        });
                     } else if (res.status === 403) {
                         console.log(res.body.errMsg);
                         alert(res.body.errMsg);

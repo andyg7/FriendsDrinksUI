@@ -33,7 +33,7 @@ class App extends React.Component {
   handleSessionExpired() {
     this.setState({
       loggedInUser: null
-    })
+    });
   }
 
   render() {

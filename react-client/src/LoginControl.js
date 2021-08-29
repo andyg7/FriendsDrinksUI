@@ -16,7 +16,7 @@ export default class LoginControl extends React.Component {
         this.setState(function (state, props) {
             return {
                 page: 'LOG_IN'
-            }
+            };
         });
     }
 
@@ -24,7 +24,7 @@ export default class LoginControl extends React.Component {
         this.setState(function (state, props) {
             return {
                 page: 'FORGOT_PASSWORD'
-            }
+            };
         });
     }
 
@@ -32,7 +32,7 @@ export default class LoginControl extends React.Component {
         this.setState(function (state, props) {
             return {
                 page: 'RESET_PASSWORD'
-            }
+            };
         });
     }
 
@@ -40,7 +40,7 @@ export default class LoginControl extends React.Component {
         this.setState(function (state, props) {
             return {
                 page: 'SIGN_UP'
-            }
+            };
         });
     }
 
@@ -78,11 +78,11 @@ class LogIn extends React.Component {
         if (name === 'email') {
             this.setState({
                 email: event.target.value
-            })
+            });
         } else if (name === 'password') {
             this.setState({
                 password: event.target.value
-            })
+            });
         } else {
             throw new Error('Unknown name ' + name);
         }
@@ -179,19 +179,19 @@ class SignUp extends React.Component {
         if (name === 'email') {
             this.setState({
                 email: event.target.value
-            })
+            });
         } else if (name === 'password') {
             this.setState({
                 password: event.target.value
-            })
+            });
         } else if (name === 'firstName') {
             this.setState({
                 firstName: event.target.value
-            })
+            });
         } else {
             this.setState({
                 lastName: event.target.value
-            })
+            });
         }
     }
 
@@ -282,7 +282,7 @@ class ForgotPassword extends React.Component {
     handleChange(event) {
         this.setState({
             email: event.target.value
-        })
+        });
     }
 
     handleSubmit(event) {
@@ -361,15 +361,15 @@ class ResetPassword extends React.Component {
         if (name === 'email') {
             this.setState({
                 email: event.target.value
-            })
+            });
         } else if (name === 'verificationCode') {
             this.setState({
                 verificationCode: event.target.value
-            })
+            });
         } else if (name === 'newPassword') {
             this.setState({
                 newPassword: event.target.value
-            })
+            });
         } else {
             throw new Error('Unknown name ' + name);
         }
